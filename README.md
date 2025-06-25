@@ -1,8 +1,9 @@
-# Butterfly Project, INRAe / Universite de Bordeaux
+# Butterfly Project, BIOGECO, Universite de Bordeaux INRAE
 
-Andre Luza, Didier Alard, Frederic Barraquand
+### Andre Luza, Didier Alard, Frederic Barraquand
+#### (2025-06-25)
 
-Brief description of the folders in this repository:
+Brief description of the fiels and folders in this repository:
 
 Root\
 |- *Data*: Spatial data\
@@ -52,7 +53,9 @@ Root\
                       |------------------- *scenario_two_sparta*: correct data and simulation results for scenario 2 using the SPARTA approach (uncorrelated site random effects) (Outwhaite et al. 2018) - **study 2-scenario 2**\
                       |------------------- *scenario_three*: correct data and simulation results for scenario 3 - **study 2-scenario 3**\
                       |------------------- *scenario_phenology*: correct data and simulation results for the scenario incorporating phenology + observer preferences - **study 3 - scenario 1**\
-                      |------------------- *scenario_phenology_spot*: correct data and simulation results for the scenario incorporating phenology + observer preferences + observation spot - **study 3 - scenario 2**\
+                      |------------------- *scenario_phenology_spot*: correct data and simulation results for the scenario incorporating phenology + observer preferences + observation spot - **study 3 - scenario 2**
+                      
+### End of the description                      
 
 
 
