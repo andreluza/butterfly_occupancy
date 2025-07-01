@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+R/11-study-empirical-butterfly-data.R
+R/11-study-empirical-extractionSpatialCovariates.R
+R/11-study-empirical-organize-occupancy-data.R
