@@ -51,7 +51,7 @@ sigma.sq.vals <- c(0.3, 1.5)
 #       study region.
 
 # set lower values of phi to have more spatial autocorrelation
-phi.vals <- c(3 / 6, 3 / 3)  # lower decay than before
+phi.vals <- c(3 / 3, 3 / 6)  # lower decay than before
 
 # Temporal parameters -----------------
 rho.vals <- c(0.5, 0.9)
