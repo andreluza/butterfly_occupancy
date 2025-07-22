@@ -38,10 +38,6 @@ load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-co
 load(file = here ("model_output", "output_simulations", "scenario_zero",
                   "sim-mixed-stPGOcc-results_1600.rda"))
 
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_zero",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"))
-
 
 # Generate the data -------------------------------------------------------
 # Number of data sets for each scenario
