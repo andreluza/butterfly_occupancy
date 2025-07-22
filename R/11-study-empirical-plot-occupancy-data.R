@@ -32,6 +32,70 @@ my_theme <- theme(legend.position = 'bottom',
 load (file = here("Processed_data", 
                   "Occupancy_data_spOccupancy.RData"))
 
+# --------------------- Create the buffer around Bordeaux  ------------------------------
+
+# load spatial data (maille) -------------------------------
+cells_NAquitane <- st_read(dsn=here ("Data", "SpatialData","Maillage_1x1km"),
+                           layer="1x1km_n-a")
+
+# Gironde department ----------------------------
+# source: https://www.actualitix.com/blog/shapefiles-des-departements-de-france.html
+cells_Gironde <- st_read(dsn=here ("Data", "SpatialData","33-gironde"),
+                         layer="33-")
+
+# communes of Bordeaux Metropole
+communes <- c("BORDEAUX",
+              "AMBARES-ET-LAGRAVE",
+              "AMBES",
+              "ARTIGUES-PRES-BORDEAUX"  ,
+              "BASSENS",
+              "BEGLES",
+              "BLANQUEFORT",
+              "BOULIAC",
+              "LE BOUSCAT",
+              "BRUGES",
+              "CARBON-BLANC",
+              "CENON",
+              "EYSINES",
+              "FLOIRAC",
+              "GRADIGNAN",
+              "LE HAILLAN",
+              "LORMONT",
+              "MARTIGNAS-SUR-JALLE" ,
+              "MERIGNAC",
+              "PAREMPUYRE",
+              "PESSAC",
+              "SAINT-AUBIN-DE-MEDOC"  ,
+              "SAINT-LOUIS-DE-MONTFERRAND" ,
+              "SAINT-MEDARD-EN-JALLES"  ,
+              "SAINT-VINCENT-DE-PAUL" ,
+              "LE TAILLAN-MEDOC"  ,
+              "TALENCE",
+              "VILLENAVE-D'ORNON" )
+
+# plot              
+a <- ggplot() +
+  geom_sf(fill="white")+
+  geom_sf(data= cells_NAquitane)
+
+# Bordeaux distance
+bordeaux_distance <- st_distance (cells_Gironde,
+                                  cells_Gironde %>%
+                                    filter (NOM_COMM == "BORDEAUX"))
+#  plot
+(a <- ggplot()  + geom_sf(data=cells_Gironde %>%
+                            cbind (dist=as.numeric(bordeaux_distance)) %>%
+                            filter (dist < 10000),
+                          aes(fill= NOM_COMM))+
+    theme(legend.position = "none"))
+
+# buffer of 10 km around Bordeaux
+cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
+                                            cbind (dist=as.numeric(bordeaux_distance)) %>%
+                                            filter (dist < 10000)
+                                          ,
+                                          cells_NAquitane))
+
 # --------------------- Section of plots  ------------------------------
 
 # observations over time
@@ -246,10 +310,8 @@ data_visits <- #lapply (unique(cols_base), function (i) # activate if need to ev
                #Year = as.numeric(i)
                ) 
 #)
-
 # melt
 #data_visits <- do.call(rbind, data_visits)
-
 #data_visits %>%
 #  filter(Year == 2023) %>%
 #  summarize(sum(Freq[-1]))
@@ -386,6 +448,9 @@ species_plot <- melt (apply(species_table,c(2,3),sum,na.rm=T),as.is=T) %>%
   coord_polar(start = 0,clip="off",direction = 1,theta="x")+
   scale_x_discrete(breaks = paste0("juin ", seq(2000,2023)), labels = 2000:2023)   
 
+
+# -----------------------------------------------------------
+#               FIGURE 1: DATA DESCRIPTION
 # plot
 png(here ("figures", "empirical", "map_spp_visits.png"),
     width = 30, height = 30, units = "cm",res=400)
@@ -405,15 +470,14 @@ png(here ("figures", "empirical", "map_spp_visits.png"),
 )
 
 dev.off()
-
-# plot of detection maps in high res
+#
+# -----------------------------------------------------------
+# plot of detection maps in higher res
 png(here ("figures", "empirical", "map_spp_highRes.png"),
     width = 30, height = 20, units = "cm",res=600)
 
-             
   p1a
-             
-             
+
 dev.off()
 
 # histograms
@@ -503,7 +567,7 @@ p_BM_obs
 
 # save Bordeaux Metropole maps
 # histograms
-png(here ("figures", "empirical", "Bordeaux_metropole_data.png"),
+png(here ("figures", "empirical", "Bordeaux_data.png"),
     width = 30, height = 20, units = "cm", res= 600)
 
 grid.arrange(p_BM,

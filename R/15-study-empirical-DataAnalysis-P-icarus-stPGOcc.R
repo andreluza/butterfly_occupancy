@@ -206,6 +206,16 @@ z.init <- apply(data.list.full$y, c(1, 2), function(a) as.numeric(sum(a, na.rm =
 inits.list <- list(beta = 0, alpha = 0, sigma.sq.t = 0.5, phi = 3 / .5, 
                    sigma.sq = 1, rho = 0, z = z.init)
 
+# plot naive occupancy (detection cells)
+(a <- ggplot() +
+    geom_sf(fill="white")+
+    geom_sf(data= cells_NAquitane)+
+    geom_sf(data = cbind (cells_NAquitane,
+                          naive.occ = apply (sp_table_years[,,,sp], 1, max, na.rm =T)),
+            aes(fill=naive.occ,col=naive.occ))+
+    scale_fill_viridis_c(na.value = "white",direction=-1)+
+    scale_colour_viridis_c(na.value = "white",direction=-1))
+
 # Tuning
 tuning.list <- list(phi = 0.5, rho = 0.5)
 
@@ -245,7 +255,7 @@ prior.list <- list(beta.normal = list(mean = 0, var = 2.72),
                    alpha.normal = list(mean = 0, var = 2.72),
                    sigma.sq.ig = c(a = 2, b = 1.5),
                    sigma.sq.t.ig = c(2, 1),
-                   phi.unif = c(a = 3 / 6, b = 3 / 1)) # interpreted as somehow 6 km up to 1 km distance neighbors
+                   phi.unif = c(a = 3 / 6, b = 3 / 1)) # higher autocorrelation
 
 # Starting values
 z.init <- apply(data.list.full$y, c(1, 2), function(a) as.numeric(sum(a, na.rm = TRUE) > 0))
