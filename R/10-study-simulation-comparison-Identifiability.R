@@ -109,6 +109,7 @@ load(file = here ("model_output", "output_simulations", "scenario_phenology_spot
 scePhenSpot$study <- 3
 scePhenSpot$sc <- 2
 
+
 # -------------------------------------------
 
 # spatial params
@@ -793,7 +794,6 @@ png (here("figures", "Scenario-Comparisons","maps_comparison_sc3.png"),
 
 dev.off()
 
-
 # -----------------------------------------------------
 # relationship between spatial and temporal random effects (theta)
 
@@ -810,8 +810,8 @@ theta_data <- lapply (list (sceDS,
                             theta_data <-  rbind (
                                   
                               data.frame (# occupancy intercept and coefficients
-                                    sim=melt(i$theta.mean.samples[1,,])[,1],
-                                    scenario=melt(i$theta.mean.samples[1,,])[,2],
+                                    sim=melt(i$theta.mean.samples)[,1],
+                                    scenario=melt(i$theta.mean.samples)[,3],
                                     "sigma_sq"=melt(i$theta.mean.samples[,1,])[,3],
                                     "phi"=melt(i$theta.mean.samples[,2,])[,3],
                                     "sigma_sqT"=melt(i$theta.mean.samples[,3,])[,3],
@@ -955,7 +955,6 @@ png (here("figures", "Scenario-Comparisons","density.rho_sigmaT13-16.png"),
   density.rho_sigmaT2
 
 dev.off()
-
 
 # relationship between intercepts and regression coefficients-----------------------------------------------------
 
@@ -1340,83 +1339,24 @@ png (here("figures", "Scenario-Comparisons","density.alphas_pairs_sc13-16.png"),
 
 dev.off()
 
-
-
 # build the likelihood surfaces  --------------------
 
 # https://stackoverflow.com/questions/13613157/plot-3d-density
-#require(plotly)
-#library(MASS)
-#
-## all random effects low
-#test_sc1 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 1 & sc == 0 & scenario == 3) 
-#den3d <- kde2d(plogis(test_sc1$beta0), 
-#               plogis(test_sc1$alpha0))
-#
-## plot 
-#library(plotly)
-#plot_surface1<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface1), here("figures", "Scenario-Comparisons","baseline_all_low.html"))
-#
-## all random effects high
-#test_sc2 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 1 & sc == 0 & scenario == 14) 
-#den3d <- kde2d(plogis(test_sc2$beta0), 
-#               plogis(test_sc2$alpha0))
-#
-## plot 
-#plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","baseline_all_high.html"))
-#
-#
-## study 2 ----------------------------
-#
-## all random effects low
-#test_sc1 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 2 & sc == 0 & scenario == 3) 
-#den3d <- kde2d(plogis(test_sc1$beta0), 
-#               plogis(test_sc1$alpha0))
-#
-## plot 
-#plot_surface1<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface1), here("figures", "Scenario-Comparisons","st2-sc0_all_low.html"))
-#
-## all random effects high
-#test_sc2 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 2 & sc == 0 & scenario == 14) 
-#den3d <- kde2d(plogis(test_sc2$beta0), 
-#               plogis(test_sc2$alpha0))
-#
-## plot 
-#plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","st2-sc0_all_high.html"))
-#
-## study 2 - 2 ----------------------------
-#
-## all random effects low
-#test_sc1 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 2 & sc == 2 & scenario == 3) 
-#den3d <- kde2d(plogis(test_sc1$beta0), 
-#               plogis(test_sc1$alpha0))
-#
-## plot 
-#plot_surface1<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface1), here("figures", "Scenario-Comparisons","st2-sc0_all_low.html"))
-#
-## all random effects high
-#test_sc2 <- psi_p_data %>%
-#  filter (is.na(alpha0)!=T) %>%
-#  filter (study == 2 & sc == 2 & scenario == 14) 
-#den3d <- kde2d(plogis(test_sc2$beta0), 
-#               plogis(test_sc2$alpha0))
-#
-## plot 
-#plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
-#htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","st2-sc0_all_high.html"))
-#
+require(plotly)
+library(MASS)
+
+# all random effects high
+test_sc2 <- theta_data %>%
+  #filter (is.na(alpha0)!=T) %>%
+  filter (study == 1 & sc == 0 & scenario == 2) 
+den3d <- kde2d((test_sc2$sigma_sq), 
+               (test_sc2$phi.x))
+
+# plot 
+plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% 
+  add_surface()
+plot_surface2
+htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","st1-sc0_all_high.html"))
+
+# end
+
