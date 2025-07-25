@@ -352,14 +352,18 @@ display: none;
 </div>
 
 
-<div id="butterfly-project-biogeco-universite-de-bordeaux-inrae" class="section level1">
-<h1>Butterfly Project, BIOGECO, Universite de Bordeaux INRAE</h1>
-<div id="andre-luza-didier-alard-frederic-barraquand" class="section level3">
-<h3>Andre Luza, Didier Alard, Frederic Barraquand</h3>
-<div id="section" class="section level4">
-<h4>(2025-06-25)</h4>
-<p>Brief description of the fiels and folders in this repository:</p>
+<div id="butterfly-project-biogeco-universite-de-bordeaux-inrae" class="section level3">
+<h3>Butterfly Project, BIOGECO, Universite de Bordeaux INRAE</h3>
+<div id="andre-luza-didier-alard-frederic-barraquand" class="section level4">
+<h4>Andre Luza, Didier Alard, Frederic Barraquand</h4>
+<div id="section" class="section level5">
+<h5>(2025-07-22)</h5>
+<p>Brief description of the files and folders in this repository:</p>
 <p>Root<br />
+|- <em>SuppInfo-A-D.pdf</em>: Supporting Information A, B, C and D
+associated to the article;<br />
+|- <em>SuppInfo-E.pdf</em>: Supporting Information E associated to the
+article.<br />
 |- <em>Data</em>: Spatial data<br />
 |——– SpatialData: systematic grid (grid cells 1x1 km, French geographic
 system) from FAUNA<br />
@@ -378,70 +382,72 @@ steps of data exploration and analyses)<br />
 |— <em>Simulations</em><br />
 |——– R scripts are numbered sequentially, from 1 to 9. Thus they should
 be run sequentially:<br />
-|——– 1-study1-sc0<em>: Scripts to reproduce original simulations (as per
-Doser &amp; Stoudt 2024 = D&amp;S) using Bernoulli sampling
+|——– 1-study1-sc0-… .R: Scripts to reproduce original simulations (as
+per Doser &amp; Stoudt 2024 = D&amp;S) using Bernoulli sampling
 design;<br />
-|——– 2-study1-sc1</em>: Scripts to reproduce D&amp;S simulations with
+|——– 2-study1-sc1-… .R: Scripts to reproduce D&amp;S simulations with
 higher spatial autocorrelation (lower values of ) and Bernoulli sampling
 design;<br />
-|——– 3-study2-sc0<em>: Scripts to simulations with our Poisson sampling
+|——– 3-study2-sc0-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0);<br />
-|——– 4-study2-sc1</em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy covariate;<br />
-|——– 5-study2-sc2<em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy and detection covariate (total overlap of covariates);<br />
-|——– 6-study2-sc3</em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy and detection covariate, and <span class="math inline">\(v_{itj}\)</span> (random covariate) in the
-detection model (partial overlap of covariates);<br />
-|——– 7-study3-sc1<em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy and detection covariate, and <span class="math inline">\(v_{itj}\)</span> (random covariate) in the
-detection model (partial overlap of covariates). Design including the
-effect of phenology + observer preferences on occupancy data;<br />
-|——– 8-study3-sc2</em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy and detection covariate, and <span class="math inline">\(v_{itj}\)</span> (random covariate) in the
-detection model (partial overlap of covariates). Design including the
-effect of phenology + observer preferences + observation spot on
-occupancy data;<br />
-|——– 9-study2-sc1<em>: Scripts to simulations with our Poisson sampling
-design (<span class="math inline">\(\phi\)</span> as in study
-1-study1-sc0) and latitude <span class="math inline">\(L_i\)</span> as
-occupancy covariate. Here the data was analyzed using the random walk
-model by Outhwaite et al. (2018) - <a href="https://doi.org/10.1016/j.ecolind.2018.05.010;\" class="uri">https://doi.org/10.1016/j.ecolind.2018.05.010;\</a> |——–
-10-study-simulation-comparison-Identifiability: Script used to interpret
-simulations’ output. Produce figures in the main text and SI;<br />
-|— </em>Empirical analyses<em><br />
-|——– 11-study-</em>.R: scripts used to organize butterfly data, extract
+1-sc0);<br />
+|——– 4-study2-sc1-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy
+covariate;<br />
+|——– 5-study2-sc2-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy and
+detection covariate (total overlap of covariates);<br />
+|——– 6-study2-sc3-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy and
+detection covariate, and <span class="math inline">\(v_{itj}\)</span>
+(random covariate) in the detection model (partial overlap of
+covariates);<br />
+|——– 7-study3-sc1-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy and
+detection covariate, and <span class="math inline">\(v_{itj}\)</span>
+(random covariate) in the detection model (partial overlap of
+covariates). Design including the effect of phenology + observer
+preferences on occupancy data;<br />
+|——– 8-study3-sc2-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy and
+detection covariate, and <span class="math inline">\(v_{itj}\)</span>
+(random covariate) in the detection model (partial overlap of
+covariates). Design including the effect of phenology + observer
+preferences + observation spot on occupancy data;<br />
+|——– 9-study2-sc1-… .R: Scripts to simulations with our Poisson sampling
+design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
+latitude <span class="math inline">\(L_i\)</span> as occupancy
+covariate. Here the data was analyzed using the random walk model by
+Outhwaite et al. (2018) - <a href="https://doi.org/10.1016/j.ecolind.2018.05.010" class="uri">https://doi.org/10.1016/j.ecolind.2018.05.010</a>;<br />
+|——– 10-study-simulation-comparison-Identifiability: Script used to
+interpret simulations’ output. Produce figures in the main text and
+SI;<br />
+|— <em>Empirical analyses</em><br />
+|——– 11-study-… .R: scripts used to organize butterfly data, extract
 covariates, and create the occupancy dataset available in the folder
 “Processed_data”;<br />
 |——– 11-study-empirical-plot-occupancy-data.R: script used to plot
 butterfly data (Fig. 1);<br />
-|——– 12-study-empirical-buffer-DataAnalysis-<em>.R: script used to
-analyze data at Bordeaux + 10 km buffer scale. One script per
-species;<br />
-|——– 13-study-empirical-buffer-Predictions-Maps-</em>.R: script used to
+|——– 12-study-empirical-buffer-DataAnalysis-… .R: script used to analyze
+data at Bordeaux + 10 km buffer scale. One script per species;<br />
+|——– 13-study-empirical-buffer-Predictions-Maps-… .R: script used to
 make predictions and map. One script per species;<br />
-|——– 14-study-empirical-buffer-Tables-PPO-<em>.R: script used to
-calculate Prior-Posterior overlap (Tables in Supporting Information).
-One script per species;<br />
-|——– 15-study-empirical-buffer-DataAnalysis-</em>.R: script used to
-analyze data at Nouvelle Aquitaine scale. One script per species;<br />
-|——– 16-study-empirical-buffer-Predictions-Maps-<em>.R: script used to
+|——– 14-study-empirical-buffer-Tables-PPO-… .R: script used to calculate
+Prior-Posterior overlap (Tables in Supporting Information). One script
+per species;<br />
+|——– 15-study-empirical-buffer-DataAnalysis-… .R: script used to analyze
+data at Nouvelle Aquitaine scale. One script per species;<br />
+|——– 16-study-empirical-buffer-Predictions-Maps-… .R: script used to
 make predictions and map at Nouvelle Aquitaine scale. One script per
 species;<br />
-|——– 17-study-empirical-buffer-Tables-PPO-</em>.R: script used to
-calculate Prior-Posterior overlap (Tables in Supporting Information) at
-Nouvelle Aquitaine scale. One script per species;<br />
+|——– 17-study-empirical-buffer-Tables-PPO–… .R: script used to calculate
+Prior-Posterior overlap (Tables in Supporting Information) at Nouvelle
+Aquitaine scale. One script per species;<br />
 </p>
 <p>|- <em>model_output</em>: results of the analyses of simulated and
 empirical data sets - these folders will be created while running
@@ -486,6 +492,9 @@ results for the scenario incorporating phenology + observer preferences
 + observation spot - <strong>study 3 - scenario 2</strong><br />
 </p>
 </div>
+</div>
+<div id="end-of-the-description" class="section level4">
+<h4>End of the description</h4>
 </div>
 </div>
 
