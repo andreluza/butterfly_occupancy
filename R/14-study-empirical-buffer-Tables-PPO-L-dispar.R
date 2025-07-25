@@ -18,7 +18,7 @@ gc()
 source ("R/packages.R")
 
 # load output (batch) ----------------------------------
-list_output <- list.files (here ("model_output", "empirical"),pattern = "Lycaena*") 
+list_output <- list.files (here ("model_output", "empirical"),pattern = "Lycaena dis") 
 list_output <- list_output[grep("urban", list_output)]
 
 # load water  -------------------------------

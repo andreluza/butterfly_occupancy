@@ -35,6 +35,9 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.text.y = element_text(size = 5),
                   axis.title = element_text(size=10))
 
+# create a dir to receive the results
+dir.create(here("model_output", "empirical"))
+
 # load processed data ------------------------
 load (file = here("Processed_data", 
                   "Occupancy_data_spOccupancy.RData"))
@@ -115,8 +118,24 @@ table(rowSums(base_table_years[])==0) # and the effort table
 
 gc()
 
-# naive occupancy
-mean(apply (sp_table_years[missing_sites==F,,,sp],2,sum,na.rm=T)/nrow(sp_table_years[missing_sites==F,,,]))*100
+#naive yearly occupancy
+unlist(lapply (seq(1,ncol(sp_table_years[,,,sp])), function (i)
+  
+  ((sum(apply (sp_table_years[,i,,sp],1,sum,na.rm=T)>0))/nrow(sp_table_years[,,,sp]))*100
+  
+)) %>% mean
+
+# number of cells
+unlist(lapply (seq(1,ncol(sp_table_years[,,,sp])), function (i)
+  
+  ((sum(apply (sp_table_years[,i,,sp],1,sum,na.rm=T)>0)))
+  
+)) %>% mean
+
+# detections in an average of six cells per year
+mean(apply (sp_table_years[,,,sp],c(1,2),sum,na.rm=T) %>%
+       # sum of the number of sites 
+       colSums())
 
 # load the models to  make predictions ----------------------------------------
 NG15weak <- new.env()
@@ -143,8 +162,10 @@ generate_predictions <- lapply (seq(1,length(list_output)), function (out) {
                              # Do the predictions in chunks of sites #-------------------------------------------------------
                              vals <- split(1:nrow(cell_centroid_df), ceiling(seq_along(1:nrow(cell_centroid_df)) / 1500))
                              psi.quants <- array(NA, dim = c(nrow(cell_centroid_df), ncol(sp_table_years)))  
+                             psi.quants.lci <- array(NA, dim = c(nrow(cell_centroid_df), ncol(sp_table_years)))  
+                             psi.quants.uci <- array(NA, dim = c(nrow(cell_centroid_df), ncol(sp_table_years)))  
                              w.quants <- array(NA, dim = c(nrow(cell_centroid_df), 1)) #
-                            for (j in 1:length(vals)) {
+                             for (j in 1:length(vals)) {
                                print(paste("Currently on set ", j, " out of ", length(vals), sep = ''))
                                curr.indx <- vals[[j]]
                                out.pred <- predict(list_output[[out]]$out, X[curr.indx, , -c(6,7), drop = FALSE],
@@ -153,6 +174,8 @@ generate_predictions <- lapply (seq(1,length(list_output)), function (out) {
                                                    n.omp.threads = 10, 
                                                    verbose = T)
                                psi.quants[curr.indx, ] <- apply(out.pred$psi.0.samples, c(2, 3), mean)
+                               psi.quants.lci[curr.indx, ] <- apply(out.pred$psi.0.samples, c(2, 3), quantile, 0.025)
+                               psi.quants.uci[curr.indx, ] <- apply(out.pred$psi.0.samples, c(2, 3), quantile, 0.975)
                                w.quants[curr.indx, ] <- apply(out.pred$w.0.samples, 2, mean)
                                
                                rm(out.pred)
@@ -160,14 +183,13 @@ generate_predictions <- lapply (seq(1,length(list_output)), function (out) {
                              }
                              
                              # save these predictions as they took some time to run
-                             save (psi.quants,w.quants, 
+                             save (psi.quants,psi.quants.lci,psi.quants.uci,w.quants, 
                                    file = here ("model_output", "empirical", paste ("predictions-", list_output[[out]]$lab,"-", substr(sp_list[sp],1,12),".Rdata")))
                              
                              
                              }
                            )
                              
-
 # load predictions
 generate_predictions <- lapply (list("Ng15weak", "Ng15inf"), function (i) {
 
@@ -175,6 +197,9 @@ generate_predictions <- lapply (list("Ng15weak", "Ng15inf"), function (i) {
 
   #  return what interests
   res <- list (psi_it = psi.quants,
+               psi_it_lci = psi.quants.lci,
+               psi_it_uci = psi.quants.uci,
+               
                w_i = w.quants)
   res
   }
@@ -192,8 +217,8 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
                                                  )
     # estimates for sampled sites
     data_sampled <- data.frame (cells = rownames(cell_centroid_df [missing_sites==F,]),
-                                psi_i = apply (list_output[[out]]$out$psi.samples,2,mean), # point estimates of psi_i
-                                w_i = apply (list_output[[out]]$out$w.samples,2,mean)) # point estimates of omega_i
+                                psi_i = apply (generate_predictions[[out]]$psi_it[missing_sites==F,],1,mean), # point estimates of psi_i
+                                w_i = (generate_predictions[[out]]$w_i[missing_sites==F,])) # point estimates of omega_i
     # table(data_sampled$cells %in% data_non_sampled$cells) # check if they are all different
     gc()
     # sampled within Bordeaux's buffer
@@ -244,8 +269,8 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
               aes (fill=bar_w_i,
                    col=bar_w_i),
               alpha=0.75)+
-      scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-      scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
+      scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+      scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
       ggtitle("")+
       theme(plot.title = element_text(size=10),
             axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
@@ -295,8 +320,8 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
               aes (fill=bar_w_i,
                    col=bar_w_i),
               alpha=0.75)+
-      scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-      scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
+      scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+      scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
       ggtitle("")+
       theme(plot.title = element_text(size=10),
             axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
@@ -316,6 +341,11 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
     # summarize in-sample estimates (point estimates)
     gc()
     summ_tab_psi <-apply(list_output[[out]]$out$psi.samples,c(1,3),mean)
+    #summ_tab_psi <-apply(out.pred.occ$psi.0.samples,c(1,3),function (x) sum(x)/ncol(out$out$psi.samples))
+    # summarize in-sample estimates (point estimates)
+    #summ_tab_psib <-apply(list_output[[out]]$out$psi.samples,c(1,3),function (x) sum(x)/ncol(list_output[[out]]$out$psi.samples))
+    #table(round(summ_tab_psib,3) == round(summ_tab_psi,3))
+    
     summ_tab_psi <- data.frame (psi = apply(summ_tab_psi,2,mean),
                      uci = apply(summ_tab_psi,2,quantile, 0.975),
                      lci = apply(summ_tab_psi,2,quantile, 0.025),
@@ -327,7 +357,7 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
       ggplot(aes(x=year,psi)) +
       geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
       geom_line(linewidth=1,col="black")+
-      geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years[missing_sites==F,,,]),year = seq(2009,2023)), 
+      geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2009,2023)), 
                                              aes (x=year, y=psi))+
         ggtitle("")+
         labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+

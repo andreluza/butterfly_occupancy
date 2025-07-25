@@ -15,6 +15,9 @@
 rm(list=ls())
 source ("R/packages.R")
 
+# create a dir to receive the results
+dir.create(here("model_output", "empirical"))
+
 # load processed data ------------------------
 load (file = here("Processed_data", 
                   "Occupancy_data_spOccupancy.RData"))

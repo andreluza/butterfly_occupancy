@@ -53,7 +53,7 @@ cells_Gironde <- st_read(dsn=here ("Data", "SpatialData","33-gironde"),
 a <- ggplot() +
   geom_sf(fill="white")+
   geom_sf(data= cells_NAquitane)
-
+a
 
 # bordeaux distance
 bordeaux_distance <- st_distance (cells_Gironde,
@@ -67,14 +67,10 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                           ,
                                           cells_NAquitane))
 
-# 
-length(unique(dataPointsPolygonClean$Maille1))
-table(unique(dataPointsPolygonClean$Maille1) %in% cells_NAquitane$CODE_10KM)
 
 # cells in the region of Gironde
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
 # altitude_stats <- altitude_stats[which(cells_NAquitane$CODE_10KM %in% inter_gironde_NAq$CODE_10KM),]
-
 
 # select sites
 sp_table_years <- (sp_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,,])
@@ -148,6 +144,7 @@ table(rowSums(base_table_years) == 0)/sum(table(rowSums(base_table_years) == 0))
 
 # Coordinates
 coords <- cell_centroid_df[,c("X","Y")][which(missing_sites==F),]
+cell_centroid_df_buffer <- cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
 
 # Pack all data into lists
 occ.covs <- list(int = X[which(missing_sites==F), , 1],
@@ -173,22 +170,38 @@ det.covs <- list(int = X.p[which(missing_sites==F), , , 1],
 )
 
 # bundle data
-str(data.list.full <- list(y = sp_table_years [which(missing_sites==F),,,sp], # select common blue 
+str(data.list.full <- list(y = sp_table_years [which(missing_sites==F),,,sp], # select large copper 
                            occ.covs = occ.covs, 
                            det.covs = det.covs, 
                            coords = coords))
-table(data.list.full$y>=0)
-sum(data.list.full$y,na.rm=T)
+# number of detections
+table(data.list.full$y>0) 
+sum(apply (data.list.full$y,1,max,na.rm=T))
 
-# naive occupancy
-table(apply (data.list.full$y,1,sum,na.rm=T)>0)/nrow(data.list.full$y)
+#naive yearly occupancy
+unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
+  
+  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0))/1346)*100
+  
+)) %>% mean
 
+# number of cells
+unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
+
+  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0)))
+
+)) %>% mean
+
+# detections in an average of six cells per year
+mean(apply (data.list.full$y,c(1,2),sum,na.rm=T) %>%
+       # sum of the number of sites 
+       colSums())
+     
 # missing data in the buffer
 table(gironde_cells$CODE_10KM %in% rownames(coords))
 
 # missing data in the buffer
 missing_buffer <- gironde_cells$CODE_10KM [which(gironde_cells$CODE_10KM %in% rownames(coords)==F)]
-
 
 # load the models to  make predictions ----------------------------------------
 NG15weak <- new.env()
@@ -202,14 +215,15 @@ load (file=here ("model_output",
                  "empirical",
                  "buffer_outputNNG15InfPrior_urban_Lycaena disp.Rdata"),NG15inf)
 NG15inf$lab <- "Ng15inf"
-
+# out<-NG15weak
 # make predictions and produce plots for all models (plots )
 res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       
       # predict
       out.pred.occ <- predict(out$out, 
-                              X[which(missing_sites==T),,-c(6,7)], 
-                              cell_centroid_df[which(missing_sites==T),], 
+                              X[,,-c(6,7)], 
+                              #cell_centroid_df[which(missing_sites==T),], 
+                              cell_centroid_df_buffer,
                               verbose = T,
                               t.cols=seq(1,ncol(data.list.full$y)),
                               type = 'occupancy'
@@ -218,14 +232,14 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       # map of all cells -----------------------------------------------------------
       # estimates for non-sampled sites
       data_non_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==T)],
-                                      psi_i = apply (out.pred.occ$psi.0.samples,2, # expected values (average of predictions) of psi_i
+                                      psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==T),],2, # expected values (average of predictions) of psi_i
                                                      mean),
-                                      w_i = apply (out.pred.occ$w.0.samples,2, # expected values (average of predictions) of w_i
+                                      w_i = apply (out.pred.occ$w.0.samples[,which(missing_sites ==T)],2, # expected values (average of predictions) of w_i
                                                    mean))
       # estimates for sampled sites
       data_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==F)],
-                                  psi_i = apply (out$out$psi.samples,2,mean), # point estimates of psi_i
-                                  w_i = apply (out$out$w.samples,2,mean)) # point estimates of omega_i
+                                  psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==F),],2,mean), # point estimates of psi_i
+                                  w_i = apply (out.pred.occ$w.0.samples[,which(missing_sites ==F)],2,mean)) # point estimates of omega_i
       # table(data_sampled$cells %in% data_non_sampled$cells) # check if they are all different
       
       # sampled within Bordeaux's buffer
@@ -248,7 +262,7 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       p1_missing<-ggplot(data = gironde_cells[missing_sites==T,]) +
         geom_sf(fill="white")+
         geom_sf(data=cbind (gironde_cells[missing_sites==T,],
-                            bar_psi_i = apply (out.pred.occ$psi.0.samples,2,mean)),
+                            bar_psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==T),],2,mean)),
                 aes (fill=bar_psi_i,
                      col=bar_psi_i),
                 alpha=0.75)+
@@ -270,15 +284,15 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
         my_theme
       
       # spatial random effect
-      p2_missing<-ggplot(data = gironde_cells[missing_sites==T,]) +
+      p2_missing<-ggplot(data = gironde_cells[which(missing_sites==T),]) +
         geom_sf(fill="white")+
         geom_sf(data=cbind (gironde_cells[missing_sites==T,],
-                            bar_psi_i = apply (out.pred.occ$psi.0.samples,2,mean)),
+                            bar_psi_i = apply (out.pred.occ$w.0.samples[,which(missing_sites==T)],2,mean)),
                 aes (fill=bar_psi_i,
                      col=bar_psi_i),
                 alpha=0.75)+
-        scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
+        scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
         ggtitle("")+
         theme(plot.title = element_text(size=10),
               axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
@@ -298,7 +312,7 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       p1 <- ggplot(data = gironde_cells) +
         geom_sf(fill="white")+
         geom_sf(data=cbind (gironde_cells,
-                            bar_psi_i = res_data$psi_i,
+                            bar_psi_i = apply (out.pred.occ$psi.0.samples,2,mean),
                             #ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$psi_i),
                             det_data_i = !missing_sites), # what have data
                 aes (fill=bar_psi_i,
@@ -325,13 +339,13 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       p2 <- ggplot(data = gironde_cells) +
         geom_sf(fill="white")+
         geom_sf(data=cbind (gironde_cells,
-                            bar_w_i = res_data$w_i,#ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$w_i),
+                            bar_w_i = apply (out.pred.occ$w.0.samples,2,mean),#ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$w_i),
                             det_data_i = !missing_sites), # what have data),
                 aes (fill=bar_w_i,
                      col=as.factor(ifelse (det_data_i == T,1,0))),
                 alpha=0.75)+
         scale_colour_viridis_d(option = "magma",direction=1,na.value = "gray90",begin=0.75)+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
+        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
         ggtitle("")+
         theme(plot.title = element_text(size=10),
               axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
@@ -349,13 +363,21 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
         guides(col="none")
       
       # summarize in-sample estimates (point estimates)
-      summ_tab_psi <-apply(out$out$psi.samples,c(1,3),mean)
+      summ_tab_psi <-apply(out.pred.occ$psi.0.samples,c(1,3),mean)
+      # do by hand to see if it correspond
+      #summ_tab_psib<-lapply (seq(1,nrow(out.pred.occ$psi.0.samples)), function (i)
       
-      #test <- (apply (NG15weak$out$psi.samples,1, function (x) colSums(x)/nrow(x)))
-      #mean(rowMeans(test))
-      #(colMeans(apply (NG15weak$out$psi.samples, c(1,3),mean)))
-      # range (rowMeans(test))
+      #  colSums(out.pred.occ$psi.0.samples[i,,])/ncol(out$out$psi.samples)
+        
+      #  )
+      #table(do.call(rbind,summ_tab_psib) == summ_tab_psi)
       
+      # calculate mean yearly occupancy
+      print(data.frame (psi = apply(summ_tab_psi,2,mean),
+                  uci = apply(summ_tab_psi,2,quantile, 0.975),
+                  lci = apply(summ_tab_psi,2,quantile, 0.025)) %>%
+        colMeans()*100)
+
       # plot
       p3<- data.frame (psi = apply(summ_tab_psi,2,mean),
                        uci = apply(summ_tab_psi,2,quantile, 0.975),
@@ -364,7 +386,7 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
         ggplot(aes(x=year,psi)) +
         geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
         geom_line(linewidth=1,col="black")+
-        geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(data.list.full$y),year = seq(2000,2023)), 
+        geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2000,2023)), 
                   aes (x=year, y=psi))+
         ggtitle("")+
         labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
@@ -394,7 +416,7 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       ) 
       phen_plot$month <-factor(phen_plot$month,
                                levels = c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"))
-      
+      # plot phenology and observer effect
       p4 <- ggplot(phen_plot, aes(x=x, y = p)) +
         geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
         #geom_point()+
@@ -409,7 +431,7 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
         )
       
        # create a list of resulting plots
-        res_plots <- list (p1=p1,
+       res_plots <- list (p1=p1,
                            p2=p2,
                            p3=p3,
                            p4=p4,
@@ -447,16 +469,16 @@ dev.off()
 png (here ("figures", "empirical","estimates_missing_cells_Ldispar_buffer.png"),
      width = 12,height = 14,units = "cm",res=150)
 
-grid.arrange(# weak prior
-  res_plots[[1]]$p1_missing+ggtitle("A"),
-  res_plots[[1]]$p2_missing,
-  
-  # 15 neightbors informative
-  res_plots[[2]]$p1_missing+ggtitle("B"),
-  res_plots[[2]]$p2_missing,
-  
-  nrow=2,ncol=2
-)
+  grid.arrange(# weak prior
+    res_plots[[1]]$p1_missing+ggtitle("A"),
+    res_plots[[1]]$p2_missing,
+    
+    # 15 neightbors informative
+    res_plots[[2]]$p1_missing+ggtitle("B"),
+    res_plots[[2]]$p2_missing,
+    
+    nrow=2,ncol=2
+  )
 
 dev.off()
 

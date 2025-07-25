@@ -27,6 +27,9 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.text.y = element_text(size = 5),
                   axis.title = element_text(size=10))
 
+# create a dir to receive the results
+dir.create(here("model_output", "empirical"))
+
 # load processed data ------------------------
 load (file = here("Processed_data", 
                   "Occupancy_data_spOccupancy.RData"))
@@ -64,10 +67,6 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                             filter (dist < 10000)
                                           ,
                                           cells_NAquitane))
-
-# 
-length(unique(dataPointsPolygonClean$Maille1))
-table(unique(dataPointsPolygonClean$Maille1) %in% cells_NAquitane$CODE_10KM)
 
 # cells in the region of Gironde
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
@@ -134,6 +133,7 @@ table(rowSums(base_table_years) == 0)/sum(table(rowSums(base_table_years) == 0))
 
 # Coordinates
 coords <- cell_centroid_df[,c("X","Y")][which(missing_sites==F),]
+cell_centroid_df_buffer <- cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
 
 # Pack all data into a list
 occ.covs <- list(int = X[which(missing_sites==F), , 1],
@@ -161,11 +161,28 @@ str(data.list.full <- list(y = sp_table_years [which(missing_sites==F),,,sp], # 
                            occ.covs = occ.covs, 
                            det.covs = det.covs, 
                            coords = coords))
-table(data.list.full$y>=0)
-sum(data.list.full$y,na.rm=T) # number of detections
 
-# naive occupancy
-table(apply (data.list.full$y,1,sum,na.rm=T)>0)/nrow (data.list.full$y)
+# number of detections
+table(data.list.full$y) 
+sum(apply (data.list.full$y,1,max,na.rm=T)) # sites with detection
+
+#naive yearly occupancy
+unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
+  
+  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0))/1346)*100
+  
+)) %>% mean
+# number of cells
+unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
+  
+  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0)))
+  
+)) %>% mean
+
+# detections in an average of six cells per year
+mean(apply (data.list.full$y,c(1,2),sum,na.rm=T) %>%
+       # sum of the number of sites 
+       colSums())
 
 # missing data in the buffer
 table(gironde_cells$CODE_10KM %in% rownames(coords))
@@ -190,217 +207,227 @@ NG15inf$lab <- "Ng15inf"
 res_plots <- lapply (list (NG15weak,
                            NG15inf), function (out) {
       
-      # predict
-      out.pred.occ <- predict(out$out, 
-                              X[which(missing_sites==T),,-9], 
-                              cell_centroid_df[which(missing_sites==T),], 
-                              verbose = T,
-                              t.cols=seq(1,ncol(data.list.full$y)),
-                              type = 'occupancy'
-                              )
-      
-      
-      # map of all cells -----------------------------------------------------------
-      # estimates for non-sampled sites
-      data_non_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==T)],
-                                    psi_i = apply (out.pred.occ$psi.0.samples,2, # expected values (average of predictions) of psi_i
-                                                   mean),
-                                    w_i = apply (out.pred.occ$w.0.samples,2, # expected values (average of predictions) of w_i
-                                                mean))
-      # estimates for sampled sites
-      data_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==F)],
-                                      psi_i = apply (out$out$psi.samples,2,mean), # point estimates of psi_i
-                                      w_i = apply (out$out$w.samples,2,mean)) # point estimates of omega_i
-      # table(data_sampled$cells %in% data_non_sampled$cells) # check if they are all different
-      
-      # sampled within Bordeaux's buffer
-      #data_sampled <- data_sampled[which(data_sampled$cells %in% gironde_cells$CODE_10KM),]
-      
-      # bind the results
-      res_data <- rbind (data_sampled,
-                         data_non_sampled)
-      
-      data_sampled$cells %in% data_non_sampled$cells
-      table(res_data$cells %in% gironde_cells$CODE_10KM)
-      
-      # match cell ID
-      
-      res_data <- res_data[match (gironde_cells$CODE_10KM,res_data$cells),]
-      # table(res_data$cells == gironde_cells$CODE_10KM) # check
-      
-      
-      # map of non-sampled areas ----- out-of-sample predictions needed -------------
-      # occupancy
-      p1_missing<-ggplot(data = gironde_cells[missing_sites==T,]) +
-        geom_sf(fill="white")+
-        geom_sf(data=cbind (gironde_cells[missing_sites==T,],
-                            bar_psi_i = apply (out.pred.occ$psi.0.samples,2,mean)),
-                aes (fill=bar_psi_i,
-                     col=bar_psi_i),
-                alpha=0.75)+
-        scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
-        ggtitle("")+
-        theme(plot.title = element_text(size=10),
-              axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
-              axis.text.y = element_text(size = 3),
-              strip.text.x = element_text(face = "italic",size=7),
-              legend.key.size = unit(0.4, 'cm'), #change legend key size
-              legend.background = element_blank(),
-              legend.key.height = unit(0.5, 'cm'), #change legend key height
-              legend.key.width = unit(0.5, 'cm'), #change legend key width
-              legend.title = element_text(size=8), #change legend title font size
-              legend.text = element_text(size=8,angle=45)) +
-        labs (col = expression(paste('E(', hat(psi[i]),')')),
-              fill = expression(paste('E(', hat(psi[i]),')')))+
-        my_theme
-      
-      # spatial random effect
-      p2_missing<-ggplot(data = gironde_cells[missing_sites==T,]) +
-        geom_sf(fill="white")+
-        geom_sf(data=cbind (gironde_cells[missing_sites==T,],
-                            bar_w_i = apply (out.pred.occ$psi.0.samples,2,mean)),
-                aes (fill=bar_w_i,
-                     col=bar_w_i),
-                alpha=0.75)+
-        scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-        ggtitle("")+
-        theme(plot.title = element_text(size=10),
-              axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
-              axis.text.y = element_text(size = 3),
-              strip.text.x = element_text(face = "italic",size=7),
-              legend.key.size = unit(0.4, 'cm'), #change legend key size
-              legend.background = element_blank(),
-              legend.key.height = unit(0.5, 'cm'), #change legend key height
-              legend.key.width = unit(0.5, 'cm'), #change legend key width
-              legend.title = element_text(size=8), #change legend title font size
-              legend.text = element_text(size=8,angle=45)) +
-        labs (col = expression(paste('E(', hat(omega[i]),')')),
-              fill = expression(paste('E(', hat(omega[i]),')')))+
-        my_theme
-      
-      
-      # E(psi_i)
-      p1 <- ggplot(data = gironde_cells) +
-        geom_sf(fill="white")+
-        geom_sf(data=cbind (gironde_cells,
-                            bar_psi_i = res_data$psi_i,
-                            #ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$psi_i),
-                            det_data_i = !missing_sites), # what have data
-                aes (fill=bar_psi_i,
-                     col=as.factor(ifelse (det_data_i == T,1,0))),
-                alpha=0.75)+
-        scale_colour_viridis_d(option = "magma",direction=1,na.value = "gray90",begin=0.75)+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
-        theme(plot.title = element_text(size=10),
-              axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
-              axis.text.y = element_text(size = 3),
-              strip.text.x = element_text(face = "italic",size=7),
-              legend.key.size = unit(0.4, 'cm'), #change legend key size
-              legend.background = element_blank(),
-              legend.key.height = unit(0.35, 'cm'), #change legend key height
-              legend.key.width = unit(0.4, 'cm'), #change legend key width
-              legend.title = element_text(size=8), #change legend title font size
-              legend.text = element_text(size=8,angle=45))+
-        labs (col = expression(paste('', y[i],'')),
-              fill = expression(paste('E(', hat(psi[i]),')')))+
-        my_theme+
-        guides(col="none")
-      
-      # the spatial random effect
-      p2 <- ggplot(data = gironde_cells) +
-        geom_sf(fill="white")+
-        geom_sf(data=cbind (gironde_cells,
-                            bar_w_i = res_data$w_i,#ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$w_i),
-                            det_data_i = !missing_sites), # what have data),
-                aes (fill=bar_w_i,
-                     col=as.factor(ifelse (det_data_i == T,1,0))),
-                alpha=0.75)+
-        scale_colour_viridis_d(option = "magma",direction=1,na.value = "gray90",begin=0.75)+
-        scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(min(res_data$w_i),max(res_data$w_i)))+
-        ggtitle("")+
-        theme(plot.title = element_text(size=10),
-              axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
-              axis.text.y = element_text(size = 3),
-              strip.text.x = element_text(face = "italic",size=7),
-              legend.key.size = unit(0.4, 'cm'), #change legend key size
-              legend.background = element_blank(),
-              legend.key.height = unit(0.35, 'cm'), #change legend key height
-              legend.key.width = unit(0.4, 'cm'), #change legend key width
-              legend.title = element_text(size=8), #change legend title font size
-              legend.text = element_text(size=8,angle=45))+
-        labs (col = expression(paste('', y[i],'')),
-              fill = expression(paste('E(', hat(omega[i]),')')))+
-        my_theme+
-        guides(col="none")
-      
-      # summarize in-sample estimates (point estimates)
-      summ_tab_psi <-apply(out$out$psi.samples,c(1,3),mean)
-      
-      # plot
-      p3<- data.frame (psi = apply(summ_tab_psi,2,mean),
-                       uci = apply(summ_tab_psi,2,quantile, 0.975),
-                       lci = apply(summ_tab_psi,2,quantile, 0.025),
-                       year = seq(2000,2023)) %>%
-        ggplot(aes(x=year,psi)) +
-        geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
-        geom_line(linewidth=1,col="black")+
-        geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(data.list.full$y),year = seq(2000,2023)), 
-                  aes (x=year, y=psi))+
-        ggtitle("")+
-        labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
-        my_theme+
-        ylim(c(0,1))
-        
-      # phenology
-      # summarize
-      par(mfrow=c(1,1),mar=c(4,4,4,4))
-      point_est <- apply (out$out$alpha.samples,2,mean)
-      lci<-apply (out$out$alpha.samples,2,quantile,0.025)
-      uci<-apply (out$out$alpha.samples,2,quantile,0.975)
-      
-      # organize data to plot
-      phen_plot <- data.frame (p = plogis(point_est[1] + 
-                                            point_est[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                            point_est[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
-                               lci = plogis(lci[1] + 
-                                              lci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                              lci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
-                               uci = plogis(uci[1] + 
-                                              uci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                              uci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
-                               x = seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
-                               month=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
-                               
-      ) 
-      phen_plot$month <-factor(phen_plot$month,
-                               levels = c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"))
-      
-      p4 <- ggplot(phen_plot, aes(x=x, y = p)) +
-        geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
-        #geom_point()+
-        geom_line(linewidth=1)+
-        my_theme+ #theme(axis.ticks.x = element_blank())+
-        labs(y = expression(paste('E(', hat(p[j]),')')),
-             x="Month")+
-        ggtitle("")+
-        scale_x_continuous(
-          breaks=seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
-          labels=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
-        )
-      
-      
-       # create a list of resulting plots
-        res_plots <- list (p1=p1,
-                           p2=p2,
-                           p3=p3,
-                           p4=p4,
-                           p1_missing = p1_missing,
-                           p2_missing = p2_missing
-        )
-        ;
-        res_plots
+                             # predict
+                             out.pred.occ <- predict(out$out, 
+                                                     X[,,-9], 
+                                                     #cell_centroid_df[which(missing_sites==T),], 
+                                                     cell_centroid_df_buffer,
+                                                     verbose = T,
+                                                     t.cols=seq(1,ncol(data.list.full$y)),
+                                                     type = 'occupancy'
+                             )
+                             
+                             # map of all cells -----------------------------------------------------------
+                             # estimates for non-sampled sites
+                             data_non_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==T)],
+                                                             psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==T),],2, # expected values (average of predictions) of psi_i
+                                                                            mean),
+                                                             w_i = apply (out.pred.occ$w.0.samples[,which(missing_sites ==T)],2, # expected values (average of predictions) of w_i
+                                                                          mean))
+                             # estimates for sampled sites
+                             data_sampled <- data.frame (cells = gironde_cells$CODE_10KM[which(missing_sites ==F)],
+                                                         psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==F),],2,mean), # point estimates of psi_i
+                                                         w_i = apply (out.pred.occ$w.0.samples[,which(missing_sites ==F)],2,mean)) # point estimates of omega_i
+                             # table(data_sampled$cells %in% data_non_sampled$cells) # check if they are all different
+                             
+                             # sampled within Bordeaux's buffer
+                             #data_sampled <- data_sampled[which(data_sampled$cells %in% gironde_cells$CODE_10KM),]
+                             
+                             # bind the results
+                             res_data <- rbind (data_sampled,
+                                                data_non_sampled)
+                             
+                             data_sampled$cells %in% data_non_sampled$cells
+                             table(res_data$cells %in% gironde_cells$CODE_10KM)
+                             
+                             # match cell ID
+                             res_data <- res_data[match (gironde_cells$CODE_10KM,res_data$cells),]
+                             # table(res_data$cells == gironde_cells$CODE_10KM) # check
+                             
+                             
+                             # map of non-sampled areas ----- out-of-sample predictions needed -------------
+                             # occupancy
+                             p1_missing<-ggplot(data = gironde_cells[missing_sites==T,]) +
+                               geom_sf(fill="white")+
+                               geom_sf(data=cbind (gironde_cells[missing_sites==T,],
+                                                   bar_psi_i = apply (out.pred.occ$psi.0.samples[,which(missing_sites ==T),],2,mean)),
+                                       aes (fill=bar_psi_i,
+                                            col=bar_psi_i),
+                                       alpha=0.75)+
+                               scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
+                               scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
+                               ggtitle("")+
+                               theme(plot.title = element_text(size=10),
+                                     axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
+                                     axis.text.y = element_text(size = 3),
+                                     strip.text.x = element_text(face = "italic",size=7),
+                                     legend.key.size = unit(0.4, 'cm'), #change legend key size
+                                     legend.background = element_blank(),
+                                     legend.key.height = unit(0.5, 'cm'), #change legend key height
+                                     legend.key.width = unit(0.5, 'cm'), #change legend key width
+                                     legend.title = element_text(size=8), #change legend title font size
+                                     legend.text = element_text(size=8,angle=45)) +
+                               labs (col = expression(paste('E(', hat(psi[i]),')')),
+                                     fill = expression(paste('E(', hat(psi[i]),')')))+
+                               my_theme
+                             
+                             # spatial random effect
+                             p2_missing<-ggplot(data = gironde_cells[which(missing_sites==T),]) +
+                               geom_sf(fill="white")+
+                               geom_sf(data=cbind (gironde_cells[missing_sites==T,],
+                                                   bar_psi_i = apply (out.pred.occ$w.0.samples[,which(missing_sites==T)],2,mean)),
+                                       aes (fill=bar_psi_i,
+                                            col=bar_psi_i),
+                                       alpha=0.75)+
+                               scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+                               scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+                               ggtitle("")+
+                               theme(plot.title = element_text(size=10),
+                                     axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
+                                     axis.text.y = element_text(size = 3),
+                                     strip.text.x = element_text(face = "italic",size=7),
+                                     legend.key.size = unit(0.4, 'cm'), #change legend key size
+                                     legend.background = element_blank(),
+                                     legend.key.height = unit(0.5, 'cm'), #change legend key height
+                                     legend.key.width = unit(0.5, 'cm'), #change legend key width
+                                     legend.title = element_text(size=8), #change legend title font size
+                                     legend.text = element_text(size=8,angle=45)) +
+                               labs (col = expression(paste('E(', hat(omega[i]),')')),
+                                     fill = expression(paste('E(', hat(omega[i]),')')))+
+                               my_theme
+                             
+                             # E(psi_i)
+                             p1 <- ggplot(data = gironde_cells) +
+                               geom_sf(fill="white")+
+                               geom_sf(data=cbind (gironde_cells,
+                                                   bar_psi_i = apply (out.pred.occ$psi.0.samples,2,mean),
+                                                   #ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$psi_i),
+                                                   det_data_i = !missing_sites), # what have data
+                                       aes (fill=bar_psi_i,
+                                            col=as.factor(ifelse (det_data_i == T,1,0))),
+                                       alpha=0.75)+
+                               scale_colour_viridis_d(option = "magma",direction=1,na.value = "gray90",begin=0.75)+
+                               scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90",limits=c(0,1))+
+                               theme(plot.title = element_text(size=10),
+                                     axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
+                                     axis.text.y = element_text(size = 3),
+                                     strip.text.x = element_text(face = "italic",size=7),
+                                     legend.key.size = unit(0.4, 'cm'), #change legend key size
+                                     legend.background = element_blank(),
+                                     legend.key.height = unit(0.35, 'cm'), #change legend key height
+                                     legend.key.width = unit(0.4, 'cm'), #change legend key width
+                                     legend.title = element_text(size=8), #change legend title font size
+                                     legend.text = element_text(size=8,angle=45))+
+                               labs (col = expression(paste('', y[i],'')),
+                                     fill = expression(paste('E(', hat(psi[i]),')')))+
+                               my_theme+
+                               guides(col="none")
+                             
+                             # the spatial random effect
+                             p2 <- ggplot(data = gironde_cells) +
+                               geom_sf(fill="white")+
+                               geom_sf(data=cbind (gironde_cells,
+                                                   bar_w_i = apply (out.pred.occ$w.0.samples,2,mean),#ifelse (extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"] >0.8, NA, res_data$w_i),
+                                                   det_data_i = !missing_sites), # what have data),
+                                       aes (fill=bar_w_i,
+                                            col=as.factor(ifelse (det_data_i == T,1,0))),
+                                       alpha=0.75)+
+                               scale_colour_viridis_d(option = "magma",direction=1,na.value = "gray90",begin=0.75)+
+                               scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
+                               ggtitle("")+
+                               theme(plot.title = element_text(size=10),
+                                     axis.text.x = element_text(angle = 45, hjust = 1, size = 3), 
+                                     axis.text.y = element_text(size = 3),
+                                     strip.text.x = element_text(face = "italic",size=7),
+                                     legend.key.size = unit(0.4, 'cm'), #change legend key size
+                                     legend.background = element_blank(),
+                                     legend.key.height = unit(0.35, 'cm'), #change legend key height
+                                     legend.key.width = unit(0.4, 'cm'), #change legend key width
+                                     legend.title = element_text(size=8), #change legend title font size
+                                     legend.text = element_text(size=8,angle=45))+
+                               labs (col = expression(paste('', y[i],'')),
+                                     fill = expression(paste('E(', hat(omega[i]),')')))+
+                               my_theme+
+                               guides(col="none")
+                             
+                             # summarize in-sample estimates (point estimates)
+                             summ_tab_psi <-apply(out.pred.occ$psi.0.samples,c(1,3),mean)
+                             # do by hand to see if it correspond
+                             #summ_tab_psib<-lapply (seq(1,nrow(out.pred.occ$psi.0.samples)), function (i)
+                             
+                             #  colSums(out.pred.occ$psi.0.samples[i,,])/ncol(out$out$psi.samples)
+                             
+                             #  )
+                             #table(do.call(rbind,summ_tab_psib) == summ_tab_psi)
+                             
+                             # calculate mean yearly occupancy
+                             print(data.frame (psi = apply(summ_tab_psi,2,mean),
+                                               uci = apply(summ_tab_psi,2,quantile, 0.975),
+                                               lci = apply(summ_tab_psi,2,quantile, 0.025)) %>%
+                                     colMeans()*100)
+                             
+                             # plot
+                             p3<- data.frame (psi = apply(summ_tab_psi,2,mean),
+                                              uci = apply(summ_tab_psi,2,quantile, 0.975),
+                                              lci = apply(summ_tab_psi,2,quantile, 0.025),
+                                              year = seq(2000,2023)) %>%
+                               ggplot(aes(x=year,psi)) +
+                               geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
+                               geom_line(linewidth=1,col="black")+
+                               geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2000,2023)), 
+                                         aes (x=year, y=psi))+
+                               ggtitle("")+
+                               labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
+                               my_theme+
+                               ylim(c(0,1))
+                             
+                             # phenology
+                             # summarize
+                             par(mfrow=c(1,1),mar=c(4,4,4,4))
+                             point_est <- apply (out$out$alpha.samples,2,mean)
+                             lci<-apply (out$out$alpha.samples,2,quantile,0.025)
+                             uci<-apply (out$out$alpha.samples,2,quantile,0.975)
+                             
+                             # organize data to plot
+                             phen_plot <- data.frame (p = plogis(point_est[1] + 
+                                                                   point_est[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
+                                                                   point_est[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                                      lci = plogis(lci[1] + 
+                                                                     lci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
+                                                                     lci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                                      uci = plogis(uci[1] + 
+                                                                     uci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
+                                                                     uci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                                      x = seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+                                                      month=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
+                                                      
+                             ) 
+                             phen_plot$month <-factor(phen_plot$month,
+                                                      levels = c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"))
+                             # plot phenology and observer effect
+                             p4 <- ggplot(phen_plot, aes(x=x, y = p)) +
+                               geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
+                               #geom_point()+
+                               geom_line(linewidth=1)+
+                               my_theme+ #theme(axis.ticks.x = element_blank())+
+                               labs(y = expression(paste('E(', hat(p[j]),')')),
+                                    x="Month")+
+                               ggtitle("")+
+                               scale_x_continuous(
+                                 breaks=seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+                                 labels=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
+                               )
+                             
+                             # create a list of resulting plots
+                             res_plots <- list (p1=p1,
+                                                p2=p2,
+                                                p3=p3,
+                                                p4=p4,
+                                                p1_missing = p1_missing,
+                                                p2_missing = p2_missing
+                             )
+                             ;
+                             res_plots
         
   })
 

@@ -182,7 +182,7 @@ rownames(table_summ) <- NULL
 tab_kable<-table_summ %>%
   dplyr::select (param, Average, LCI,UCI,RHat,percent_PPO, Model) %>%
   # results with 15 neighbors
-  filter (Model == "buffer_outputNNG15_urban_Polyommatus .Rdata") %>%
+  filter (Model == "buffer_outputNNG15_urbanPolyommatus .Rdata") %>%
   # bind results with informative priors
   cbind (table_summ %>%
            dplyr::select (Average, LCI,UCI,RHat,percent_PPO, Model) %>%
