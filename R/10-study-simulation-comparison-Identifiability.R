@@ -9,7 +9,7 @@
 
 rm(list = ls())
 gc()
-library(spOccupancy) # package for data analyses
+require(spOccupancy) # package for data analyses
 require(here) # transit between folders
 require(ggplot2) # plots
 require(dplyr)# organize data
@@ -47,68 +47,50 @@ scePhen <- new.env()
 scePhenSpot <- new.env()
 
 # load in the environments
-load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
-                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
-sceDSsmooth$study <- 1
-sceDSsmooth$sc <- 1
-
-# 
+# # 
 load(file = here ("model_output", "output_simulations", "sims_D&S",
                   "sim-mixed-stPGOcc-results_1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
+load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
+                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
+sceDSsmooth$study <- 1
+sceDSsmooth$sc <- 1
+
+
 load(file = here ("model_output", "output_simulations", "scenario_zero",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce0)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_zero",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce0)
 sce0$study <- 2
 sce0$sc <- 0
 
 load(file = here ("model_output", "output_simulations", "scenario_one",
-                  "sim-mixed-stPGOcc-results-merged.rda"),sce1)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_one",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce1)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce1)
 
 sce1$study <- 2
 sce1$sc <- 1
 
 load(file = here ("model_output", "output_simulations", "scenario_two",
-                  "sim-mixed-stPGOcc-results-merged.rda"),sce2)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_two",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce2)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 sce2$study <- 2
 sce2$sc <- 2
 
 load(file = here ("model_output", "output_simulations", "scenario_three",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce3)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_three",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce3)
 sce3$study <- 2
 sce3$sc <- 3
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhen)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhen)
 
 scePhen$study <- 3
 scePhen$sc <- 1
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpot)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhenSpot)
 
 scePhenSpot$study <- 3
 scePhenSpot$sc <- 2
-
 
 # -------------------------------------------
 
@@ -845,7 +827,7 @@ to_replace <- theta_data [which(theta_data$study == 1 & theta_data$sc == 1),"phi
 theta_data [which(theta_data$study == 1 & theta_data$sc == 1),"phi.y"] <- ifelse (to_replace == 15,1,0.5)
 
 # density
-density.phi_sigma <- theta_data %>%
+density_phi_sigma <- theta_data %>%
   filter(scenario == c(1:4) &
            is.na(phi.x)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -865,15 +847,15 @@ density.phi_sigma <- theta_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.phi_sigma1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_phi_sigma1-4.png"),
      width = 17, height = 17,units = "cm",res=150)
 
-  density.phi_sigma
+  density_phi_sigma
 
 dev.off()
 
 # density
-density.phi_sigma2 <- theta_data %>%
+density_phi_sigma2 <- theta_data %>%
   filter(scenario == c(13:16) &
            is.na(phi.x)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -893,15 +875,15 @@ density.phi_sigma2 <- theta_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.phi_sigma13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_phi_sigma13-16.png"),
      width = 17, height = 17,units = "cm",res=150)
 
-  density.phi_sigma2
+  density_phi_sigma2
 
 dev.off()
 
 # density rho and sigma_sqT ---------------------
-density.rho_sigmaT <- theta_data %>%
+density_rho_sigmaT <- theta_data %>%
   filter(scenario == c(1:4) &
            is.na(phi.x)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -921,15 +903,15 @@ density.rho_sigmaT <- theta_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.rho_sigmaT1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_rho_sigmaT1-4.png"),
      width = 17, height = 17,units = "cm",res=150)
 
-  density.rho_sigmaT
+  density_rho_sigmaT
 
 dev.off()
 
 # density rho and sigma_sqT ---------------------
-density.rho_sigmaT2 <- theta_data %>%
+density_rho_sigmaT2 <- theta_data %>%
   filter(scenario == c(13:16) &
            is.na(phi.x)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -949,10 +931,10 @@ density.rho_sigmaT2 <- theta_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.rho_sigmaT13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_rho_sigmaT13-16.png"),
      width = 17, height = 17,units = "cm",res=150)
 
-  density.rho_sigmaT2
+  density_rho_sigmaT2
 
 dev.off()
 
@@ -1053,7 +1035,7 @@ psi_p_data$spatial <- factor(psi_p_data$spatial, levels = unique(psi_p_data$spat
 psi_p_data$time <- factor(psi_p_data$time, levels = unique(psi_p_data$time))
 
 # density
-density.intercepts1 <- psi_p_data %>%
+density_intercepts1 <- psi_p_data %>%
   filter(scenario == c(1:4) &
            is.na(alpha0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1076,12 +1058,12 @@ density.intercepts1 <- psi_p_data %>%
 png (here("figures", "Scenario-Comparisons","density_intercepts_sc1-4.png"),
      width =18, height = 18,units = "cm",res=150)
 
-  density.intercepts1
+  density_intercepts1
 
 dev.off()
 
 # density
-density.intercepts2 <- psi_p_data %>%
+density_intercepts2 <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1104,13 +1086,13 @@ density.intercepts2 <- psi_p_data %>%
 png (here("figures", "Scenario-Comparisons","density_intercepts_sc13-16.png"),
      width =18, height = 18,units = "cm",res=150)
 
-  density.intercepts2
+  density_intercepts2
 
 dev.off()
 
 # regression coeff --------------------------------------
 # density
-density.betas1 <- psi_p_data %>%
+density_betas1 <- psi_p_data %>%
   filter(scenario == c(1:4) &
            is.na(beta0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1130,16 +1112,16 @@ density.betas1 <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.betas_sc1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_betas_sc1-4.png"),
      width =18, height = 18,units = "cm",res=150)
 
 
-  density.betas1
+  density_betas1
 
 dev.off()
 
 # other scenarios
-density.betas2 <- psi_p_data %>%
+density_betas2 <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1159,16 +1141,16 @@ density.betas2 <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.betas_sc13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_betas_sc13-16.png"),
      width = 18, height = 18, units = "cm",res=150)
 
-  density.betas2
+  density_betas2
 
 dev.off()
 
 # alphas ------------------------------
 # density
-density.alphas1 <- psi_p_data %>%
+density_alphas1 <- psi_p_data %>%
   filter(scenario == c(1:4) &
            is.na(beta0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1188,15 +1170,15 @@ density.alphas1 <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas_sc1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas_sc1-4.png"),
      width = 18, height = 18, units = "cm",res=150)
 
-  density.alphas1
+  density_alphas1
 
 dev.off()
 
 # other sncearios
-density.alphas2 <- psi_p_data %>%
+density_alphas2 <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha0)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1216,16 +1198,16 @@ density.alphas2 <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas_sc13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas_sc13-16.png"),
      width = 18, height = 18, units = "cm",res=150)
 
-  density.alphas2
+  density_alphas2
 
 dev.off()
 
 # second alpha coefficient ---------------------
 # density
-density.alphas2 <- psi_p_data %>%
+density_alphas2 <- psi_p_data %>%
   filter(scenario == c(1:4) &
            is.na(alpha2)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1245,15 +1227,15 @@ density.alphas2 <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas2_sc1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas2_sc1-4.png"),
      width = 18, height = 12, units = "cm",res=150)
 
-  density.alphas2
+  density_alphas2
 
 dev.off()
 
 # other sncearios
-density.alphas2_b <- psi_p_data %>%
+density_alphas2_b <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha2)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1273,16 +1255,16 @@ density.alphas2_b <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas2_sc13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas2_sc13-16.png"),
      width = 18, height = 12, units = "cm",res=150)
 
-  density.alphas2_b
+  density_alphas2_b
 
 dev.off()
 
 # alpha 1 and alpha2 ---- low temporal autocorrelation
 # other sncearios
-density.alphas <- psi_p_data %>%
+density_alphas <- psi_p_data %>%
   filter(scenario == c(1:4) &
            is.na(alpha2)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1302,17 +1284,17 @@ density.alphas <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas_pairs_sc1-4.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc1-4.png"),
      width = 18, height = 12, units = "cm",res=150)
 
-  density.alphas
+  density_alphas
 
 dev.off()
 
 
 # alpha 1 and alpha2 ---- high temporal autocorrelation
 # other sncearios
-density.alphas <- psi_p_data %>%
+density_alphas <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha2)!=T ) %>%
   mutate (spatial=as.factor(spatial)) %>%
@@ -1332,10 +1314,10 @@ density.alphas <- psi_p_data %>%
   theme(axis.text.x = element_text(angle=45))
 
 # save
-png (here("figures", "Scenario-Comparisons","density.alphas_pairs_sc13-16.png"),
+png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc13-16.png"),
      width = 18, height = 12, units = "cm",res=150)
 
-  density.alphas
+  density_alphas
 
 dev.off()
 
@@ -1357,6 +1339,3 @@ plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>%
   add_surface()
 plot_surface2
 htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","st1-sc0_all_high.html"))
-
-# end
-
