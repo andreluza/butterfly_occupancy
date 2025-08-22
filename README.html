@@ -352,146 +352,184 @@ display: none;
 </div>
 
 
-<div id="butterfly-project-biogeco-universite-de-bordeaux-inrae" class="section level3">
-<h3>Butterfly Project, BIOGECO, Universite de Bordeaux INRAE</h3>
-<div id="andre-luza-didier-alard-frederic-barraquand" class="section level4">
-<h4>Andre Luza, Didier Alard, Frederic Barraquand</h4>
-<div id="section" class="section level5">
-<h5>(2025-07-22)</h5>
+<div id="evaluating-multi-season-occupancy-models-with-autocorrelation-fitted-to-heterogeneous-datasets" class="section level3">
+<h3>Evaluating multi-season occupancy models with autocorrelation fitted
+to heterogeneous datasets</h3>
+<div id="andre-luza1-didier-alard1-frederic-barraquand2" class="section level4">
+<h4>Andre Luza<span class="math inline">\(^1\)</span>, Didier Alard<span class="math inline">\(^1\)</span>, Frederic Barraquand<span class="math inline">\(^2\)</span></h4>
+<p><span class="math inline">\(^1\)</span> UMR Biodiversité Gènes et
+Communautés, University of Bordeaux, INRAE, Pessac, France<br />
+<span class="math inline">\(^2\)</span> Institute of Mathematics of
+Bordeaux, University of Bordeaux, CNRS, Bordeaux INP, Talence,
+France</p>
+</div>
+</div>
+<div id="section" class="section level1">
+<h1>———————————————–</h1>
 <p>Brief description of the files and folders in this repository:</p>
-<p>Root<br />
-|- <em>SuppInfo-A-D.pdf</em>: Supporting Information A, B, C and D
-associated to the article;<br />
+<div id="root" class="section level4">
+<h4>Root<br />
+</h4>
+<p>|- <em>SuppInfo-A-D.pdf</em>: Supporting Information A, B, C and D
+associated to the article<br />
 |- <em>SuppInfo-E.pdf</em>: Supporting Information E associated to the
-article.<br />
-|- <em>Data</em>: Spatial data<br />
-|——– SpatialData: systematic grid (grid cells 1x1 km, French geographic
-system) from FAUNA<br />
+article (analyses using the Random Walk Occupancy Model by Outwaithe et
+al. 2018)<br />
+|- <em>SuppInfo-F.pdf</em>: Supporting Information F associated to the
+article (analyses using data of the four remaining species: the meadow
+brown, the false ringlet, the marsh fritillary, and the small
+copper)<br />
+|- <em>SuppInfo-G.pdf</em>: Supporting Information G associated to the
+article (names/IDs of data contributors as appearing the FAUNA data
+sets)<br />
 </p>
-<p>|- <em>Processed_data</em>: Data obtained after processing raw data
+</div>
+<div id="data-spatial-data" class="section level4">
+<h4>|- <em>Data</em>: Spatial data<br />
+</h4>
+<p>|——– SpatialData: systematic grid (grid cells 1x1 km, French
+geographic system) from FAUNA<br />
+</p>
+</div>
+<div id="processed_data-data-obtained-after-processing-raw-data-sets" class="section level4">
+<h4>|- <em>Processed_data</em>: Data obtained after processing raw data
 sets<br />
-|——– AltitudeHabitatStats.RData: Altitude data (From EUDEM) and habitat
-data (from CORINE land use data)<br />
+</h4>
+<p>|——– AltitudeHabitatStats.RData: Altitude data (From EUDEM) and
+habitat data (from CORINE land use data)<br />
 |——– SpeciesData: Occupancy data used in SDMs (from FAUNA data
 base)<br />
 |——– Water.RData: CORINE land cover data regarding water vs non-water
 sites<br />
 </p>
-<p>|- <em>R</em>: R scripts (numbered from 1 to X to track different
+</div>
+<div id="r-r-scripts-numbered-from-1-to-20-to-track-different-steps-of-data-exploration-and-analyses" class="section level4">
+<h4>|- <em>R</em>: R scripts (numbered from 1 to 20 to track different
 steps of data exploration and analyses)<br />
-|— <em>Simulations</em><br />
+</h4>
+<p>|— <em>Simulations</em><br />
 |——– R scripts are numbered sequentially, from 1 to 9. Thus they should
 be run sequentially:<br />
 |——– 1-study1-sc0-… .R: Scripts to reproduce original simulations (as
 per Doser &amp; Stoudt 2024 = D&amp;S) using Bernoulli sampling
-design;<br />
+design<br />
 |——– 2-study1-sc1-… .R: Scripts to reproduce D&amp;S simulations with
 higher spatial autocorrelation (lower values of ) and Bernoulli sampling
 design;<br />
 |——– 3-study2-sc0-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study
-1-sc0);<br />
+1-sc0)<br />
 |——– 4-study2-sc1-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy
-covariate;<br />
+covariate<br />
 |——– 5-study2-sc2-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy and
-detection covariate (total overlap of covariates);<br />
+detection covariate (total overlap of covariates)<br />
 |——– 6-study2-sc3-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy and
 detection covariate, and <span class="math inline">\(v_{itj}\)</span>
 (random covariate) in the detection model (partial overlap of
-covariates);<br />
+covariates)<br />
 |——– 7-study3-sc1-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy and
 detection covariate, and <span class="math inline">\(v_{itj}\)</span>
 (random covariate) in the detection model (partial overlap of
 covariates). Design including the effect of phenology + observer
-preferences on occupancy data;<br />
+preferences on occupancy data<br />
 |——– 8-study3-sc2-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy and
 detection covariate, and <span class="math inline">\(v_{itj}\)</span>
 (random covariate) in the detection model (partial overlap of
 covariates). Design including the effect of phenology + observer
-preferences + observation spot on occupancy data;<br />
+preferences + observation spot on occupancy data<br />
 |——– 9-study2-sc1-… .R: Scripts to simulations with our Poisson sampling
 design (<span class="math inline">\(\phi\)</span> as in study 1-sc0) and
 latitude <span class="math inline">\(L_i\)</span> as occupancy
 covariate. Here the data was analyzed using the random walk model by
-Outhwaite et al. (2018) - <a href="https://doi.org/10.1016/j.ecolind.2018.05.010" class="uri">https://doi.org/10.1016/j.ecolind.2018.05.010</a>;<br />
+Outhwaite et al. (2018) - <a href="https://doi.org/10.1016/j.ecolind.2018.05.010" class="uri">https://doi.org/10.1016/j.ecolind.2018.05.010</a><br />
 |——– 10-study-simulation-comparison-Identifiability: Script used to
 interpret simulations’ output. Produce figures in the main text and
-SI;<br />
+SI<br />
 |— <em>Empirical analyses</em><br />
 |——– 11-study-… .R: scripts used to organize butterfly data, extract
 covariates, and create the occupancy dataset available in the folder
-“Processed_data”;<br />
+“Processed_data”<br />
 |——– 11-study-empirical-plot-occupancy-data.R: script used to plot
-butterfly data (Fig. 1);<br />
+butterfly data (Fig. 1)<br />
 |——– 12-study-empirical-buffer-DataAnalysis-… .R: script used to analyze
-data at Bordeaux + 10 km buffer scale. One script per species;<br />
+data at Bordeaux + 10 km buffer scale. One script per species<br />
 |——– 13-study-empirical-buffer-Predictions-Maps-… .R: script used to
-make predictions and map. One script per species;<br />
+make predictions and map. One script per species<br />
 |——– 14-study-empirical-buffer-Tables-PPO-… .R: script used to calculate
 Prior-Posterior overlap (Tables in Supporting Information). One script
-per species;<br />
+per species<br />
 |——– 15-study-empirical-buffer-DataAnalysis-… .R: script used to analyze
-data at Nouvelle Aquitaine scale. One script per species;<br />
+data at Nouvelle Aquitaine scale. One script per species<br />
 |——– 16-study-empirical-buffer-Predictions-Maps-… .R: script used to
 make predictions and map at Nouvelle Aquitaine scale. One script per
-species;<br />
+species<br />
 |——– 17-study-empirical-buffer-Tables-PPO–… .R: script used to calculate
 Prior-Posterior overlap (Tables in Supporting Information) at Nouvelle
-Aquitaine scale. One script per species;<br />
+Aquitaine scale. One script per species<br />
+|——– 18-study-empirical-buffer-DataAnalysis-remaining-spp-stPGocc.R:
+script used to analyze data of the four remaining species - Bordeaux +
+10 km buffer scale<br />
+|——– 19-study-empirical-buffer-Predictions-Maps-remaining-species.R:
+script used to make predictions and map distribution of the remaining
+species - Bordeaux + 10 km buffer scale<br />
+|——– 20-study-empirical-buffer-Tables-PPO-remaining-species.R: script
+used to calculate Prior-Posterior overlap (Tables in Supporting
+Information F) - Bordeaux + 10 km buffer scale<br />
 </p>
-<p>|- <em>model_output</em>: results of the analyses of simulated and
+</div>
+<div id="model_output-results-of-the-analyses-of-simulated-and-empirical-data-sets---these-folders-will-be-created-while-running-scripts" class="section level4">
+<h4>|- <em>model_output</em>: results of the analyses of simulated and
 empirical data sets - these folders will be created while running
-scripts<br />
-|————— <em>empirical</em>: results of empirical data analysis using
-spOccupancy<br />
+scripts:</h4>
+<p>|————— <em>empirical</em>: results of empirical data analysis using
+spOccupancy;<br />
 |————— <em>output_simulations</em>: rerun D&amp;S simulations based on
-butterfly data<br />
-|——————- <em>“Xp_itj.rda”</em>: observation covariate <span class="math inline">\(v_{itj}\)</span> (generated once)<br />
-|——————- <em>“sim-settings.rda”</em>: simulation constants and MCMC
+butterfly data:<br />
+|———————- <em>“Xp_itj.rda”</em>: observation covariate <span class="math inline">\(v_{itj}\)</span> (generated once)<br />
+|———————- <em>“sim-settings.rda”</em>: simulation constants and MCMC
 settings<br />
-|——————- <em>“sampling_design_Poisson”</em>: sampling design used in
+|———————- <em>“sampling_design_Poisson”</em>: sampling design used in
 study 2, scenarios 0 to 3<br />
-|——————- <em>“sampling_design_Poisson_phenology”</em>: sampling design
+|———————- <em>“sampling_design_Poisson_phenology”</em>: sampling design
 used in study 3, scenario 1 (only phenology)<br />
-|——————- <em>“sampling_design_Poisson_phenology_spot”</em>: sampling
+|———————- <em>“sampling_design_Poisson_phenology_spot”</em>: sampling
 design used in study 3, scenario 2 (phenology and observation
 spot)<br />
-|——————- <em>sims_D&amp;S</em>: correct data and simulation results for
+|———————- <em>sims_D&amp;S</em>: correct data and simulation results for
 D&amp;S original sims - <strong>study 1-scenario 0</strong><br />
-|——————- <em>smooth_sims_D&amp;S</em>: correct data and simulation
+|———————- <em>smooth_sims_D&amp;S</em>: correct data and simulation
 results for D&amp;S-like simulations with lower values of the spatial
 decay parameter <span class="math inline">\(\phi\)</span> -
 <strong>study 1-scenario 1</strong><br />
-|——————- <em>scenario_zero</em>: correct data and simulation results for
-scenario 0 - <strong>study 2-scenario 0</strong><br />
-|——————- <em>scenario_one</em>: correct data and simulation results for
+|———————- <em>scenario_zero</em>: correct data and simulation results
+for scenario 0 - <strong>study 2-scenario 0</strong><br />
+|———————- <em>scenario_one</em>: correct data and simulation results for
 scenario 1 - <strong>study 2-scenario 1</strong><br />
-|——————- <em>scenario_two</em>: correct data and simulation results for
+|———————- <em>scenario_two</em>: correct data and simulation results for
 scenario 2 - <strong>study 2-scenario 2</strong><br />
-|——————- <em>scenario_two_sparta</em>: correct data and simulation
+|———————- <em>scenario_two_sparta</em>: correct data and simulation
 results for scenario 2 using the SPARTA approach (uncorrelated site
 random effects) (Outwhaite et al. 2018) - <strong>study 2-scenario
 2</strong><br />
-|——————- <em>scenario_three</em>: correct data and simulation results
+|———————- <em>scenario_three</em>: correct data and simulation results
 for scenario 3 - <strong>study 2-scenario 3</strong><br />
-|——————- <em>scenario_phenology</em>: correct data and simulation
+|———————- <em>scenario_phenology</em>: correct data and simulation
 results for the scenario incorporating phenology + observer preferences
 - <strong>study 3 - scenario 1</strong><br />
-|——————- <em>scenario_phenology_spot</em>: correct data and simulation
+|———————- <em>scenario_phenology_spot</em>: correct data and simulation
 results for the scenario incorporating phenology + observer preferences
 + observation spot - <strong>study 3 - scenario 2</strong><br />
 </p>
-</div>
 </div>
 <div id="end-of-the-description" class="section level4">
 <h4>End of the description</h4>
