@@ -215,7 +215,7 @@ for (j in 1:n.sims) {
      scenario.vals, file = here ("model_output", 
                                  "output_simulations", 
                                  "sims_D&S",
-                                 paste0 ("sim-mixed-stPGOcc-results-SimSce",curr.indx,".rda"))
+                                 paste0 ("sim-mixed-stPGOcc-results-",curr.indx,".rda"))
     )
     
     # the loop makes the array each time larger, so
@@ -224,7 +224,7 @@ for (j in 1:n.sims) {
     unlink (here ("model_output", 
                   "output_simulations", 
                   "sims_D&S",
-                  paste0("sim-mixed-stPGOcc-results-SimSce",curr.indx-3,".rda")),recursive=F)
+                  paste0("sim-mixed-stPGOcc-results-",curr.indx-3,".rda")),recursive=F)
 
   } # i (n.scenarios)
 } # j (n.sims)

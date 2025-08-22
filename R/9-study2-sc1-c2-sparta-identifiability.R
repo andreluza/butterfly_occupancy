@@ -32,7 +32,6 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.text.y = element_text(size = 10),
                   axis.title = element_text(size=15))
 
-
 # create a folder to host the figures
 dir.create(here ("figures", "sims_present_paper","Scenario1_sparta"))
 
@@ -79,7 +78,7 @@ plot.df <- lapply (seq (1:42), function (sim)
     
     curr.indx <- (sim - 1) * n.scenarios + sce
     plot.df <- cbind (Estimated = melt(hat_psi_it[[curr.indx]])[,3],
-                      melt(psi.true[,,sim,sce]),
+                      melt(true_psi_it[,,sim,sce]),
                       sim=sim,
                       scenario=sce) 
     
