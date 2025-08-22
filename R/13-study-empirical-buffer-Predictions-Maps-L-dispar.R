@@ -28,7 +28,6 @@ my_theme <- theme(legend.position = 'bottom',
 
 
 # load processed data ------------------------
-
 load (file = here("Processed_data", 
                          "Occupancy_data_spOccupancy.RData"))
 
@@ -49,11 +48,10 @@ cells_NAquitane <- st_read(dsn=here ("Data", "SpatialData","Maillage_1x1km"),
 # source: https://www.actualitix.com/blog/shapefiles-des-departements-de-france.html
 cells_Gironde <- st_read(dsn=here ("Data", "SpatialData","33-gironde"),
                          layer="33-")
-
-a <- ggplot() +
+# Nouvelle Aquitaine map
+(a <- ggplot() +
   geom_sf(fill="white")+
-  geom_sf(data= cells_NAquitane)
-a
+  geom_sf(data= cells_NAquitane))
 
 # bordeaux distance
 bordeaux_distance <- st_distance (cells_Gironde,
@@ -130,7 +128,6 @@ X.p[,,,6] <- X[, , 6] # non-water habitats
 # select
 sp<- grep("Lycaena dispar", sp_list) # L. dispar
 
-
 # identify missing data - zeroed encounter histories
 missing_sites <- rowSums(is.na(sp_table_years[,,,sp]))==max(rowSums(is.na(sp_table_years[,,,sp]))) # 10 years x 10 months with zeroes 
 
@@ -178,19 +175,18 @@ str(data.list.full <- list(y = sp_table_years [which(missing_sites==F),,,sp], # 
 table(data.list.full$y>0) 
 sum(apply (data.list.full$y,1,max,na.rm=T))
 
-#naive yearly occupancy
-unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
-  
-  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0))/1346)*100
-  
-)) %>% mean
+# calculate and save naive occupancy
+sites_det_year <- apply (data.list.full$y,c(1,2), sum,na.rm=T)>0 # if site was sampled in year t
+sites_det_year <- colSums(sites_det_year) 
+# year effort
+eff_year <- colSums(apply (base_table_years,c(1,2), sum,na.rm=T)>0) # total number of sites sampled in each year
+naive_occ <- data.frame (sites_det_year = sites_det_year,
+                         total_sites_year = eff_year,
+                         naive_occ = sites_det_year/eff_year)
 
-# number of cells
-unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
-
-  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0)))
-
-)) %>% mean
+# average naive occupancy
+mean(naive_occ$naive_occ)*100
+mean(naive_occ$sites_det_year)
 
 # detections in an average of six cells per year
 mean(apply (data.list.full$y,c(1,2),sum,na.rm=T) %>%
@@ -215,6 +211,7 @@ load (file=here ("model_output",
                  "empirical",
                  "buffer_outputNNG15InfPrior_urban_Lycaena disp.Rdata"),NG15inf)
 NG15inf$lab <- "Ng15inf"
+
 # out<-NG15weak
 # make predictions and produce plots for all models (plots )
 res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
@@ -255,7 +252,6 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
       # match cell ID
       res_data <- res_data[match (gironde_cells$CODE_10KM,res_data$cells),]
       # table(res_data$cells == gironde_cells$CODE_10KM) # check
-      
       
       # map of non-sampled areas ----- out-of-sample predictions needed -------------
       # occupancy
@@ -386,8 +382,9 @@ res_plots <- lapply (list (NG15weak,NG15inf), function (out) {
         ggplot(aes(x=year,psi)) +
         geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
         geom_line(linewidth=1,col="black")+
-        geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2000,2023)), 
-                  aes (x=year, y=psi))+
+        geom_line(data = cbind (naive_occ, 
+                                year = seq(2000,2023)), 
+                  aes (x=year, y=naive_occ))+
         ggtitle("")+
         labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
         my_theme+

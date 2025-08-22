@@ -72,7 +72,6 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
 # altitude_stats <- altitude_stats[which(cells_NAquitane$CODE_10KM %in% inter_gironde_NAq$CODE_10KM),]
 
-
 # select sites
 sp_table_years <- (sp_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,,])
 base_table_years <- (base_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,])
@@ -166,23 +165,18 @@ str(data.list.full <- list(y = sp_table_years [which(missing_sites==F),,,sp], # 
 table(data.list.full$y) 
 sum(apply (data.list.full$y,1,max,na.rm=T)) # sites with detection
 
-#naive yearly occupancy
-unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
-  
-  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0))/1346)*100
-  
-)) %>% mean
-# number of cells
-unlist(lapply (seq(1,ncol(data.list.full$y)), function (i)
-  
-  ((sum(apply (data.list.full$y[,i,],1,sum,na.rm=T)>0)))
-  
-)) %>% mean
+# calculate and save naive occupancy
+sites_det_year <- apply (data.list.full$y,c(1,2), sum,na.rm=T)>0 # if site was sampled in year t
+sites_det_year <- colSums(sites_det_year) 
+# year effort
+eff_year <- colSums(apply (base_table_years,c(1,2), sum,na.rm=T)>0) # total number of sites sampled in each year
+naive_occ <- data.frame (sites_det_year = sites_det_year,
+                         total_sites_year = eff_year,
+                         naive_occ = sites_det_year/eff_year)
 
-# detections in an average of six cells per year
-mean(apply (data.list.full$y,c(1,2),sum,na.rm=T) %>%
-       # sum of the number of sites 
-       colSums())
+# average naive occupancy
+mean(naive_occ$naive_occ)*100
+mean(naive_occ$sites_det_year)
 
 # missing data in the buffer
 table(gironde_cells$CODE_10KM %in% rownames(coords))
@@ -374,8 +368,9 @@ res_plots <- lapply (list (NG15weak,
                                ggplot(aes(x=year,psi)) +
                                geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
                                geom_line(linewidth=1,col="black")+
-                               geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2000,2023)), 
-                                         aes (x=year, y=psi))+
+                               geom_line(data = cbind (naive_occ, 
+                                                       year = seq(2000,2023)), 
+                                         aes (x=year, y=naive_occ))+
                                ggtitle("")+
                                labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
                                my_theme+

@@ -118,19 +118,18 @@ table(rowSums(base_table_years[])==0) # and the effort table
 
 gc()
 
-#naive yearly occupancy
-unlist(lapply (seq(1,ncol(sp_table_years[,,,sp])), function (i)
-  
-  ((sum(apply (sp_table_years[,i,,sp],1,sum,na.rm=T)>0))/nrow(sp_table_years[,,,sp]))*100
-  
-)) %>% mean
+# calculate and save naive occupancy
+sites_det_year <- apply (sp_table_years[,,,sp],c(1,2), sum,na.rm=T)>0 # if site was sampled in year t
+sites_det_year <- colSums(sites_det_year) 
+# year effort
+eff_year <- colSums(apply (base_table_years,c(1,2), sum,na.rm=T)>0) # total number of sites sampled in each year
+naive_occ <- data.frame (sites_det_year = sites_det_year,
+                         total_sites_year = eff_year,
+                         naive_occ = sites_det_year/eff_year)
 
-# number of cells
-unlist(lapply (seq(1,ncol(sp_table_years[,,,sp])), function (i)
-  
-  ((sum(apply (sp_table_years[,i,,sp],1,sum,na.rm=T)>0)))
-  
-)) %>% mean
+# average naive occupancy
+mean(naive_occ$naive_occ)*100
+mean(naive_occ$sites_det_year)
 
 # detections in an average of six cells per year
 mean(apply (sp_table_years[,,,sp],c(1,2),sum,na.rm=T) %>%
@@ -357,9 +356,10 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
       ggplot(aes(x=year,psi)) +
       geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
       geom_line(linewidth=1,col="black")+
-      geom_line(data = data.frame (psi = apply (sp_table_years[,,,sp],2,sum,na.rm=T)/nrow(sp_table_years),year = seq(2009,2023)), 
-                                             aes (x=year, y=psi))+
-        ggtitle("")+
+      geom_line(data = cbind (naive_occ, 
+                              year = seq(2009,2023)), 
+                aes (x=year, y=naive_occ))+
+      ggtitle("")+
         labs(x="Year", y = expression(paste('E(', hat(psi[t]),')')))+
         my_theme+
         ylim(c(0,1))
