@@ -1,5 +1,14 @@
-### Evaluating multi-season occupancy models with autocorrelation fitted to heterogeneous datasets 
-Andre Luza$^1$, Didier Alard$^1$, Frederic Barraquand$^2$
+---
+title: "Evaluating multi-season occupancy models with autocorrelation fitted to heterogeneous datasets"
+author: "Andre Luza$^1$, Didier Alard$^1$, Frederic Barraquand$^2$"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
 INRAE, Pessac, France\
@@ -8,7 +17,7 @@ CNRS, Bordeaux INP, Talence, France
 
 # -----------------------------------------------
 
-Brief description of the files and folders in this repository:
+## Brief description of the files and folders in this repository:
 
 #### Root \
 |- *SuppInfo-A-D.pdf*: Supporting Information A, B, C and D associated to the article (also published as Online Supportiong Information)\
