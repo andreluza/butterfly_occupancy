@@ -15,16 +15,21 @@ Brief description of the files and folders in this repository:
 |- *SuppInfo-E.pdf*: Supporting Information E: analyses using the Random Walk Occupancy Model by Outwaithe et al. 2018\
 |- *SuppInfo-F.pdf*: Supporting Information F: analyses using data of the four remaining species: the meadow brown, the false ringlet, the marsh fritillary, and the small copper\
 |- *SuppInfo-G.pdf*: Supporting Information G: names/IDs of data contributors, as appearing in FAUNA data sets\
+\
 
 #### |- *Data*: Spatial data\
 |-------- SpatialData: systematic grid (grid cells 1x1 km, French geographic system) from FAUNA. The $1 \times 1$km spatial grid was downloaded from: https://observatoire-fauna.fr/ressources/publications?typePublication%5B%5D=fauna&themesID%5B%5D=6\
+
+\
 
 #### |- *Processed_data*: Data obtained after processing raw data sets \
 |-------- AltitudeHabitatStats.RData: Altitude data (From EUDEM) and habitat data (from CORINE land use data)\
 |-------- SpeciesData: Occupancy data used in SDMs (from FAUNA data base)\
 |-------- Water.RData: CORINE land cover data regarding water vs non-water sites\
+\
 
 #### |- *R*: R scripts (numbered from 1 to 20 to track different steps of data exploration and analyses)\
+
 |--- *Simulations*\
 |-------- R scripts are numbered sequentially, from 1 to 9. Thus they should be run sequentially:\
 |-------- 1-study1-sc0-... .R: Scripts to reproduce original work of Doser & Stoudt 2024 = D&S, using Bernoulli sampling design. "c1": generate simulated data; "c2": apply the sampling design and fit the multi-season occupancy model; "c3": interpretation of results and figures\
@@ -39,6 +44,7 @@ Brief description of the files and folders in this repository:
 |-------- 9-study2-sc1-... .R: Scripts to simulations with our Poisson sampling design ($\phi$ as in study 1-sc0) and combination of covariates as study2-sc1 - latitude $L_i$ as occupancy covariate, $v_{itj}$ as detection covariate. Here the data was analyzed using the random walk model by Outhwaite et al. (2018) - https://doi.org/10.1016/j.ecolind.2018.05.010. "c1": build the model in BUGS language, generate simulated data, apply the Poisson sampling design and fit the multi-season occupancy model; "c3": interpretation of results and figures\
 |-------- 10-study-simulation-comparison-Identifiability: Script used to interpret simulations' output. Produce figures in the main text and SI\
 \
+
 |--- *Empirical analyses*\
 |-------- 11-study-... .R: scripts used to organize butterfly data, extract covariates, and create the occupancy dataset available in the folder "Processed_data"\
 |-------- 11-study-empirical-plot-occupancy-data.R: script used to plot butterfly data (Fig. 1)\
@@ -51,6 +57,7 @@ Brief description of the files and folders in this repository:
 |-------- 18-study-empirical-buffer-DataAnalysis-remaining-spp-stPGocc.R: script used to analyze data of the four remaining species - Bordeaux + 10 km buffer scale\
 |-------- 19-study-empirical-buffer-Predictions-Maps-remaining-species.R: script used to make predictions and map distribution of the remaining species - Bordeaux + 10 km buffer scale\
 |-------- 20-study-empirical-buffer-Tables-PPO-remaining-species.R: script used to calculate summary statistics for regression coefficients, including the Prior-Posterior overlap (Tables in Supporting Information F). Results shown only at Bordeaux + 10 km buffer scale\
+\
 
 #### |- *model_output*: results of the analyses of simulated and empirical data sets - these folders will be created while running scripts:
 |--------------- *empirical*: results of empirical data analysis using spOccupancy; \
@@ -69,15 +76,25 @@ Brief description of the files and folders in this repository:
 |---------------------- *scenario_three*: simulation results for study 2 - scenario 3 - **study 2-scenario 3** \
 |---------------------- *scenario_phenology*: simulation results for the study 3 - scenario 1 incorporating phenology + observer preferences - **study 3 - scenario 1** \
 |---------------------- *scenario_phenology_spot*: correct data and simulation results for study 3 - scenario 2 incorporating phenology + observer preferences + observation spot - **study 3 - scenario 2** \
+\
 
-#### The folder with figures will be created while running the scripts.
+##### The folder with figures will be created while running the scripts.
 
-#### This paper was produced using the following software and associated packages:
+\
+\
 
+##### This paper was produced using the following software and associated packages:
+
+\
+```{r pressure, echo=F,warning=F,message=F}
 
 source("R/packages.R")
 sessionInfo()
 
+
+```
+
+\
 
 #### End of the description                      
 
