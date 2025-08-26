@@ -1,4 +1,13 @@
-### Evaluating multi-season occupancy models with autocorrelation fitted to heterogeneous datasets 
+---
+title: "Evaluating multi-season occupancy models with autocorrelation fitted to heterogeneous datasets"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 Andre Luza$^1$, Didier Alard$^1$, Frederic Barraquand$^2$
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
@@ -8,7 +17,7 @@ CNRS, Bordeaux INP, Talence, France
 
 # -----------------------------------------------
 
-Brief description of the files and folders in this repository:
+## Brief description of the files and folders in this repository:
 
 #### Root \
 |- *SuppInfo-A-D.pdf*: Supporting Information A, B, C and D associated to the article (also published as Online Supportiong Information)\
@@ -24,7 +33,7 @@ Brief description of the files and folders in this repository:
 
 #### |- *Processed_data*: Data obtained after processing raw data sets \
 |-------- AltitudeHabitatStats.RData: Altitude data (From EUDEM) and habitat data (from CORINE land use data)\
-|-------- SpeciesData: Occupancy data used in SDMs (from FAUNA data base)\
+|-------- SpeciesData.RData: Occupancy data used in SDMs (from FAUNA data base)\
 |-------- Water.RData: CORINE land cover data regarding water vs non-water sites\
 \
 
@@ -64,8 +73,8 @@ Brief description of the files and folders in this repository:
 |--------------- *output_simulations*: rerun D&S simulations based on butterfly data: \
 |---------------------- *"Xp_itj.rda"*: observation covariate $v_{itj}$ (generated once) \
 |---------------------- *"sim-settings.rda"*: simulation constants and MCMC settings \
-|---------------------- *"sampling_design_Poisson"*: sampling design used in study 2, scenarios 0 to 3 \
-|---------------------- *"sampling_design_Poisson_phenology"*: sampling design used in study 3, scenario 1 (only phenology) \
+|---------------------- *"sampling_design_Poisson"*: sampling design used in study 2, scenarios 0 to 3\
+|---------------------- *"sampling_design_Poisson_phenology"*: sampling design used in study 3, scenario 1 (only phenology)\
 |---------------------- *"sampling_design_Poisson_phenology_spot"*: sampling design used in study 3, scenario 2 (phenology and observation spot) \
 |---------------------- *sims_D&S*: correct data and simulation results for D&S original sims - **study 1-scenario 0** \
 |---------------------- *smooth_sims_D&S*: correct data and simulation results for data generated under scenarios of high spatial autocorrelation - low spatial decay parameter $\phi$ - **study 1-scenario 1** \
