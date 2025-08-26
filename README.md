@@ -4,7 +4,7 @@ heterogeneous datasets
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-Andre Luza$^1$, Didier Alard$^1$, Frederic Barraquand$^2$
+André L Luza $^1$, Didier Alard $^1$, Frederic Barraquand $^2$
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
 INRAE, Pessac, France  
