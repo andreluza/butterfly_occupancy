@@ -1,5 +1,5 @@
 
-# list of packages to open
+# list of packages to open (work with data frames, maps, plots, tables)
 require(here)
 require(sf)
 require(ggplot2)
@@ -21,13 +21,11 @@ require(terra)
 require(raster)
 require(tidyr)
 
-
-# analysis
-require("rjags")
+# analysis (occupancy models, processing of posterior distribution draws)
 require("coda")
-require(R2WinBUGS)
 require(jagsUI)
 require(spOccupancy)
 require(spBayes)
 require(MASS)  # For mvrnorm
+require(MCMCvis)
 
