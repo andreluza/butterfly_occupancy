@@ -71,7 +71,6 @@ coords$Site <- seq(1,nrow(coords))
 #                  this as well). 
 n.time <- 10
 
-
 # Number of secondary occasions
 J<-10
 
