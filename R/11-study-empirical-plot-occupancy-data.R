@@ -11,6 +11,9 @@ rm(list=ls())
 gc()
 source ("R/packages.R")
 
+# create a dir to receive the figures
+dir.create(here("figures", "empirical"))
+
 # ggplot theme (D&S theme - nice plots)
 my_theme <- theme(legend.position = 'bottom', 
                   strip.text = element_text(size=12),
@@ -22,10 +25,6 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
                   axis.text.y = element_text(size = 10),
                   axis.title = element_text(size=15))
-
-# load data
-#load(here ("Processed_data",
-#           "ProcessedDetectionData.RData"))
 
 # load the objects to be used as input of the multi-season site occupancy models
 load (file = here("Processed_data", 
@@ -246,12 +245,7 @@ data_visits <- #lapply (unique(cols_base), function (i) # activate if need to ev
                ) 
 #)
 
-# melt
-#data_visits <- do.call(rbind, data_visits)
 
-#data_visits %>%
-#  filter(Year == 2023) %>%
-#  summarize(sum(Freq[-1]))
 
 # average number of cells sampled per year
 ncells_year <- dataPointsPolygonClean_subsetSpp %>%
