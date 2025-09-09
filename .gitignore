@@ -7,6 +7,5 @@ R/11-study-empirical-extractionSpatialCovariates.R
 R/11-study-empirical-organize-occupancy-data.R
 model_output
 figures
-Sparta*
-*.png
-*.odp
+SpartaTest.md
+SpartaTest.rmd
