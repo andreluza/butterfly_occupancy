@@ -383,7 +383,6 @@ table(sp_table_years[,1,,] == species_table[,1:10,]) # check 1st year
 table(sp_table_years[,24,,] == species_table[,231:240,]) # check 24th year
 
 # do the same edit for the number of observers ----------------------
-
 obs_table_years <-  lapply (seq(1,nrow(df_years)), function (i)
   
   obs_table [,seq (df_years[i,1],df_years[i,2])]
