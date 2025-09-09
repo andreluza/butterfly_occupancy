@@ -108,6 +108,22 @@ for (s in 1:n.sims) {
     psi <- 1 / (1 + exp(-logit_psi))
     psi.true[, , s, sc] <- psi
     
+    # save psi to be used in the test with SPARTA model
+    save(psi.true,  file = here ("model_output", 
+                                 "output_simulations", 
+                                 "scenario_one",
+                                 paste0("sim-mixed-stPGOcc-psi-true_",curr.indx,".rda"))
+    )
+    
+    # the loop makes the array each time larger, so
+    # remove files to avoid reach the upper memory bound
+    # remove three output before the present output
+    unlink (here ("model_output", 
+                  "output_simulations", 
+                  "scenario_one",
+                  paste0("sim-mixed-stPGOcc-psi-true_",curr.indx-3,".rda")),recursive=F)
+    
+    
     # Generate binary occupancy data (sample from a Binomial)
     Z <- matrix(rbinom(I * n.time, 
                        size = 1, 
@@ -197,7 +213,7 @@ for (s in 1:n.sims) {
                    accept.rate = 0.43,
                    cov.model = cov.model,
                    tuning = tuning.list,
-                   n.omp.threads = 1,
+                   n.omp.threads = 1, # TODO: change as necessary. 
                    verbose = TRUE,
                    ar1 = TRUE,
                    NNGP = TRUE,
@@ -523,7 +539,5 @@ grid.arrange (proj_Z,
               proj_Xp_Y,ncol=1)
 
 dev.off()
-
-# end
 
 
