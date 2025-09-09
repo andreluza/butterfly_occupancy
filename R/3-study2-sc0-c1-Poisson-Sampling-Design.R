@@ -17,8 +17,9 @@ rm(list=ls())
 source ("R/packages.R")
 source ("R/functions.R")
 
-# create folder to receive figures
-dir.create(here ("figures","sims_present_paper"))
+
+# directory to store figures
+dir.create(here ("figures", "sims_present_paper"))
 
 # load simulation settings
 load(here("model_output", "output_simulations", "sim-settings.RData"))

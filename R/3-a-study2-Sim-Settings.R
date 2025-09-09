@@ -19,6 +19,8 @@ dir.create(here ("model_output", "output_simulations","scenario_three"))
 dir.create(here ("model_output", "output_simulations","scenario_phenology"))
 dir.create(here ("model_output", "output_simulations","scenario_phenology_spot"))
 
+# directory to store figures
+dir.create(here ("figures", "sims_present_paper"))
 
 # ggplot theme -------------------------------------
 my_theme <- theme(legend.position = 'bottom', 
