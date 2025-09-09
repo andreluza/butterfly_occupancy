@@ -76,24 +76,25 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% unique(cells_buffer_bordeaux$CODE_10KM)),]
 
 # select sites
-sp_table_years <- (sp_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,,])
-base_table_years <- (base_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,])
+# select sites (cells from Nouvelle Aquitaine within the Bordeaux + 10 km buffer)
+sel_sites <- which(cells_NAquitane$CODE_10KM %in% unique(cells_buffer_bordeaux$CODE_10KM))
+sp_table_years <- (sp_table_years[sel_sites,,,])
+base_table_years <- (base_table_years[sel_sites,,])
 
 # where NAs in table of spp, there is NAs in total records
 table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 
 # Organize Data for spOcc analysis ---------------
 # Package all data into a list
-# occ
-X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + n covariates (lat, lat2, long, etc)
-X[, , 2] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"]^2)[,1])
-X[, , 4] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "X"])[,1]
-X[, , 5] <-  scale(altitude_stats$altitude_mean[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM)])[,1]
-X[, , 6] <-  scale(1-extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-(extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"]^2))[,1])
-X[, , 8] <-  scale((extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("1")]))[,1] # 
-X[, , 9] <-  (scale((extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("2")]))[,1]) # 
+# occ: lat+lat2+lon+elev+non_water+non_water2+urban
+X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 8)) # intercept + n covariates (lat, lat2, long, etc)
+X[, , 2] <-  scale(cell_centroid_df[sel_sites, "Y"])[,1]
+X[, , 3] <-  (scale(cell_centroid_df[sel_sites, "Y"])[,1])^2
+X[, , 4] <-  scale(cell_centroid_df[sel_sites, "X"])[,1]
+X[, , 5] <-  scale(altitude_stats$altitude_mean[sel_sites])[,1]
+X[, , 6] <-  scale(1-extract.water.summary[sel_sites,"1"])[,1] # non water = 1 minus water(extract.water.summary)
+X[, , 7] <-  (scale((1-extract.water.summary[sel_sites,"1"]))[,1])^2
+X[, , 8] <-  scale((extract.hab.NA.summary [sel_sites,c("1")]))[,1] # 
 #1 230 0 77 255 111 - Continuous urban fabric
 #2 255 0 0 255 112 - Discontinuous urban fabric
 
@@ -127,7 +128,7 @@ X.p <- array (1, dim=c(nrow(sp_table_years),
                        dim(sp_table_years)[3],
                        6)) # intercept + 4 covariates
 X.p[,,,2] <- X[, , 2] # latitude
-X.p[,,,3] <- scale((obs_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,]))#[,(ncol(obs_table_years)-9):ncol(obs_table_years),]))# observers
+X.p[,,,3] <- scale((obs_table_years[sel_sites,,]))#[,(ncol(obs_table_years)-9):ncol(obs_table_years),]))# observers
 
 # bind months (phenology)
 months_bind  <- replicate (ncol(sp_table_years),
@@ -136,8 +137,8 @@ months_bind  <- replicate (ncol(sp_table_years),
 
 # change the order to fit the right format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)
-X.p[,,,5] <- scale(months_bind^2)
+X.p[,,,4] <- scale(months_bind)[,1]# linear effect of month
+X.p[,,,5] <- (scale(months_bind)[,1])^2# quadratic effect of month
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
@@ -228,7 +229,7 @@ tuning.list <- list(phi = 0.5, rho = 0.5)
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
 out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+urban,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -237,7 +238,7 @@ out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+urban,
                accept.rate = 0.43,
                cov.model = "exponential",
                tuning = tuning.list,
-               n.omp.threads = 3, # TODO: change as necessary. 
+               n.omp.threads = 3,
                verbose = TRUE,
                ar1 = TRUE,
                NNGP = TRUE,
@@ -252,6 +253,9 @@ save (out,
       file=here ("model_output", 
                  "empirical",
                  paste0 ("buffer_outputNNG15_urban_", substr(sp_list[sp],1,12),".Rdata")))
+
+rm(out)
+gc()
 
 # Informative Priors ----------------------------------------------------------
 
@@ -273,7 +277,7 @@ tuning.list <- list(phi = mean (c(a = 3 / 6, b = 3 / 1)), rho = 0.5)
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
 out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+urban,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -282,16 +286,16 @@ out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+urban,
                accept.rate = 0.43,
                cov.model = "exponential",
                tuning = tuning.list,
-               n.omp.threads = 3, # TODO: change as necessary. 
+               n.omp.threads = 3, 
                verbose = TRUE,
                ar1 = TRUE,
                NNGP = TRUE,
-               n.neighbors = 15, ##### set to 15 as Bajcz et al. 2024 - https://pmc.ncbi.nlm.nih.gov/articles/PMC10834413/
+               n.neighbors = 15, 
                n.report = 25,
                n.burn = n.burn,
                n.thin = n.thin,
                n.chains = n.chains)
-
+summary(out)
 # save model output
 save (out, 
       file=here ("model_output", 

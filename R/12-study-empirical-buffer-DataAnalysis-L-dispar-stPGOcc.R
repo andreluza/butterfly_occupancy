@@ -55,24 +55,27 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% unique(cells_buffer_bordeaux$CODE_10KM)),]
 
 # select sites
-sp_table_years <- (sp_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,,])
-base_table_years <- (base_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,])
+# select sites (cells from Nouvelle Aquitaine within the Bordeaux + 10 km buffer)
+sel_sites <- which(cells_NAquitane$CODE_10KM %in% unique(cells_buffer_bordeaux$CODE_10KM))
+# subset table
+sp_table_years <- (sp_table_years[sel_sites,,,])
+base_table_years <- (base_table_years[sel_sites,,])
 
 # where NAs in table of spp, there is NAs in total records
-table(is.na(sp_table_years[,,,3]) == (base_table_years==0))
+table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 
 # Organize Data for spOcc analysis ---------------
 # Package all data into a list
 # Occupancy covariates
 X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 10)) # intercept + n covariates (lat, lat2, & long, etc )
-X[, , 2] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"]^2)[,1])
-X[, , 4] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "X"])[,1]
-X[, , 5] <-  scale(altitude_stats$altitude_mean[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM)])[,1]
-X[, , 6] <-  scale(1-extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"]^2)[,1])
-X[, , 8] <-  scale(rowSums(extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("35","36", "37","40","41","42","43")]))[,1] # codes below
-X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("35","36", "37","40","41","42","43")])^2)[,1]) # codes below
+X[, , 2] <-  scale(cell_centroid_df[sel_sites, "Y"])[,1]
+X[, , 3] <-  (scale(cell_centroid_df[sel_sites, "Y"])[,1])^2
+X[, , 4] <-  scale(cell_centroid_df[sel_sites, "X"])[,1]
+X[, , 5] <-  scale(altitude_stats$altitude_mean[sel_sites])[,1]
+X[, , 6] <-  scale(1-extract.water.summary[sel_sites,"1"])[,1] # non water = 1 minus water(extract.water.summary)
+X[, , 7] <-  (scale((1-extract.water.summary[sel_sites,"1"]))[,1])^2
+X[, , 8] <-  scale(rowSums(extract.hab.NA.summary [sel_sites,c("35","36", "37","40","41","42","43")]))[,1] # codes below
+X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [sel_sites,c("35","36", "37","40","41","42","43")]))[,1])^2 # codes below
 #35 166 166 255 255 411 - Inland marshes  <-----------------------
 #36 77 77 255 255 412 - Peat bogs <-----------------------
 #37 204 204 255 255 421 - Salt marshes  <-----------------------
@@ -80,7 +83,7 @@ X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [which(cells_NAquitane$CODE_1
 #41 128 242 230 255 512 - Water bodies
 #42 0 255 166 255 521 - Coastal lagoons
 #43 166 255 230 255 522 - Estuaries
-X[, , 10] <-  scale((extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("1")]))[,1] # 
+X[, , 10] <-  scale((extract.hab.NA.summary [sel_sites,c("1")]))[,1] # 
 #1 230 0 77 255 111 - Continuous urban fabric
 
 # Input altitude because there are 10 NAs
@@ -103,7 +106,7 @@ X.p <- array (1, dim=c(nrow(sp_table_years),
                        dim(sp_table_years)[3],
                        6)) # intercept + 5 covariates
 X.p[,,,2] <- X[, , 2] # latitude
-X.p[,,,3] <- scale((obs_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,]))# n observers
+X.p[,,,3] <- scale((obs_table_years[sel_sites,,]))# n observers
 
 # bind months (phenology)
 months_bind  <- replicate (ncol(sp_table_years),
@@ -112,8 +115,8 @@ months_bind  <- replicate (ncol(sp_table_years),
 
 # change the order to fit the right format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)# linear effect of month
-X.p[,,,5] <- scale(months_bind^2)# quadratic effect of month
+X.p[,,,4] <- scale(months_bind)[,1]# linear effect of month
+X.p[,,,5] <- (scale(months_bind)[,1])^2# quadratic effect of month
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
@@ -214,9 +217,8 @@ tuning.list <- list(phi = 0.5, rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+
-                               marshes+marshes2+urban,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+marshes+marshes2+urban,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -243,6 +245,8 @@ save (out,
                  "empirical",
                  paste0 ("buffer_outputNNG15_urban_", substr(sp_list[sp],1,12),".Rdata")))
 
+rm(out)
+gc()
 
 # Informative Priors ----------------------------------------------------------
 
@@ -263,9 +267,8 @@ tuning.list <- list(phi = mean (c(a = 3 / 6, b = 3 / 1)), rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+#non_water+non_water2+
-                 marshes+marshes2+urban,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+marshes+marshes2+urban,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,

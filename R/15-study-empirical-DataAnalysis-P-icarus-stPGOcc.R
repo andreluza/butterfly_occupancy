@@ -71,15 +71,15 @@ table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 # Organize Data for spOcc analysis ---------------
 # Pack all data into lists
 # Occupancy covariates
-X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + 4 covariates (lat, lat2, long, etc)
+X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + n covariates (lat, lat2, long, etc)
 X[, , 2] <-  scale(cell_centroid_df[, "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[, "Y"]^2)[,1])
+X[, , 3] <-  (scale(cell_centroid_df[, "Y"])[,1])^2
 X[, , 4] <-  scale(cell_centroid_df[, "X"])[,1]
 X[, , 5] <-  scale(altitude_stats$altitude_mean)[,1]
 X[, , 6] <-  scale(1-extract.water.summary[,"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-(extract.water.summary[,"1"]^2))[,1])
+X[, , 7] <-  (scale((1-(extract.water.summary[,"1"])^2))[,1])
 X[, , 8] <-  scale((extract.hab.NA.summary [,c("26")]))[,1] # codes below
-X[, , 9] <-  (scale((extract.hab.NA.summary [,c("26")])^2)[,1]) # codes below
+X[, , 9] <-  (scale((extract.hab.NA.summary [,c("26")]))[,1])^2 # codes below
 #26 204 242 77 255 321 - Natural grasslands     <-----------------------
 #27 166 255 128 255 322 - Moors and heathland   <-----------------------
 #28 166 230 77 255 323 - Sclerophyllous vegetation 
@@ -123,19 +123,19 @@ months_bind  <- replicate (ncol(sp_table_years),
                            do.call(cbind,lapply (seq(1,10,1), function (i) rep(i,nrow(sp_table_years))))
 )
 
-# change the order to fit the right format
+# change the order to fit the correct format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)
-X.p[,,,5] <- scale(months_bind^2)
+X.p[,,,4] <- scale(months_bind)[,1]
+X.p[,,,5] <- (scale(months_bind)[,1])^2
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
 
 #  fit the model ----------------------------------------------------------
 # MCMC settings 
-n.samples <- 100000
+n.samples <- 50000
 batch.length <- 100
-n.burn <- 98000
+n.burn <- 48000
 n.thin <- 5
 n.chains <- 3
 accept.rate <- 0.43
@@ -214,9 +214,8 @@ tuning.list <- list(phi = 0.5, rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+
-                 grasslands+grasslands2,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+grasslands+grasslands2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -225,7 +224,7 @@ out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+
                accept.rate = 0.43,
                cov.model = "exponential",
                tuning = tuning.list,
-               n.omp.threads = 3, # TODO: change as necessary. 
+               n.omp.threads = 3, 
                verbose = TRUE,
                ar1 = TRUE,
                NNGP = TRUE,
@@ -240,6 +239,8 @@ save (out,
       file=here ("model_output", 
                  "empirical",
                  paste0 ("outputNNG15_", substr(sp_list[sp],1,12),".Rdata")))
+rm(out)
+gc()
 
 # Informative Priors ----------------------------------------------------------
 
@@ -260,9 +261,8 @@ tuning.list <- list(phi = mean (c(a = 3 / 6, b = 3 / 1)), rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+
-                 grasslands+grasslands2,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+grasslands+grasslands2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -271,11 +271,11 @@ out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+non_water+non_water2+
                accept.rate = 0.43,
                cov.model = "exponential",
                tuning = tuning.list,
-               n.omp.threads = 3, # TODO: change as necessary. 
+               n.omp.threads = 3,
                verbose = TRUE,
                ar1 = TRUE,
                NNGP = TRUE,
-               n.neighbors = 15, ##### set to 15 as Bajcz et al. 2024 - https://pmc.ncbi.nlm.nih.gov/articles/PMC10834413/
+               n.neighbors = 15, 
                n.report = 25,
                n.burn = n.burn,
                n.thin = n.thin,

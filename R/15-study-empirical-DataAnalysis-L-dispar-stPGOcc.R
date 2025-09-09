@@ -57,15 +57,16 @@ table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 # Organize Data for spOcc analysis ---------------
 # Package all data into a list
 # Occupancy covariates
+# # occ: lat+lat2+lon+elev+marshes+marshes2,
 X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + n covariates (lat, lat2, & long, etc )
 X[, , 2] <-  scale(cell_centroid_df[, "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[, "Y"]^2)[,1])
+X[, , 3] <-  (scale(cell_centroid_df[, "Y"])[,1])^2
 X[, , 4] <-  scale(cell_centroid_df[, "X"])[,1]
 X[, , 5] <-  scale(altitude_stats$altitude_mean)[,1]
 X[, , 6] <-  scale(1-extract.water.summary[,"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-extract.water.summary[,"1"]^2)[,1])
+X[, , 7] <-  (scale((1-extract.water.summary[,"1"]))[,1])^2
 X[, , 8] <-  scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")]))[,1] # codes below
-X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")])^2)[,1]) # codes below
+X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")]))[,1])^2 # codes below
 #35 166 166 255 255 411 - Inland marshes 
 #36 77 77 255 255 412 - Peat bogs
 #37 204 204 255 255 421 - Salt marshes
@@ -93,8 +94,8 @@ months_bind  <- replicate (ncol(sp_table_years),
 
 # change the order to fit the right format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)
-X.p[,,,5] <- scale(months_bind^2)
+X.p[,,,4] <- scale(months_bind)[,1]
+X.p[,,,5] <- (scale(months_bind)[,1])^2
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
@@ -150,9 +151,9 @@ table(apply (data.list.full$y,1,sum,na.rm=T)>0)/nrow(data.list.full$y)
 
 #  fit the model ----------------------------------------------------------
 # MCMC settings 
-n.samples <- 100000
+n.samples <- 50000
 batch.length <- 100
-n.burn <- 98000
+n.burn <- 48000
 n.thin <- 5
 n.chains <- 3
 accept.rate <- 0.43
@@ -176,9 +177,8 @@ tuning.list <- list(phi = 0.5, rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+
-                              marshes+marshes2,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+marshes+marshes2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,
@@ -205,6 +205,8 @@ save (out,
                  "empirical",
                  paste0 ("outputNNG15_", substr(sp_list[sp],1,12),".Rdata")))
 
+rm(out)
+gc()
 
  # Informative Priors ----------------------------------------------------------
 
@@ -225,9 +227,8 @@ tuning.list <- list(phi = mean (c(a = 3 / 6, b = 3 / 1)), rho = 0.5)
 
 # RUN THE ANALYSIS WITH NNG=15 ----------------------------------------
 # Fit the model with stPGOcc
-out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+#non_water+non_water2+
-                 marshes+marshes2,
-               det.formula = ~ non_water+lat+obs+phen+phen2,
+out <- stPGOcc(occ.formula = ~ lat+lat2+lon+elev+marshes+marshes2,
+               det.formula = ~ lat+obs+phen+phen2+non_water,
                data = data.list.full,
                n.batch = n.batch/n.chains,
                batch.length = batch.length,

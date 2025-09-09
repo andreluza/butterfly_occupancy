@@ -66,7 +66,7 @@ table_summ <- lapply(list_output, function (ng){
       #run the function for beta parameters
       # occupancy coeffs
       beta_overlap <- MCMCtrace(out$beta.samples,
-                priors = rnorm(n = 1500,0,sqrt(2.72)), 
+                priors = rnorm(n = 1200,0,sqrt(2.72)), 
                 PPO_out = TRUE,
                 plot = T,
                 pdf=F,
@@ -74,7 +74,7 @@ table_summ <- lapply(list_output, function (ng){
       
       # detection coeffs
       alpha_overlap <- MCMCtrace(out$alpha.samples,
-                                priors = rnorm(n = 1500,0,sqrt(2.72)), 
+                                priors = rnorm(n = 1200,0,sqrt(2.72)), 
                                 PPO_out = TRUE,
                                 plot = T,
                                 pdf=F,
@@ -83,7 +83,7 @@ table_summ <- lapply(list_output, function (ng){
       # theta coeffs
       # sigma_sq
       sigma_sq_overlap <- MCMCtrace(out$theta.samples,
-                                 priors = 1/rgamma (n = 1500,shape = 2, rate = 1.5), # inverse gamma prior
+                                 priors = 1/rgamma (n = 1200,shape = 2, rate = 1.5), # inverse gamma prior
                                  PPO_out = TRUE,
                                  plot = T,
                                  pdf=F,
@@ -91,7 +91,7 @@ table_summ <- lapply(list_output, function (ng){
       sigma_sq_overlap <- sigma_sq_overlap[which(sigma_sq_overlap$param == "sigma.sq"),] # select the parameter (this prior don't apply to all theta)
       # sigma_sq_T
       sigma_sq_T_overlap <- MCMCtrace(out$theta.samples,
-                                    priors = 1/rgamma (n = 1500,shape = 2, rate = 1), # inverse gamma prior
+                                    priors = 1/rgamma (n = 1200,shape = 2, rate = 1), # inverse gamma prior
                                     PPO_out = TRUE,
                                     plot = T,
                                     pdf=F,
@@ -104,7 +104,7 @@ table_summ <- lapply(list_output, function (ng){
       if (length(grep("InfPrior", ng))==0) {
         
         phi_overlap <- MCMCtrace(out$theta.samples,
-                                        priors = runif(1500, 3 / 1, 3 / 0.005),
+                                        priors = runif(1200, 3 / 1, 3 / 0.005),
                                         PPO_out = TRUE,
                                         plot = T,
                                         pdf=F,
@@ -114,7 +114,7 @@ table_summ <- lapply(list_output, function (ng){
       } else {
         
         phi_overlap <- MCMCtrace(out$theta.samples,
-                                 priors = runif(1500, 3 / 6, 3 / 1),
+                                 priors = runif(1200, 3 / 6, 3 / 1),
                                  PPO_out = TRUE,
                                  plot = T,
                                  pdf=F,
@@ -127,7 +127,7 @@ table_summ <- lapply(list_output, function (ng){
       
       # rho
       rho_overlap <- MCMCtrace(out$theta.samples,
-                               priors = runif(1500, -1, 1),
+                               priors = runif(1200, -1, 1),
                                PPO_out = TRUE,
                                plot = T,
                                pdf=F,
@@ -158,11 +158,12 @@ table_summ <- lapply(list_output, function (ng){
                              "$\\sigma^2_T$",
                              "$\\rho$", 
                              "$\\alpha_0$",
-                            "$\\alpha_{NON-WATER}$",
                              "$\\alpha_{LAT}$",
                              "$\\alpha_{OBS}$",
                             "$\\alpha_{MON}$",
-                            "$\\alpha_{MON^2}$")
+                            "$\\alpha_{MON^2}$",
+                            "$\\alpha_{NON-WATER}$"
+      )
       
       
       rm(out) # save memory
@@ -173,7 +174,7 @@ table_summ <- lapply(list_output, function (ng){
 }
 )
 
-# melt
+  # melt
 table_summ <- do.call(rbind, table_summ)
 rownames(table_summ) <- NULL
 
@@ -198,5 +199,4 @@ knitr::kable(tab_kable [,-which(colnames(tab_kable) == "Model")],
 
 
 # end
-
-
+# plot(plogis(-1.116 + (-0.150*seq(-1.5,1.5,0.1))+(-1.459 *seq(-1.5,1.5,0.1)^2)))

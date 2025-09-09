@@ -63,16 +63,17 @@ table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 
 # Organize Data for spOcc analysis ---------------
 # Package all data into a list
-# occ
+# occ: occ.formula = ~ lat+lat2+lon+elev+marshes+marshes2,
+# det.formula = ~ lat+obs+phen+phen2+non_water,
 X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + n covariates (lat, lat2, & long, etc )
 X[, , 2] <-  scale(cell_centroid_df[, "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[, "Y"]^2)[,1])
+X[, , 3] <-  (scale(cell_centroid_df[, "Y"])[,1])^2
 X[, , 4] <-  scale(cell_centroid_df[, "X"])[,1]
 X[, , 5] <-  scale(altitude_stats$altitude_mean)[,1]
 X[, , 6] <-  scale(1-extract.water.summary[,"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-extract.water.summary[,"1"]^2)[,1])
+X[, , 7] <-  (scale((1-extract.water.summary[,"1"]))[,1])^2
 X[, , 8] <-  scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")]))[,1] # codes below
-X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")])^2)[,1]) # codes below
+X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41","42","43")]))[,1])^2 # codes below
 #35 166 166 255 255 411 - Inland marshes  <-----------------------
 #36 77 77 255 255 412 - Peat bogs <-----------------------
 #37 204 204 255 255 421 - Salt marshes  <-----------------------
@@ -81,7 +82,7 @@ X[, , 9] <-  (scale(rowSums(extract.hab.NA.summary [,c("35","36", "37","40","41"
 #42 0 255 166 255 521 - Coastal lagoons
 #43 166 255 230 255 522 - Estuaries
 
-# imput altitude because there are 10 NAs
+# input altitude because there are 10 NAs
 # set the minimum of the scaled values because NAs are in the lowlands/coastline
 X[, , 5] [is.na(X[, , 5])] <- min(X[, , 5],na.rm=T)
 
@@ -100,8 +101,8 @@ months_bind  <- replicate (ncol(sp_table_years),
 
 # change the order to fit the right format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)
-X.p[,,,5] <- scale(months_bind^2)
+X.p[,,,4] <- scale(months_bind)[,1]
+X.p[,,,5] <- (scale(months_bind)[,1])^2
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
@@ -204,7 +205,6 @@ generate_predictions <- lapply (list("Ng15weak", "Ng15inf"), function (i) {
   }
 )
 
-
 # Produce plots for all models (weak and informative priors)
 res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
   
@@ -290,7 +290,7 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
     p1 <- ggplot(data = cells_NAquitane) +
       geom_sf(fill="white")+
       geom_sf(data=cbind (cells_NAquitane,
-                          bar_psi_i = res_data$psi_i), # what have data
+                          bar_psi_i = ifelse (X[, 1, 5] == min(X[, 1, 5] ), NA, res_data$psi_i)), # what have data 
               aes (fill=bar_psi_i,
                    col=bar_psi_i),
               alpha=0.75)+
@@ -315,7 +315,7 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
     p2 <- ggplot(data = cells_NAquitane) +
       geom_sf(fill="white")+
       geom_sf(data=cbind (cells_NAquitane,
-                          bar_w_i = res_data$w_i), # what have data),
+                          bar_w_i = ifelse (X[, 1, 5] == min(X[, 1, 5] ), NA, res_data$w_i)), # what have data),
               aes (fill=bar_w_i,
                    col=bar_w_i),
               alpha=0.75)+
@@ -374,21 +374,21 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
       
       # organize data to plot
       phen_plot <- data.frame (p = plogis(point_est[1] + 
-                                            point_est[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                            point_est[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                            point_est["phen"]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                            point_est["phen2"]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
                                lci = plogis(lci[1] + 
-                                              lci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                              lci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                              lci["phen"]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                              lci["phen2"]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
                                uci = plogis(uci[1] + 
-                                              uci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                              uci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
-                               x = seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+                                              uci["phen"]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                              uci["phen2"]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
+                               x = seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100),
                                month=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
                                
       ) 
       phen_plot$month <-factor(phen_plot$month,
                                levels = c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov"))
-      
+      # plot phenology and observer effect
       p4 <- ggplot(phen_plot, aes(x=x, y = p)) +
         geom_ribbon(aes(ymin=lci, ymax=uci),fill="white")+
         #geom_point()+
@@ -398,9 +398,11 @@ res_plots <- lapply (seq(1,length(generate_predictions)), function (out) {
              x="Month")+
         ggtitle("")+
         scale_x_continuous(
-          breaks=seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+          breaks=seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=10),
           labels=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
         )
+      p4
+      
       # create a list of resulting plots
       res_plots <- list (p1=p1,
                          p2=p2,

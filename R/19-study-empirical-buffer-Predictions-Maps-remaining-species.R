@@ -70,39 +70,61 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
 gironde_cells <- cells_NAquitane [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),]
 # altitude_stats <- altitude_stats[which(cells_NAquitane$CODE_10KM %in% inter_gironde_NAq$CODE_10KM),]
 
-# select sites
-sp_table_years <- (sp_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,,])
-base_table_years <- (base_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,])
+
+# select sites (cells from Nouvelle Aquitaine within the Bordeaux + 10 km buffer)
+sel_sites <- which(cells_NAquitane$CODE_10KM %in% unique(cells_buffer_bordeaux$CODE_10KM))
+sp_table_years <- (sp_table_years[sel_sites,,,])
+base_table_years <- (base_table_years[sel_sites,,])
 
 # where NAs in table of spp, there is NAs in total records
 table(is.na(sp_table_years[,,,6]) == (base_table_years==0))
 
 # Organize Data for spOcc analysis ---------------
 # Package all data into a list
-# occ
-X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 9)) # intercept + n covariates (lat, lat2, long, etc)
-X[, , 2] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"])[,1]
-X[, , 3] <-  (scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "Y"]^2)[,1])
-X[, , 4] <-  scale(cell_centroid_df[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM), "X"])[,1]
-X[, , 5] <-  scale(altitude_stats$altitude_mean[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM)])[,1]
-X[, , 6] <-  scale(1-extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"])[,1] # non water = 1 minus water(extract.water.summary)
-X[, , 7] <-  (scale(1-(extract.water.summary[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),"1"]^2))[,1])
-X[, , 8] <-  scale((extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("1")]))[,1] # 
-X[, , 9] <-  (scale((extract.hab.NA.summary [which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),c("2")]))[,1]) # 
+# occ: lat+lat2+lon+elev+non_water+non_water2+urban
+X <- array(1, dim = c(nrow(sp_table_years), ncol(sp_table_years), 8)) # intercept + n covariates (lat, lat2, long, etc)
+X[, , 2] <-  scale(cell_centroid_df[sel_sites, "Y"])[,1]
+X[, , 3] <-  (scale(cell_centroid_df[sel_sites, "Y"])[,1])^2
+X[, , 4] <-  scale(cell_centroid_df[sel_sites, "X"])[,1]
+X[, , 5] <-  scale(altitude_stats$altitude_mean[sel_sites])[,1]
+X[, , 6] <-  scale(1-extract.water.summary[sel_sites,"1"])[,1] # non water = 1 minus water(extract.water.summary)
+X[, , 7] <-  (scale((1-extract.water.summary[sel_sites,"1"]))[,1])^2
+X[, , 8] <-  scale((extract.hab.NA.summary [sel_sites,c("1")]))[,1] # 
 #1 230 0 77 255 111 - Continuous urban fabric
 #2 255 0 0 255 112 - Discontinuous urban fabric
 
+# plot urban areas
+ggplot() +
+  geom_sf(fill="white")+
+  #geom_sf(data= cells_buffer_bordeaux)+
+  geom_sf(data = cbind (gironde_cells,
+                        urban = X[, 1, 8]),
+          aes(fill=urban,col=urban))+
+  scale_fill_viridis_c(na.value = "red")+
+  scale_colour_viridis_c(na.value = "red")
+
 # imput altitude because there are 10 NAs
+# where are the NAs
+ggplot() +
+  geom_sf(fill="white")+
+  #geom_sf(data= cells_NAquitane)+
+  geom_sf(data = cbind (gironde_cells,
+                        alt = X[, 1, 5]),
+          aes(fill=alt,col=alt))+
+  scale_fill_viridis_c(na.value = "red")+
+  scale_colour_viridis_c(na.value = "red")
+
 # set the minimum of the scaled values because NAs are in the lowlands/coastline
 X[, , 5] [is.na(X[, , 5])] <- min(X[, , 5],na.rm=T)
 
 # detection covariates
+# # det: non_water+lat+obs+phen+phen2,
 X.p <- array (1, dim=c(nrow(sp_table_years),
                        ncol(sp_table_years),
                        dim(sp_table_years)[3],
                        6)) # intercept + 4 covariates
 X.p[,,,2] <- X[, , 2] # latitude
-X.p[,,,3] <- scale((obs_table_years[which(cells_NAquitane$CODE_10KM %in% cells_buffer_bordeaux$CODE_10KM),,]))#[,(ncol(obs_table_years)-9):ncol(obs_table_years),]))# observers
+X.p[,,,3] <- scale((obs_table_years[sel_sites,,]))#[,(ncol(obs_table_years)-9):ncol(obs_table_years),]))# observers
 
 # bind months (phenology)
 months_bind  <- replicate (ncol(sp_table_years),
@@ -111,11 +133,12 @@ months_bind  <- replicate (ncol(sp_table_years),
 
 # change the order to fit the right format
 months_bind <- aperm(months_bind, c(1,3,2))
-X.p[,,,4] <- scale(months_bind)
-X.p[,,,5] <- scale(months_bind^2)
+X.p[,,,4] <- scale(months_bind)[,1]# linear effect of month
+X.p[,,,5] <- (scale(months_bind)[,1])^2# quadratic effect of month
 
 # non-water
 X.p[,,,6] <- X[, , 6] # non-water habitats
+
 
 # produce maps and plots for all species at once  -------------------------------
 #sp<- grep("Polyommatus icarus", sp_list)  # P. icarus
@@ -213,7 +236,7 @@ lapply (sp, function (sel_sp) {
             
         # predict
         out.pred.occ <- predict(out$out, 
-                                X[,,-9], 
+                                X[,,-9], # nine is discontinuous urban
                                 #cell_centroid_df[which(missing_sites==T),], 
                                 cell_centroid_df_buffer,
                                 verbose = T,
@@ -394,15 +417,15 @@ lapply (sp, function (sel_sp) {
         
         # organize data to plot
         phen_plot <- data.frame (p = plogis(point_est[1] + 
-                                              point_est[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                              point_est[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                              point_est[5]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                              point_est[6]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
                                  lci = plogis(lci[1] + 
-                                                lci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                                lci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
+                                                lci[5]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                                lci[6]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
                                  uci = plogis(uci[1] + 
-                                                uci[5]*seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)+
-                                                uci[6]*(seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10)^2)),
-                                 x = seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+                                                uci[5]*seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)+
+                                                uci[6]*(seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100)^2)),
+                                 x = seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=100),
                                  month=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
                                  
         ) 
@@ -418,10 +441,11 @@ lapply (sp, function (sel_sp) {
                x="Month")+
           ggtitle("")+
           scale_x_continuous(
-            breaks=seq(min(X.p[,,,5]),max(X.p[,,,5]),length.out=10),
+            breaks=seq(min(X.p[,,,4]),max(X.p[,,,4]),length.out=10),
             labels=c("Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov")
           )
         
+        p4
         # create a list of resulting plots
         res_plots <- list (p1=p1,
                            p2=p2,
