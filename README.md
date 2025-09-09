@@ -4,11 +4,12 @@ heterogeneous datasets
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-André L Luza $^1$, Didier Alard $^1$, Frederic Barraquand $^2$
+André L Luza $^1$, Didier Alard $^1$$^,$$^2$, Frederic Barraquand $^3$
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
 INRAE, Pessac, France  
-$^2$ Institute of Mathematics of Bordeaux, University of Bordeaux, CNRS,
+$^2$ Observatoire FAUNA, University of Bordeaux, Pessac, France  
+$^3$ Institute of Mathematics of Bordeaux, University of Bordeaux, CNRS,
 Bordeaux INP, Talence, France
 
 # ———————————————–
@@ -20,7 +21,9 @@ Bordeaux INP, Talence, France
 \|- *SuppInfo-A-D.pdf*: Supporting Information A, B, C and D associated
 to the article (also published as Online Supportiong Information)  
 \|- *SuppInfo-E.pdf*: Supporting Information E: analyses using the
-Random Walk Occupancy Model by Outwaithe et al. 2018  
+Random Walk Occupancy Model by Outwaithe et al. (2018)  
+\|- *occ-model-rwalk-RE-simulations.txt*: Model of Outwaithe et
+al. (2018) in BUGS language  
 \|- *SuppInfo-F.pdf*: Supporting Information F: analyses using data of
 the four remaining species: the meadow brown, the false ringlet, the
 marsh fritillary, and the small copper  
@@ -31,8 +34,8 @@ contributors, as appearing in FAUNA data sets
 #### \|- *Data*: Spatial data 
 
 \|——– SpatialData: systematic grid (grid cells 1x1 km, French geographic
-system) from FAUNA. The $1 \times 1$km spatial grid was downloaded from:
-<a
+system) from Observatoire FAUNA. The $1 \times 1$km spatial grid was
+downloaded from: <a
 href="https://observatoire-fauna.fr/ressources/publications?typePublication%5B%5D=fauna&amp;themesID%5B%5D=6\"
 class="uri">https://observatoire-fauna.fr/ressources/publications?typePublication%5B%5D=fauna&amp;themesID%5B%5D=6\</a>
 
@@ -40,33 +43,37 @@ class="uri">https://observatoire-fauna.fr/ressources/publications?typePublicatio
 
 #### \|- *Processed_data*: Data obtained after processing raw data sets 
 
-\|——– AltitudeHabitatStats.RData: Altitude data (From EUDEM) and habitat
+\|——– AltitudeHabitatStats.RData: Altitude data (from EUDEM) and habitat
 data (from CORINE land use data)  
-\|——– SpeciesData.RData: Occupancy data used in SDMs (from FAUNA data
-base)  
+\|——– SpeciesData.RData: Occupancy data used in SDMs (from Observatoire
+FAUNA data base)  
 \|——– Water.RData: CORINE land cover data regarding water vs non-water
 sites  
   
 
-#### \|- *R*: R scripts (numbered from 1 to 20 to track different steps of data exploration and analyses) 
+#### \|- *R*: R scripts 
 
-\|— *Simulations*  
-\|——– R scripts are numbered sequentially, from 1 to 9. Thus they should
-be run sequentially:  
+<span style="color:blue"> \|— *Simulations*  
+</span> \|——– R scripts are numbered sequentially, from 1 to 9. Thus,
+they should be run sequentially:  
 \|——– 1-study1-sc0-… .R: Scripts to reproduce original work of Doser &
 Stoudt 2024 = D&S, using Bernoulli sampling design. “c1”: generate
 simulated data; “c2”: apply the sampling design and fit the multi-season
-occupancy model; “c3”: interpretation of results and figures  
+occupancy model; “c3”: interpretation of results and figures. Two
+separate folders that will host simulation results (path:
+model_output/output_simulations) and figures are created here. Results
+and figures of each study-scenario will be stored in one specific
+folder.  
 \|——– 2-study1-sc1-… .R: Scripts to simulate data with higher spatial
 autocorrelation (lower values of $\phi$), under the original Bernoulli
 sampling design of D&S. “c1”: generate simulated data; “c2”: apply the
 sampling design and fit the multi-season occupancy model; “c3”:
-interpretation of results and figures  
+interpretation of results and figures.  
 \|——– 3-a-study2-Sim-Settings.R: Our simulation settings with initial
 number of secondary sampling occasions $J=10$ (equivalent to sampling
 months in our butterfly data). These settings are used in Study 2. The
-code also create folders to store simulation results, and the theme for
-ggplot.  
+code also create folders to store simulation results, figures, and the
+theme for ggplot.  
 \|——– 3-study2-sc0-… .R: Scripts to simulations with our Poisson
 sampling design ($\phi$ as in study 1-sc0). “c1”: creates the Poisson
 sampling design - array $G_{itj}$; “c2”: generate simulated data, apply
@@ -120,18 +127,20 @@ in BUGS language, generate simulated data, apply the Poisson sampling
 design and fit the multi-season occupancy model; “c3”: interpretation of
 results and figures  
 \|——– 10-study-simulation-comparison-Identifiability: Script used to
-interpret simulations’ output. Produce figures in the main text and SI  
+interpret the output of simulations. This script will produce figures
+shown in the main text and SI  
   
 
-\|— *Empirical analyses*  
-\|——– 11-study-… .R: scripts used to organize butterfly data, extract
-covariates, and create the occupancy dataset available in the folder
-“Processed_data”  
-\|——– 11-study-empirical-plot-occupancy-data.R: script used to plot
-butterfly data (Fig. 1)  
+<span style="color:blue"> \|— *Empirical analyses*  
+</span> \|——– 11-study-empirical-plot-occupancy-data.R: script used to
+plot butterfly data (Fig. 1) with occupancy already available in the
+folder “Processed_data” (raw data contain sensitive data. Access to raw
+data must be requested from Observatoire FAUNA,
+<https://observatoire-fauna.fr/>). The folder that will store figures
+will be created here.  
 \|——– 12-study-empirical-buffer-DataAnalysis-… .R: script used to
 analyze data at Bordeaux + 10 km buffer scale. One script per species -
-*P. icarus* and *L. dispar*  
+*P. icarus* and *L. dispar*.  
 \|——– 13-study-empirical-buffer-Predictions-Maps-… .R: script used to
 make predictions and map estimated distribution at buffer scale. One
 script per species  
@@ -199,11 +208,6 @@ scenario 1**
 \|———————- *scenario_phenology_spot*: correct data and simulation
 results for study 3 - scenario 2 incorporating phenology + observer
 preferences + observation spot - **study 3 - scenario 2**  
-  
-
-##### The folder with figures will be created while running the scripts.
-
-  
   
 
 ##### This paper was produced using the following software and associated packages:
