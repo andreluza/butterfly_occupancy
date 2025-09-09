@@ -7,7 +7,7 @@
 #  Butterfly data from the whole Nouvelle-Aquitaine region ,at the scale of 1x1 km (systematic grid). 
 
 #  Here we created intermediary files for creating occupancy (occurrence) data. The observations were done through points, linestrings and polygons (geometries did not follow the TypeGeoms so we merged/pooled all data for analyzes).
-#  We did some editing in the name of observers to minimize redundancy/ortographic errors, and also filtered data considering the years (2000-2023) and month of analysis (February to November). 
+#  We did some editing in the name of observers to minimize redundancy/orthographic errors, and also filtered data considering the years (2000-2023) and month of analysis (February to November). 
 
 # ------------------------------------------------------------------
 
@@ -17,6 +17,9 @@ source ("R/packages.R")
 
 # create a dir to receive the figures
 dir.create(here("figures", "empirical"))
+
+# folder to host processed data
+dir.create("Processed_data")
 
 # load spatial data (maille) -------------------------------
 cells_NAquitane <- st_read(dsn=here ("Data", "SpatialData","Maillage_1x1km"),

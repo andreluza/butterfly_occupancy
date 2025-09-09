@@ -29,13 +29,6 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.title = element_text(size=15))
 
 
-# -------------------------------------------------------------
-
-
-# create a dir to receive the figures
-
-dir.create(here("figures", "empirical"))
-
 
 # ---------------------------------------
 
