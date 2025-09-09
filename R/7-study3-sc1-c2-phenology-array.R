@@ -564,10 +564,10 @@ proj_Xp_Y <- grid.arrange (
 # arrange plot
 png(here("figures", "sims_present_paper", "Scenario_phenology.png"),
     width = 1000, height = 1000,units = "px")
-
-  grid.arrange (proj_Z,
-                proj_X,
-                proj_Xp_Y,ncol=1)
+  
+    grid.arrange (proj_Z,
+                  proj_X,
+                  proj_Xp_Y,ncol=1)
 
 dev.off()
 
