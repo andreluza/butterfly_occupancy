@@ -53,14 +53,14 @@ sites
 
 #### \|- *R*: R scripts 
 
-<span style="color:blue"> \|— *Simulations*  
-</span> \|——– R scripts are numbered sequentially, from 1 to 9. Thus,
-they should be run sequentially:  
-\|——– 1-study1-sc0-… .R: Scripts to reproduce original work of Doser &
-Stoudt 2024 = D&S, using Bernoulli sampling design. “c1”: generate
-simulated data; “c2”: apply the sampling design and fit the multi-season
-occupancy model; “c3”: interpretation of results and figures. Two
-separate folders that will host simulation results (path:
+<span style="color:blue"> \|— *Simulations*: R scripts used in
+simulations. They are numbered sequentially, from 1 to 9. Thus, they
+should be run respecting this sequence:  
+</span> \|——– 1-study1-sc0-… .R: Scripts to reproduce original work of
+Doser & Stoudt 2024 = D&S, using Bernoulli sampling design. “c1”:
+generate simulated data; “c2”: apply the sampling design and fit the
+multi-season occupancy model; “c3”: interpretation of results and
+figures. Two separate folders that will host simulation results (path:
 model_output/output_simulations) and figures are created here. Results
 and figures of each study-scenario will be stored in one specific
 folder.  
@@ -131,7 +131,9 @@ interpret the output of simulations. This script will produce figures
 shown in the main text and SI  
   
 
-<span style="color:blue"> \|— *Empirical analyses*  
+<span style="color:blue"> \|— *Empirical analyses*: R scripts used in
+the analyses of empirical data. They are numbered sequentially, from 11
+to 20. Thus, they should be run respecting this sequence:  
 </span> \|——– 11-study-empirical-plot-occupancy-data.R: script used to
 plot butterfly data (Fig. 1) with occupancy already available in the
 folder “Processed_data” (raw data contain sensitive data. Access to raw
@@ -169,27 +171,27 @@ including the Prior-Posterior overlap (Tables in Supporting Information
 F). Results shown only at Bordeaux + 10 km buffer scale  
   
 
-#### \|- *model_output*: results of the analyses of simulated and empirical data sets - these folders will be created while running scripts:
+#### \|- *model_output*: results of the analyses of simulated and empirical data sets - these folders and files (RData) will be created while running scripts:
 
-\|————— *empirical*: results of empirical data analysis using
-spOccupancy;  
-\|————— *output_simulations*: rerun D&S simulations based on butterfly
-data:  
+\|————— *empirical*: results of empirical data analysis (model output
+and predictions) using the $spOccupancy$ package;  
+\|————— *output_simulations*: simulation settings and results:  
 \|———————- *“Xp_itj.rda”*: observation covariate $v_{itj}$ (generated
 once)  
 \|———————- *“sim-settings.rda”*: simulation constants and MCMC
 settings  
-\|———————- *“sampling_design_Poisson”*: sampling design used in study 2,
-scenarios 0 to 3  
+\|———————- *“sampling_design_Poisson”*: sampling design used in study 2
+from scenario 0 to 3  
 \|———————- *“sampling_design_Poisson_phenology”*: sampling design used
-in study 3, scenario 1 (only phenology)  
+in study 3 - scenario 1 (only phenology + observer preferences)  
 \|———————- *“sampling_design_Poisson_phenology_spot”*: sampling design
-used in study 3, scenario 2 (phenology and observation spot)  
-\|———————- *sims_D&S*: correct data and simulation results for D&S
-original sims - **study 1-scenario 0**  
+used in study 3 - scenario 2 (phenology + observer preferences +
+observation spot)  
+\|———————- *sims_D&S*: correct data and simulation results as per Doser
+& Stoudt (2024) - **study 1-scenario 0**  
 \|———————- *smooth_sims_D&S*: correct data and simulation results for
-data generated under scenarios of high spatial autocorrelation - low
-spatial decay parameter $\phi$ - **study 1-scenario 1**  
+analysis of the scenario of high spatial autocorrelation - low spatial
+decay parameter $\phi$ - **study 1-scenario 1**  
 \|———————- *scenario_zero*: simulation results for study 2 - scenario
 0 - **study 2-scenario 0**  
 \|———————- *scenario_one*: simulation results for study 2 - scenario 1 -
@@ -210,7 +212,7 @@ results for study 3 - scenario 2 incorporating phenology + observer
 preferences + observation spot - **study 3 - scenario 2**  
   
 
-##### This paper was produced using the following software and associated packages:
+##### This article was produced using the following software and associated packages:
 
   
 
@@ -255,8 +257,8 @@ preferences + observation spot - **study 3 - scenario 2**
     ## [13] wk_0.9.4           fastmap_1.2.0      magic_1.6-0        rmarkdown_2.29    
     ## [17] nloptr_2.0.0       purrr_1.0.4        xfun_0.52          aplot_0.2.5       
     ## [21] jsonlite_2.0.0     parallel_4.5.1     R6_2.6.1           stringi_1.8.7     
-    ## [25] RColorBrewer_1.1-3 boot_1.3-31        Rcpp_1.0.14        iterators_1.0.14  
-    ## [29] Matrix_1.7-3       splines_4.5.1      timechange_0.3.0   tidyselect_1.2.1  
+    ## [25] RColorBrewer_1.1-3 boot_1.3-32        Rcpp_1.0.14        iterators_1.0.14  
+    ## [29] Matrix_1.7-4       splines_4.5.1      timechange_0.3.0   tidyselect_1.2.1  
     ## [33] rstudioapi_0.17.1  dichromat_2.0-0.1  yaml_2.3.10        doParallel_1.0.17 
     ## [37] codetools_0.2-19   lattice_0.22-5     tibble_3.3.0       plyr_1.8.9        
     ## [41] withr_3.0.2        evaluate_1.0.4     gridGraphics_0.5-1 proxy_0.4-27      

@@ -43,9 +43,8 @@ CNRS, Bordeaux INP, Talence, France
 #### |- *R*: R scripts\
 
 <span style="color:blue">
-|--- *Simulations*\
+|--- *Simulations*: R scripts used in simulations. They are numbered sequentially, from 1 to 9. Thus, they should be run respecting this sequence:\
 </span>
-|-------- R scripts are numbered sequentially, from 1 to 9. Thus, they should be run sequentially:\
 |-------- 1-study1-sc0-... .R: Scripts to reproduce original work of Doser & Stoudt 2024 = D&S, using Bernoulli sampling design. "c1": generate simulated data; "c2": apply the sampling design and fit the multi-season occupancy model; "c3": interpretation of results and figures. Two separate folders that will host simulation results (path: model_output/output_simulations) and figures are created here. Results and figures of each study-scenario will be stored in one specific folder.\
 |-------- 2-study1-sc1-... .R: Scripts to simulate data with higher spatial autocorrelation (lower values of $\phi$), under the original Bernoulli sampling design of D&S. "c1": generate simulated data; "c2": apply the sampling design and fit the multi-season occupancy model; "c3": interpretation of results and figures.\
 |-------- 3-a-study2-Sim-Settings.R: Our simulation settings with initial number of secondary sampling occasions $J=10$ (equivalent to sampling months in our butterfly data). These settings are used in Study 2. The code also create folders to store simulation results, figures, and the theme for ggplot.\
@@ -60,7 +59,7 @@ CNRS, Bordeaux INP, Talence, France
 \
 
 <span style="color:blue">
-|--- *Empirical analyses*\
+|--- *Empirical analyses*: R scripts used in the analyses of empirical data. They are numbered sequentially, from 11 to 20. Thus, they should be run respecting this sequence:\
 </span>
 |-------- 11-study-empirical-plot-occupancy-data.R: script used to plot butterfly data (Fig. 1) with occupancy already available in the folder "Processed_data" (raw data contain sensitive data. Access to raw data must be requested from Observatoire FAUNA, https://observatoire-fauna.fr/). The folder that will store figures will be created here.\
 |-------- 12-study-empirical-buffer-DataAnalysis-... .R: script used to analyze data at Bordeaux + 10 km buffer scale. One script per species -  *P. icarus* and *L. dispar*.\
@@ -74,16 +73,16 @@ CNRS, Bordeaux INP, Talence, France
 |-------- 20-study-empirical-buffer-Tables-PPO-remaining-species.R: script used to calculate summary statistics for regression coefficients, including the Prior-Posterior overlap (Tables in Supporting Information F). Results shown only at Bordeaux + 10 km buffer scale\
 \
 
-#### |- *model_output*: results of the analyses of simulated and empirical data sets - these folders will be created while running scripts:
-|--------------- *empirical*: results of empirical data analysis using spOccupancy; \
-|--------------- *output_simulations*: rerun D&S simulations based on butterfly data: \
+#### |- *model_output*: results of the analyses of simulated and empirical data sets - these folders and files (RData) will be created while running scripts:
+|--------------- *empirical*: results of empirical data analysis (model output and predictions) using the $spOccupancy$ package; \
+|--------------- *output_simulations*: simulation settings and results: \
 |---------------------- *"Xp_itj.rda"*: observation covariate $v_{itj}$ (generated once) \
 |---------------------- *"sim-settings.rda"*: simulation constants and MCMC settings \
-|---------------------- *"sampling_design_Poisson"*: sampling design used in study 2, scenarios 0 to 3\
-|---------------------- *"sampling_design_Poisson_phenology"*: sampling design used in study 3, scenario 1 (only phenology)\
-|---------------------- *"sampling_design_Poisson_phenology_spot"*: sampling design used in study 3, scenario 2 (phenology and observation spot) \
-|---------------------- *sims_D&S*: correct data and simulation results for D&S original sims - **study 1-scenario 0** \
-|---------------------- *smooth_sims_D&S*: correct data and simulation results for data generated under scenarios of high spatial autocorrelation - low spatial decay parameter $\phi$ - **study 1-scenario 1** \
+|---------------------- *"sampling_design_Poisson"*: sampling design used in study 2 from scenario 0 to 3\
+|---------------------- *"sampling_design_Poisson_phenology"*: sampling design used in study 3 - scenario 1 (only phenology + observer preferences)\
+|---------------------- *"sampling_design_Poisson_phenology_spot"*: sampling design used in study 3 - scenario 2 (phenology + observer preferences + observation spot) \
+|---------------------- *sims_D&S*: correct data and simulation results as per Doser & Stoudt (2024) - **study 1-scenario 0** \
+|---------------------- *smooth_sims_D&S*: correct data and simulation results for analysis of the scenario of high spatial autocorrelation - low spatial decay parameter $\phi$ - **study 1-scenario 1** \
 |---------------------- *scenario_zero*: simulation results for study 2 - scenario 0 - **study 2-scenario 0** \
 |---------------------- *scenario_one*: simulation results for study 2 - scenario 1 - **study 2-scenario 1** \
 |---------------------- *scenario_two*: simulation results for study 2 - scenario 2 - **study 2-scenario 2** \
@@ -93,8 +92,7 @@ CNRS, Bordeaux INP, Talence, France
 |---------------------- *scenario_phenology_spot*: correct data and simulation results for study 3 - scenario 2 incorporating phenology + observer preferences + observation spot - **study 3 - scenario 2** \
 \
 
-
-##### This paper was produced using the following software and associated packages:
+##### This article was produced using the following software and associated packages:
 
 \
 ```{r pressure, echo=F,warning=F,message=F}
