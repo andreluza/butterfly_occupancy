@@ -13,9 +13,11 @@ André L Luza $^1$, Didier Alard $^{1,2}$, Frederic Barraquand $^3$
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
 INRAE, Pessac, France\
-$^2$ Observatoire FAUNA, University of Bordeaux, Pessac, France\
+$^2$ US Fauna, University of Bordeaux, Pessac, France\
 $^3$ Institute of Mathematics of Bordeaux, University of Bordeaux,
 CNRS, Bordeaux INP, Talence, France
+
+Corresponding author: André L Luza, email: andre-luis.luza@u-bordeaux.fr
 
 # -----------------------------------------------
 
