@@ -47,45 +47,53 @@ scePhen <- new.env()
 scePhenSpot <- new.env()
 
 # load in the environments
-# # 
+
+# load output study 1 - 0
 load(file = here ("model_output", "output_simulations", "sims_D&S",
                   "sim-mixed-stPGOcc-results_1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
+# load output study 1 - 1
 load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
                   "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
 sceDSsmooth$study <- 1
 sceDSsmooth$sc <- 1
 
-
+# load output study 2 - 0
 load(file = here ("model_output", "output_simulations", "scenario_zero",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce0)
+
 sce0$study <- 2
 sce0$sc <- 0
 
+# load output study 2 - 1
 load(file = here ("model_output", "output_simulations", "scenario_one",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce1)
 
 sce1$study <- 2
 sce1$sc <- 1
 
+# load output study 2 - 2
 load(file = here ("model_output", "output_simulations", "scenario_two",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 sce2$study <- 2
 sce2$sc <- 2
 
+# load output study 2 - 3
 load(file = here ("model_output", "output_simulations", "scenario_three",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce3)
 sce3$study <- 2
 sce3$sc <- 3
 
+# load output study 3 - 1
 load(file = here ("model_output", "output_simulations", "scenario_phenology",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhen)
 
 scePhen$study <- 3
 scePhen$sc <- 1
 
+# load output study 3 - 2
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpot)
 
@@ -247,7 +255,7 @@ BVDec_phi <- lapply (list (sceDS,
                                 
                                 # estimated values
                                 BVDec_phi <- melt(i$theta.mean.samples[,2,]) %>% 
-                                  filter(is.na(value) !=T) %>%
+                                  #filter(is.na(value) !=T) %>%
                                   dplyr::rename("sims"= "X1",
                                                 "scenario" = "X2",
                                                 "value"="value") %>%
@@ -369,7 +377,7 @@ phi_decay <- ggplot(BVDec_phi %>%
             stat = "identity",
             linewidth=1,
             inherit.aes = F) +
-  
+
   facet_grid(time ~ spatial, 
              labeller = label_parsed) +
   
@@ -786,14 +794,13 @@ theta_data <- lapply (list (sceDS,
                             sce2,
                             sce3,
                             scePhen,
-                            scePhenSpot), function (i) {
+                            scePhenSpot
+                            ), function (i) {
 
                             # bind data
-                            theta_data <-  rbind (
-                                  
-                              data.frame (# occupancy intercept and coefficients
-                                    sim=melt(i$theta.mean.samples)[,1],
-                                    scenario=melt(i$theta.mean.samples)[,3],
+                            theta_data <- data.frame (# occupancy intercept and coefficients
+                                    sim=melt(i$theta.mean.samples[,1,])[,1],
+                                    scenario=melt(i$theta.mean.samples[,1,])[,2],
                                     "sigma_sq"=melt(i$theta.mean.samples[,1,])[,3],
                                     "phi"=melt(i$theta.mean.samples[,2,])[,3],
                                     "sigma_sqT"=melt(i$theta.mean.samples[,3,])[,3],
@@ -801,18 +808,42 @@ theta_data <- lapply (list (sceDS,
                                     
                                     study=i$study,
                                     sc=i$sc
-                                  )) %>%
-                                  
-                                  right_join(scenario.vals,by="scenario")
-                                
+                                  )
                               ;
                               
                               theta_data
                               
                             })
 
+# 
+test.sq <- melt(sceDSsmooth$theta.mean.samples[,1,]) 
+test.phi <- melt(sceDSsmooth$theta.mean.samples[,2,]) 
+
+test <- cbind (test.sq, "phi" = test.phi$value)
+test %>% 
+  mutate(scenario = X2) %>%
+  right_join(scenario.vals,by="scenario") %>%
+  ggplot(aes(x = phi.x, y = value)) +
+  geom_density_2d_filled(contour_var = "ndensity",bins=6)+
+  geom_point(alpha=0.1) + 
+  scale_fill_viridis_d(direction = -1,option="magma") +
+  facet_wrap( ~ scenario) +
+  #xlim(c(0,1))+
+  ylim(c(0,4))+
+  theme_bw()+
+  labs(y = bquote(""*hat(sigma^2)*""),
+       x = bquote(""*hat(phi)*""))+
+  geom_point (aes(x=phi.y,y=sigma.sq),col="gray80",shape=4)+
+  theme(axis.text.x = element_text(angle=45))
+
 # melt to a df
 theta_data <- do.call(rbind,theta_data)
+# mean(theta_data [which(theta_data$scenario == c(1,2,3,4)),"phi"])
+# mean(theta_data [which(theta_data$scenario == c(13,14,15,16)),"phi"])
+
+# join scenarios (labels)
+theta_data<-theta_data %>% 
+  right_join(scenario.vals,by="scenario")
 
 # Ensure time and spatial columns are character vectors
 theta_data$spatial <- as.character(theta_data$spatial)
@@ -825,6 +856,24 @@ theta_data$time <- factor(theta_data$time, levels = unique(theta_data$time))
 # adjust the true for the scenario 1-1 (lower values of phi)
 to_replace <- theta_data [which(theta_data$study == 1 & theta_data$sc == 1),"phi.y"]
 theta_data [which(theta_data$study == 1 & theta_data$sc == 1),"phi.y"] <- ifelse (to_replace == 15,1,0.5)
+
+# check
+theta_data %>%
+filter(scenario == c(13:16) &
+         is.na(phi.x)!=T ) %>%
+  ggplot(aes(x = phi.x, y = sigma_sq)) +
+  geom_density_2d_filled(contour_var = "ndensity",bins=6)+
+  geom_point(alpha=0.1) + 
+  scale_fill_viridis_d(direction = -1,option="magma") +
+  facet_grid(study+sc ~ spatial, 
+             labeller = label_parsed) +
+  #xlim(c(0,1))+
+  ylim(c(0,4))+
+  theme_bw()+
+  labs(y = bquote(""*hat(sigma^2)*""),
+       x = bquote(""*hat(phi)*""))+
+  geom_point (aes(x=phi.y,y=sigma.sq),col="gray80",shape=4)+
+  theme(axis.text.x = element_text(angle=45))
 
 # density
 density_phi_sigma <- theta_data %>%
@@ -1115,7 +1164,6 @@ density_betas1 <- psi_p_data %>%
 png (here("figures", "Scenario-Comparisons","density_betas_sc1-4.png"),
      width =18, height = 18,units = "cm",res=150)
 
-
   density_betas1
 
 dev.off()
@@ -1329,8 +1377,8 @@ library(MASS)
 
 # all random effects high
 test_sc2 <- theta_data %>%
-  #filter (is.na(alpha0)!=T) %>%
-  filter (study == 1 & sc == 0 & scenario == 2) 
+  filter (is.na(sigma_sq)!=T) %>%
+  filter (study == 2 & sc == 1 & scenario == 1) 
 den3d <- kde2d((test_sc2$sigma_sq), 
                (test_sc2$phi.x))
 
