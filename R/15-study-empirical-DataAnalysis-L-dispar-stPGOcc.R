@@ -116,6 +116,26 @@ table(rowSums(base_table_years) == 0)/sum(table(rowSums(base_table_years) == 0))
 # Coordinates
 coords <- cell_centroid_df[,c("X","Y")][which(missing_sites==F),]
 
+# check coords
+(a <- ggplot() +
+    geom_sf(fill="white")+
+    geom_sf(data= cells_NAquitane)+
+    geom_sf(data = cbind (cells_NAquitane,
+                          long = cell_centroid_df[,1]),
+            aes(fill=long,col=long))+
+    scale_fill_viridis_c(na.value = "red")+
+    scale_colour_viridis_c(na.value = "red"))
+
+# check coords
+(a <- ggplot() +
+    geom_sf(fill="white")+
+    geom_sf(data= cells_NAquitane)+
+    geom_sf(data = cbind (cells_NAquitane,
+                          lat = cell_centroid_df[,2]),
+            aes(fill=lat,col=lat))+
+    scale_fill_viridis_c(na.value = "red")+
+    scale_colour_viridis_c(na.value = "red"))
+
 # Pack all data into lists
 occ.covs <- list(int = X[which(missing_sites==F), , 1],
                  lat = X[which(missing_sites==F), , 2],
