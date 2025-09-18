@@ -4,16 +4,17 @@ heterogeneous datasets
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-André L Luza $^1$, Didier Alard $^{1,2}$, Frederic Barraquand $^3$
+André L Luza $^1$, Didier Alard $^{1,2}$, Frédéric Barraquand $^3$
 
 $^1$ UMR Biodiversité Gènes et Communautés, University of Bordeaux,
 INRAE, Pessac, France  
 $^2$ US Fauna, University of Bordeaux, Pessac, France  
 $^3$ Institute of Mathematics of Bordeaux, University of Bordeaux, CNRS,
-Bordeaux INP, Talence, France
+Bordeaux INP, Talence, France  
 
-Corresponding author: André L Luza, email:
-<andre-luis.luza@u-bordeaux.fr>
+Correspondence to:  
+André L Luza: <andre-luis.luza@u-bordeaux.fr>  
+Frédéric Barraquand: <frederic.barraquand@u-bordeaux.fr>  
 
 # ———————————————–
 
