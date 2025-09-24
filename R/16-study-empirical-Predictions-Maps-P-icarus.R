@@ -447,16 +447,16 @@ dev.off()
 # plot and save results
 png (here ("figures", "empirical","estimates_missing_cells_Picarus_Aquitaine.png"),width = 12,height = 20,units = "cm",res=400)
 
-grid.arrange(# weak prior
-  res_plots[[1]]$p1_missing+ggtitle("A"),
-  res_plots[[1]]$p2_missing,
-  
-  # 30 neightbors
-  res_plots[[2]]$p1_missing+ggtitle("B"),
-  res_plots[[2]]$p2_missing,
-  
-  nrow=2,ncol=2
-)
+  grid.arrange(# weak prior
+    res_plots[[1]]$p1_missing+ggtitle("A"),
+    res_plots[[1]]$p2_missing,
+    
+    # 30 neightbors
+    res_plots[[2]]$p1_missing+ggtitle("B"),
+    res_plots[[2]]$p2_missing,
+    
+    nrow=2,ncol=2
+  )
 
 dev.off()
 

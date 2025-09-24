@@ -50,7 +50,7 @@ scePhenSpot <- new.env()
 
 # load output study 1 - 0
 load(file = here ("model_output", "output_simulations", "sims_D&S",
-                  "sim-mixed-stPGOcc-results_1600.rda"),sceDS)
+                  "sim-mixed-stPGOcc-results-1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
@@ -585,7 +585,7 @@ fig_error_sigma2_T <- ggplot(BVDec_sigma2_T%>%
   # color for study
   scale_fill_manual(values=c("MSE"="gray40","Bias"="gray60", "Variance"="gray20"))+
   scale_colour_manual(values=c("MSE"="gray80","Bias"="gray60", "Variance"="black"))+
-  ggtitle(parse(text = as.character(expression(sigma^2[T]))))+
+  ggtitle(parse(text = as.character(expression(sigma[T]^2))))+
   my_theme+
   theme(#axis.text.x = element_blank(),
     legend.position = "none",
@@ -859,7 +859,7 @@ theta_data [which(theta_data$study == 1 & theta_data$sc == 1),"phi.y"] <- ifelse
 
 # check
 theta_data %>%
-filter(scenario == c(13:16) &
+filter(scenario == c(1:4) &
          is.na(phi.x)!=T ) %>%
   ggplot(aes(x = phi.x, y = sigma_sq)) +
   geom_density_2d_filled(contour_var = "ndensity",bins=6)+
