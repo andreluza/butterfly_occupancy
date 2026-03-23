@@ -1,0 +1,171 @@
+
+# ------------------------------------------------------------------------
+
+# Simulation study 1 - scenario 0: replication of D&S Simulations
+# Produce output/figures used in the main text and SI
+
+# Mis-specification assessment
+
+# ------------------------------------------------------------------------
+
+rm(list = ls())
+library(spOccupancy)
+require(here)
+require(ggplot2)
+require(dplyr)
+require(reshape)
+require(gridExtra)
+require(tidyr)
+
+# ggplot theme
+my_theme <- theme(legend.position = 'bottom', 
+                  strip.text = element_text(size=12),
+                  strip.text.y = element_text(color = 'black'),
+                  strip.text.x = element_text(color = 'black'), 
+                  text = element_text(family="LM Roman 10"),
+                  panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
+                  axis.text.y = element_text(size = 10),
+                  axis.title = element_text(size=15))
+
+
+# create a dir to receive the figures ----------------------
+dir.create("model_output_mis-specification/figures")
+
+# Load the data sets
+load(file = here ("model_output_mis-specification", 
+                  "output_simulations", "sims_D&S", "sim-data-correct.rda"))
+
+# load model output - merged because there were breaks during the process ( see code study1-sc0-c3-Doser&Stoudtmain-bind_output.R )
+load(file = here ("model_output_mis-specification", "output_simulations", "sims_D&S",
+                  "sim-mixed-stPGOcc-results-SimSce320.rda"))
+
+# Generate the data ------------------------------------------
+# Number of data sets for each scenario
+n.sims <- 20
+
+# Spatial locations
+J.x <- 30
+J.y <- 40
+J <- J.x * J.y
+
+# Number of years
+n.time <- 10
+
+# Five replicates
+n.rep <- matrix(5, J, n.time)
+
+# Occurrence coefficient -----------------
+# Generate a single covariate
+beta <- c(0, 0.5)
+p.occ <- length(beta)
+
+# Detection coefficient ---------------
+# A single covariate on detection
+alpha <- c(0, -0.5)
+# Spatial parameters ------------------
+sp <- TRUE
+# Assume an exponential correlation model
+cov.model <- 'exponential'
+# Spatial variances
+sigma.sq.vals <- c(0.3, 1.5)
+# Spatial decay
+# NOTE: simTOcc generates data across a unit square. When using an exponential
+#       correlation function, the effective spatial range (distance at which
+#       correlation between sites drops to 0.05) is 3 / phi. Thus, the following
+#       values correspond to effective spatial ranges of 20% and 80% of the
+#       study region.
+phi.vals <- c(3 / .2, 3 / .8)
+# Temporal parameters -----------------
+rho.vals <- c(0.5, 0.9)
+sigma.sq.t.vals <- c(0.3, 1.5)
+# Total number of simulation scenarios
+n.scenarios <- length(sigma.sq.vals) * length(phi.vals) *
+  length(rho.vals) * length(sigma.sq.t.vals)
+# Different combinations of all the four parameters that vary
+scenario.vals <- expand.grid(sigma.sq = sigma.sq.vals, phi = phi.vals,
+                             rho = rho.vals, sigma.sq.t = sigma.sq.t.vals)
+
+# ----------------------------------------------------
+
+# SUMMARIZE AS DOSER & STOUDT
+plot.df <- as.data.frame.table(psi.true)
+colnames(plot.df) <- c('site', 'year', 'sim', 'scenario', 'val')
+psi.mean.df <- as.data.frame.table(psi.mean.samples)
+colnames(psi.mean.df) <- c('site', 'year', 'sim', 'scenario', 'val')
+plot.df$est <- psi.mean.df$val
+plot.df$diff <- plot.df$val - plot.df$est
+
+# remove after all runs
+plot.df <- plot.df %>%
+  filter(is.na(val) !=T)
+
+# data frame with average
+avg.df <- plot.df %>%
+ group_by(scenario, sim) %>%
+ arrange(val, .by_group = TRUE) %>%
+ mutate(fake.id = 1:n()) %>%
+ ungroup() %>%
+ group_by(scenario, fake.id) %>%
+ summarize(val.avg = mean(val),
+	    est.avg = mean(est)) %>%
+ ungroup()
+
+# Summary plot for single-visit logit
+avg.df$scenario <- as.numeric(avg.df$scenario)
+avg.df$spatial <- ifelse(avg.df$scenario %in% c(1, 5, 9, 13), 'A', 
+                         ifelse(avg.df$scenario %in% c(2, 6, 10, 14), 'B', 
+                                ifelse(avg.df$scenario %in% c(3, 7, 11, 15), 'C', 'D')))
+avg.df$time <- ifelse(avg.df$scenario %in% c(1, 2, 3, 4), 'A', 
+                      ifelse(avg.df$scenario %in% c(5, 6, 7, 8), 'B', 
+                             ifelse(avg.df$scenario %in% c(9, 10, 11, 12), 'C', 'D')))
+spatial.labs <- c(expression(paste(sigma, " "^2, " Low, ", phi, "  High")), 
+                  expression(paste(sigma, " "^2, " High, ", phi, "  High")),
+                  expression(paste(sigma, " "^2, " Low, ", phi, "  Low")),
+                  expression(paste(sigma, " "^2, " High, ", phi, "  Low")))
+avg.df$spatial <- factor(avg.df$spatial, levels = c('A', 'B', 'C', 'D'), 
+                         labels = spatial.labs)
+time.labs <- c(expression(paste(sigma, " "[T]^2, " Low, ", rho, "  Low")), 
+               expression(paste(sigma, " "[T]^2, " Low, ", rho, "  High")), 
+               expression(paste(sigma, " "[T]^2, " High, ", rho, "  Low")), 
+               expression(paste(sigma, " "[T]^2, " High, ", rho, "  High"))) 
+avg.df$time <- factor(avg.df$time, levels = c('A', 'B', 'C', 'D'), 
+                      labels = time.labs)
+plot.df$scenario <- as.numeric(plot.df$scenario)
+plot.df$spatial <- ifelse(plot.df$scenario %in% c(1, 5, 9, 13), 'A', 
+                          ifelse(plot.df$scenario %in% c(2, 6, 10, 14), 'B', 
+                                 ifelse(plot.df$scenario %in% c(3, 7, 11, 15), 'C', 'D')))
+plot.df$time <- ifelse(plot.df$scenario %in% c(1, 2, 3, 4), 'A', 
+                       ifelse(plot.df$scenario %in% c(5, 6, 7, 8), 'B', 
+                              ifelse(plot.df$scenario %in% c(9, 10, 11, 12), 'C', 'D')))
+plot.df$spatial <- factor(plot.df$spatial, levels = c('A', 'B', 'C', 'D'), 
+                          labels = spatial.labs)
+plot.df$time <- factor(plot.df$time, levels = c('A', 'B', 'C', 'D'), 
+                       labels = time.labs)
+
+# summary plot
+# Figure 3 of associated manuscript. 
+fig.3.plot <- plot.df %>%
+ ggplot() +
+   theme_light(base_size = 16) +
+   facet_grid(time ~ spatial, 
+ 	     labeller = label_parsed) +
+  #geom_point(aes(x = val, y = est, group = sim),alpha=0.01,col="gray90")+
+  geom_smooth(aes(x = val, y = est, group = sim), col = 'gray', alpha = 0.1, se = FALSE, 
+ 	      lineend = 'round', lwd = 0.25) +
+   geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2) +
+   geom_smooth(data = avg.df, aes(x = val.avg, y = est.avg), se = FALSE, col = 'black', lineend = 'round', 
+ 	      lwd = 0.5) + 
+   labs(x = 'True Occupancy Probability', y = 'Estimated Occupancy Probability') + 
+   my_theme
+
+# save
+png(here("model_output_mis-specification","figures", "Figure-3-sc1-st0-probit.png"),
+    width = 600, height = 600,units = "px")
+    
+  fig.3.plot
+
+dev.off()
+
+# end
