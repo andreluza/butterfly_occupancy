@@ -49,29 +49,29 @@ scePhenSpotRev <- new.env()
 
 # load in the environments
 load(file = here ("model_output", "output_simulations", "sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDS)
+                  "sim-mixed-stPGOcc-results-1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
 # 
 load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDSsmooth)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
 sceDSsmooth$study <- 1
 sceDSsmooth$sc <- 1
 
 
 load(file = here ("model_output", "output_simulations", "scenario_zero",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce0)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce0)
 sce0$study <- 2
 sce0$sc <- 0
 
 load(file = here ("model_output", "output_simulations", "scenario_one",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce1)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce1)
 sce1$study <- 2
 sce1$sc <- 1
 
 load(file = here ("model_output", "output_simulations", "scenario_two",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce2)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 sce2$study <- 2
 sce2$sc <- 2
 
@@ -93,7 +93,7 @@ scePhenSpot$study <- 3
 scePhenSpot$sc <- 2
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_review",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),scePhenSpotRev)
+                  "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpotRev)
 
 scePhenSpotRev$study <- 3
 scePhenSpotRev$sc <- 3
@@ -1230,7 +1230,7 @@ png (here("figures", "Scenario-Comparisons","density_alphas_sc1-4.png"),
 
 dev.off()
 
-# other sncearios
+# other scenarios
 density_alphas2 <- psi_p_data %>%
   filter(scenario == c(13:16) &
            is.na(alpha0)!=T ) %>%
@@ -1343,7 +1343,6 @@ png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc1-4.png"),
   density_alphas
 
 dev.off()
-
 
 # alpha 1 and alpha2 ---- high temporal autocorrelation
 # other sncearios

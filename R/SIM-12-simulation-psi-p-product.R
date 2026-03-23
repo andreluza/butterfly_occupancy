@@ -3,10 +3,7 @@
 
 #  COMPARISON OF STUDIES, SCENARIOS AND SUB SCENARIOS
 #  
-#  Code to produce most figures used in the main text
-
-# TODO --- check if it is better to use the product or the realization of this product Bernoulli (psi * p)
-
+#  Code used to evaluate the product of psi_it * p_it
 
 # -------------------------------------------------------
 
@@ -40,7 +37,7 @@ scePhenSpotRev <- new.env()
 
 # load in the environments
 load(file = here ("model_output", "output_simulations", "sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDS)
+                  "sim-mixed-stPGOcc-results-1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
@@ -210,7 +207,7 @@ gc()
 
 # Scenario 1 - 1 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDSsmooth)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
 sceDSsmooth$study <- 1
 sceDSsmooth$sc <- 1
 
@@ -352,7 +349,7 @@ load(here("model_output", "output_simulations", "sim-settings.RData"))
 load (file=here ("model_output", "output_simulations", "Xp_itj.rda"))
 
 load(file = here ("model_output", "output_simulations", "scenario_zero",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce0)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce0)
 sce0$study <- 2
 sce0$sc <- 0
 
@@ -499,7 +496,7 @@ gc()
 load(here("model_output", "output_simulations", "sim-settings.RData"))
 
 load(file = here ("model_output", "output_simulations", "scenario_one",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce1)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce1)
 
 sce1$study <- 2
 sce1$sc <- 1
@@ -646,10 +643,7 @@ gc()
 
 # Scenario 2 - 2 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "scenario_two",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce2)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_two",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce2)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 sce2$study <- 2
 sce2$sc <- 2
 
@@ -985,9 +979,6 @@ gc()
 # Scenario 3 - 1 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "scenario_phenology",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhen)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhen)
 
 scePhen$study <- 3
 scePhen$sc <- 1
@@ -1164,9 +1155,6 @@ gc()
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpot)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhenSpot)
 
 scePhenSpot$study <- 3
 scePhenSpot$sc <- 2
@@ -1336,10 +1324,7 @@ gc()
 # Scenario 3 - 2 ------------------------------------------
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_review",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),scePhenSpotRev)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhenSpot)
+                  "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpotRev)
 
 scePhenSpotRev$study <- 3
 scePhenSpotRev$sc <- 3

@@ -25,7 +25,7 @@ require(tidyr)
 #rm(list=setdiff(ls(), c("psi.true")))
 
 # create a folder to host the figures
-dir.create(here ("figures", "TuningD&S_sims","ScenarioSpot-NGPP-15"))
+dir.create(here ("figures", "sims_present_paper","ScenarioSpot-NGPP-15"))
 
 # Load the data sets
 load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-correct.rda"))
@@ -195,7 +195,7 @@ fig.3.plot <- plot.df %>%
    my_theme
 
 # save
-png(here("figures","TuningD&S_sims", "ScenarioSpot-NGPP-15", "Figure-3-st3-sc2.png"),
+png(here("figures","sims_present_paper", "ScenarioSpot-NGPP-15", "Figure-3-st3-sc2.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   fig.3.plot
@@ -268,7 +268,7 @@ levels ( dat.plot$paramLab ) <- c(expression(paste(sigma, " "^2)),
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 1])
 
-png(here("figures","TuningD&S_sims", "ScenarioSpot-NGPP-15", "Density_sigma2-st3-sc2.png"),
+png(here("figures","sims_present_paper", "ScenarioSpot-NGPP-15", "Density_sigma2-st3-sc2.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 # plot
@@ -291,7 +291,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 2])
 
-png(here("figures","TuningD&S_sims", "ScenarioSpot-NGPP-15", "Density_phi-st3-sc2.png"),
+png(here("figures","sims_present_paper", "ScenarioSpot-NGPP-15", "Density_phi-st3-sc2.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
@@ -312,7 +312,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 3])
 
-png(here("figures","TuningD&S_sims", "ScenarioSpot-NGPP-15", "Density_sigma2_t-st3-sc2.png"),
+png(here("figures","sims_present_paper", "ScenarioSpot-NGPP-15", "Density_sigma2_t-st3-sc2.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
@@ -333,7 +333,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 4])
 
-png(here("figures","TuningD&S_sims", "ScenarioSpot-NGPP-15", "Density_rho-st3-sc2.png"),
+png(here("figures","sims_present_paper", "ScenarioSpot-NGPP-15", "Density_rho-st3-sc2.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
