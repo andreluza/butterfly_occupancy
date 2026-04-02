@@ -29,7 +29,7 @@ find_closest_values <- function(values, target, n = 50) {
 
 
 
-library(sampling)
+# library(sampling)
 sample_brewer <- function(x, size, prob, replace = FALSE, keep = FALSE){
   pik <- prob / sum(prob) * size
   s <- UPbrewer(pik)
