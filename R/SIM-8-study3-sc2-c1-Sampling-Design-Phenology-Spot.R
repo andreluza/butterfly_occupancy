@@ -122,6 +122,10 @@ data.frame (table(G_itj[,1,7])) %>%
 
 # check
 table(rowSums(D_it) == apply(G_itj>0,1,sum,na.rm=T)) 
+# check
+table(rowSums(D_it) == apply(G_itj>0,1,sum,na.rm=T))
+sum(G_itj>0)
+prod(dim(G_itj))
 
 # spatial gaps?
 range(rowSums(D_it>0)) # no

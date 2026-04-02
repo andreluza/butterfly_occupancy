@@ -17,10 +17,6 @@ rm(list=ls())
 source ("R/packages.R")
 source ("R/functions.R")
 
-
-# directory to store figures
-dir.create(here ("figures", "sims_present_paper"))
-
 # load simulation settings
 load(here("model_output", "output_simulations", "sim-settings.RData"))
 
@@ -33,7 +29,7 @@ require(dplyr)
 
 # set lambda
 J<-10
-lambda<-1+0.1 # average sampling intensity
+lambda<-1+0.1
 
 # our design
 p1 <- data.frame (p_SO = dpois(seq(0,J,1), lambda=lambda),
@@ -51,7 +47,7 @@ p1 <- data.frame (p_SO = dpois(seq(0,J,1), lambda=lambda),
   annotate(geom="text",x=4,y=0.3,label = bquote(""*lambda*"=1.1"),size=8)
 
 # save
-png(here ("figures", "sims_present_paper",  "poisson_data_design.png"))
+png(here ("figures","TuningD&S_sims",  "poisson_data_design.png"))
 p1
 dev.off()
 
@@ -64,6 +60,7 @@ for (t in 1:n.time)  {
   D_it[,t] <- rpois(n=I, lambda=1.1) # sites in D&S could receive either 1 or 2 visits (p_J = 1 + 0,1)
   
 }
+range(D_it)
 
 # sample : distribute these D_it surveys across J secondary occasions
 # create an array of sites, years, secondary occasions
@@ -120,6 +117,8 @@ data.frame (table(G_itj[,1,1])) %>%
 
 # check
 table(rowSums(D_it) == apply(G_itj>0,1,sum,na.rm=T))
+sum(G_itj>0)
+prod(dim(G_itj))
 
 # plot
 dist_surveys_sites <-  reshape::melt(D_it) %>%
