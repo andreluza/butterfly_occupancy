@@ -487,6 +487,8 @@ dim(spp_proj_table[which(apply (spp_proj_table,1,sum)==1),]) # 43/504
 dim(spp_proj_table[which(apply (spp_proj_table,1,sum)==2),]) # 36/504
 # multispecies
 dim(spp_proj_table[which(apply (spp_proj_table,1,sum)>2),]) # 425/504
+# multispecies
+dim(spp_proj_table[which(apply (spp_proj_table,1,sum)>=6),]) # 374/504
 
 # View
 View(spp_proj_table[which(apply (spp_proj_table,1,sum)==1),] %>%
