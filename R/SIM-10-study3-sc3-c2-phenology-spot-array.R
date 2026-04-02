@@ -2,8 +2,7 @@
 # -------------------------------------------------------
 
 # Simulation study 3 - scenario 3
-#  Reviewer asked for a scenario with less sparse data
-
+# amount of data restablished
 # -------------------------------------------------------
 
 # Scenario phenology & observer preferences for mid season + Observation spot
@@ -17,7 +16,7 @@
 ## Study 3
 # SCENARIO 1 - SCENARIO 0 + SCENARIO 1 + SCENARIO 2 + SCENARIO 3 + observer preferences for mid season & J=10
 # SCENARIO 2 - SCENARIO 0 + SCENARIO 1 + SCENARIO 2 + SCENARIO 3 + phenology & observer preferences for mid season  & J=10 + spot (25% sites sampled)
-# SCENARIO 3 - SCENARIO 0 + SCENARIO 1 + SCENARIO 2 + SCENARIO 3 + phenology & observer preferences for mid season  & J=10 + spot (less sparse data with 50% of the sites being sampled)
+# SCENARIO 3 - SCENARIO 0 + SCENARIO 1 + SCENARIO 2 + SCENARIO 3 + phenology & observer preferences for mid season  & J=10 + spot (amount of data restablished)
 
 # ---------------------------------------------------------------
 
@@ -43,7 +42,7 @@ load (file=here ("model_output",
 # create directory 
 dir.create (here ("model_output", 
       "output_simulations", 
-      "scenario_phenology_spot_review"))
+      "scenario_phenology_spot_2"))
       
 # Detection coefficient ---------------
 # A single covariate on detection
@@ -92,6 +91,7 @@ for (s in 1:n.sims) {
   for (sc in 1:n.scenarios) {
     print(paste("Currently on scenario ", sc, " out of ", n.scenarios, sep = ''))
     set.seed(my.seeds[s])
+    
     # index
     curr.indx <- (s - 1) * n.scenarios + sc
     dat <- dat.full[[curr.indx]]
@@ -281,7 +281,7 @@ for (s in 1:n.sims) {
          # true
          psi.true, beta, scenario.vals, file = here ("model_output", 
                                                      "output_simulations", 
-                                                     "scenario_phenology_spot_review",
+                                                     "scenario_phenology_spot_2",
                                                      paste0("sim-mixed-stPGOcc-results_",curr.indx,".rda"))
     )
     
@@ -290,7 +290,7 @@ for (s in 1:n.sims) {
     # remove three output before the present output
     unlink (here ("model_output", 
                   "output_simulations", 
-                  "scenario_phenology_spot_review",
+                  "scenario_phenology_spot_2",
                   paste0("sim-mixed-stPGOcc-results_",curr.indx-3,".rda")),recursive=F)
     
     
@@ -573,7 +573,7 @@ proj_Xp_Y <- grid.arrange (
 
 
 # arrange plot
-png(here("figures", "TuningD&S_sims", "Scenario_phenology_spot_review.png"),
+png(here("figures", "TuningD&S_sims", "scenario_phenology_spot_2.png"),
     width = 1000, height = 1000,units = "px")
   
   grid.arrange (proj_Z,

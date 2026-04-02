@@ -3,7 +3,7 @@
 
 # Simulation study 3 - scenario 3 with phenology & observer preferences for midseason & observation spot effect (less sparse data)
 
-# Produce output/figures used in the review responses (perhaps SI?)
+# re-establishing the amount of data
 
 # -------------------------------------------------------
 
@@ -17,14 +17,14 @@ require(gridExtra)
 require(tidyr)
 
 # create a folder to host the figures
-dir.create(here ("figures", "sims_present_paper","ScenarioSpotRev"))
+dir.create(here ("figures", "TuningD&S_sims","ScenarioSpot2"))
 
 # Load the data sets
 load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-correct.rda"))
 
 # load model output
-load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_review",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"))
+load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_2",
+                  "sim-mixed-stPGOcc-results_1600.rda"))
 
 # ggplot theme -------------------------------------
 my_theme <- theme(legend.position = 'bottom', 
@@ -60,7 +60,7 @@ p.occ <- length(beta)
 
 # Detection coefficient ---------------
 # A single covariate on detection
-alpha <- c(0, -0.5)
+alpha <- c(0, -0.5, -0.5)
 # Spatial parameters ------------------
 sp <- TRUE
 # Assume an exponential correlation model
@@ -186,7 +186,7 @@ fig.3.plot <- plot.df %>%
    my_theme
 
 # save
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Figure-3-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Figure-3-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   fig.3.plot
@@ -257,7 +257,7 @@ levels ( dat.plot$paramLab ) <- c(expression(paste(sigma, " "^2)),
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 1])
 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Density_sigma2-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Density_sigma2-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 # plot
@@ -280,7 +280,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 2])
 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Density_phi-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Density_phi-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
@@ -301,7 +301,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 3])
 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Density_sigma2_t-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Density_sigma2_t-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
@@ -322,7 +322,7 @@ dev.off()
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 4])
 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Density_rho-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Density_rho-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 dat.plot %>%
@@ -468,7 +468,7 @@ bias.rho<-dat.plot %>%
 
 # arrange plots to save
 # sigma sq
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_sigma-sq-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "biasVatT_sigma-sq-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   bias.sigma.sq
@@ -476,7 +476,7 @@ png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_sigma-sq-s
 dev.off()
 
 # phi
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_phi-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "biasVatT_phi-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   bias.phi
@@ -484,7 +484,7 @@ png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_phi-st3-sc
 dev.off()
 
 # rho
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_rho-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "biasVatT_rho-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   bias.rho
@@ -492,7 +492,7 @@ png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_rho-st3-sc
 dev.off()
 
 # sigma sq T
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "biasVatT_sigma-sqT-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "biasVatT_sigma-sqT-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   bias.sigma.sqT
@@ -639,7 +639,7 @@ corr.w<-data.frame (corr=output_array_sp[3,4,]) %>%
   my_theme
 
 # arrange plot
-png(here ("figures","sims_present_paper", "ScenarioSpotRev", "panel_sp-st3-sc3.png"),
+png(here ("figures","TuningD&S_sims", "ScenarioSpot2", "panel_sp-st3-sc3.png"),
     width = 1700, height = 1300, units = "px")
 
 grid.arrange(
@@ -740,7 +740,7 @@ fig.3.plot.w <- df.spatial%>%
   my_theme
 
 # plot 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Figure-3-spatial-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Figure-3-spatial-st3-sc3.png"),
     width = 600, height = 600,units = "px")
 
   fig.3.plot.w
@@ -862,7 +862,7 @@ fig.3.plot.eta <- df.temporal%>%
        x=bquote("True temporal random effect "*(eta[t])*""))+
   my_theme
 
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "Figure-3-temporal-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "Figure-3-temporal-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 fig.3.plot.eta
@@ -917,7 +917,7 @@ density.psi.p <- psi_p_data %>%
   my_theme
                          
 # save
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "density.psi.p-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "density.psi.p-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   density.psi.p
@@ -940,7 +940,7 @@ dev.off()
 #library(plotly)
 #plot_surface1<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% add_surface()
 #
-#kaleido(plot_surface1, here("figures","sims_present_paper", "ScenarioSpotRev", #"surface_sce1.png"))
+#kaleido(plot_surface1, here("figures","TuningD&S_sims", "ScenarioSpot2", #"surface_sce1.png"))
 #
 #
 #test_sc16 <- psi_p_data %>%
@@ -989,7 +989,7 @@ density.psi.p.bars <- psi_p_data %>%
   my_theme
 
 # save
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "density.psi.p.bars-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "density.psi.p.bars-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
   density.psi.p.bars
@@ -997,7 +997,7 @@ png(here("figures","sims_present_paper", "ScenarioSpotRev", "density.psi.p.bars-
 dev.off()
 
 # relationship between intercept and regression coef
-png(here("figures","sims_present_paper", "ScenarioSpotRev", "rel.beta0.beta1-st3-sc3.png"),
+png(here("figures","TuningD&S_sims", "ScenarioSpot2", "rel.beta0.beta1-st3-sc3.png"),
     width = 20, height = 20, units = "cm", res=200)
 
 grid.arrange (

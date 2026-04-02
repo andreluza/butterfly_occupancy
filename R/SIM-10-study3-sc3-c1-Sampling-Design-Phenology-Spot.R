@@ -1,17 +1,10 @@
 # ---------------------------------------------------------------
 
-# The first reviewer required the analysis of less sparse data.
+# 3 -3 restablishing the amount of data
 
-# Sampling design with phenology + observer sampling effects + observation spot (cluster of observations) for simulations (with J=10)
+# Since the amount of data declined from 3.1 to 3.2, we need to restablish it
 
-# the issue about the sample function applies here (see https://larryzhangnz.netlify.app/post/note-on-sample/ ; https://freerangestats.info/blog/2024/08/31/ppswor). As no established technique is available up to this date, we produced a noisy gaussian curve and imposed a threshold on it to mimic phenology + observer sampling effects on the observation data.
-
-# Nota bene: the key to the phenology + observer sampling effects that I propose is that you first render the phenology of the year/site a bit noisy (some times you will select values outside the center ones, though not often), through a vector of "seasonal intensity of sampling", and then you just take the indices corresponding to the k largest values of that sample, where k is the number of values that you want to sample.
-# Here k is the value that you randomly draw with D_it, which follows the Poisson distribution. 
-
-# We implemented a similar reasoning of phenology + observer sampling effects to a spatial spot effect.
-
-# Here we work with 50% sites with data (over all years)
+# Thus, we will spread surveys using Poisson distribution with \lambda=1.1 * (I/(I*0.25)), so that we will have 4 times more surveys in the spot to have similar amount of data between 3 - 1 and 3 - 3
 
 # ---------------------------------------------------------------
 
@@ -47,17 +40,18 @@ for (t in 1:n.time)  {
   p_T <- seasonal_effect(j=1:I,m=I/2,s=I/2)
     
   # thresholding q to select 50% of the sampled sites
-  selected_sites<-order(p_T$q,decreasing=TRUE)[1:(I*0.5)]
+  selected_sites<-order(p_T$q,decreasing=TRUE)[1:(I*0.25)]
   unsampled_sites <- seq(1,I)[which(seq(1,I) %in% selected_sites == F)]
     
   # set 0 if the site is not among the sampled sites in each year
-  lambda_vector <- rep(1.1,I) # value of lambda for sampled sites # sites in D&S could receive 1 to J visits (p_J = 1 + 0,1)
+  lambda_vector <- rep(1.1 * (I/(I*0.25)), I) # value of lambda for sampled sites # sites in D&S could receive 1 to J visits (p_J = 1 + 0,1)
   lambda_vector [unsampled_sites] <- 0 # value of lambda for unsampled sites
   
   # distributing visits across the sampled sites
   D_it[,t] <- rpois(n=I, lambda=lambda_vector) 
   
 }
+sum(D_it)
 
 # Now we can define which sites were sampled using the phenology function
 # illustrate the effect (4 runs)
@@ -70,7 +64,6 @@ lapply (seq(1,4), function (i){
   
   
 })
-
 
 # then we include the seasonal effect -----------------------------------
 
@@ -124,9 +117,11 @@ data.frame (table(G_itj[,1,7])) %>%
 
 # check
 table(rowSums(D_it) == apply(G_itj>0,1,sum,na.rm=T)) 
+sum(G_itj>0)
+prod(dim(G_itj))
 
 # spatial gaps?
-range(rowSums(D_it>0)) # no
+range(rowSums(D_it>0)) # yes
 
 # plot
 dist_surveys_sites <-  reshape::melt(D_it) %>%
