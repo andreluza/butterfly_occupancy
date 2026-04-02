@@ -145,18 +145,19 @@ study-scenario are stored in one specific folder in the path:
 “model_output –\> output_simulations –\>
 scenario_phenology_spot-NNGP-15-review”.  
 \|——– SIM-10-study3-sc3-… .R: Scripts to simulations with our Poisson
-sampling design ($\phi$ as in study 1-sc0) and latitude $L_i$ as
-occupancy and detection covariate, and $v_{itj}$ (random covariate) in
-the detection model (partial overlap of covariates). Design including
-the effect of phenology + observer preferences + observation spot of
-I\*50% sites on occupancy data. “c1”: creates the Poisson sampling
-design - array $G_{itj}$ - with an effect of phenology + observer
-preferences + observation spot in mid latitudes; “c2”: generate
-simulated data, apply the sampling design and fit the multi-season
-occupancy model; “c3”: interpretation of results and figures. Results
-and figures of this study-scenario are stored in one specific folder in
-the path: “model_output –\> output_simulations –\>
-scenario_phenology_spot_review”.  
+sampling design where $\lambda = 1.1 \times (I/I*)$ (reestablishes the
+amount of data used from 1-0 to 3-1), $\phi$ as in study 1-sc0, and
+latitude $L_i$ as occupancy and detection covariate, and $v_{itj}$
+(random covariate) in the detection model (partial overlap of
+covariates). Design including the effect of phenology + observer
+preferences + observation spot of I $\times$ 50% sites on occupancy
+data. “c1”: creates the Poisson sampling design (array $G_{itj}$) with
+an effect of phenology + observer preferences + observation spot at mid
+latitudes; “c2”: generate simulated data, apply the sampling design and
+fit the multi-season occupancy model; “c3”: interpretation of results
+and figures. Results and figures of this study-scenario are stored in
+one specific folder in the path: “model_output –\> output_simulations
+–\> scenario_phenology_spot_2”.  
 \|——– SIM-11-study2-sc1-… .R: Scripts to analyze data from study
 scenario 2-1 with the random walk model by Outhwaite et al. (2018) -
 <https://doi.org/10.1016/j.ecolind.2018.05.010>. “c1”: build the model
@@ -165,10 +166,23 @@ design and fit the multi-season occupancy model; “c2”: interpretation of
 results and figures. Results and figures of this study-scenario are
 stored in one specific folder in the path: “model_output –\>
 output_simulations –\> scenario_two_sparta”.  
-\|——– SIM-12-study-simulation-comparison-Identifiability: Script used to
+\|——– SIM-12-study3-sc4-… .R: Scripts to simulations with our Poisson
+sampling design ($\lambda=1.1$), $\phi$ as in study 1-sc0, and latitude
+$L_i$ as occupancy and detection covariate, and $v_{itj}$ (random
+covariate) in the detection model (partial overlap of covariates).
+Design including the effect of phenology + observer preferences +
+observation spot of I $\times$ 50% sites on occupancy data. “c1”:
+creates the Poisson sampling design - array $G_{itj}$ - with an effect
+of phenology + observer preferences + observation spot in mid latitudes;
+“c2”: generate simulated data, apply the sampling design and fit the
+multi-season occupancy model; “c3”: interpretation of results and
+figures. Results and figures of this study-scenario are stored in one
+specific folder in the path: “model_output –\> output_simulations –\>
+scenario_phenology_spot_review”.  
+\|——– SIM-13-study-simulation-comparison-Identifiability: Script used to
 interpret the output of simulations. This script will produce figures
 shown in the main text and SI  
-\|——– SIM-12-simulation-psi-p-product: Evaluation of the product of
+\|——– SIM-13-simulation-psi-p-product: Evaluation of the product of
 $\psi_{it} \times p_{it}$ for each scenario.  
 
   
@@ -254,10 +268,10 @@ from scenario 0 to 3
 in study 3 - scenario 1 (only phenology + observer preferences).  
 \|———————- *“sampling_design_Poisson_phenology_spot”*: sampling design
 used in study 3 - scenario 2 (phenology + observer preferences +
-observation spot I*25% of the sites).  
-\|———————- *”sampling_design_Poisson_phenology_spot_st3_sc3”*: sampling
+observation spot I $\times$ 25% of the sites).  
+\|———————- *“sampling_design_Poisson_phenology_spot_st3_sc3”*: sampling
 design used in study 3 - scenario 2 (phenology + observer preferences +
-observation spot I*50% of the sites).  
+observation spot I $\times$ 50% of the sites).  
 \|———————- *sims_D&S*: correct data and simulation results as per Doser
 & Stoudt (2024) - **study 1-scenario 0**  
 \|———————- *smooth_sims_D&S*: correct data and simulation results for
@@ -281,13 +295,15 @@ scenario 1**
 \|———————- *scenario_phenology_spot*: correct data and simulation
 results for study 3 - scenario 2 incorporating phenology + observer
 preferences + observation spot - **study 3 - scenario 2**  
+\|———————- *scenario_phenology_spot_2*: correct data and simulation
+results for study 3 - scenario 3 incorporating phenology + observer
+preferences + observation spot - **study 3 - scenario 3**  
 \|———————- *scenario_phenology_spot-NNGP-15-review*: analysis of
 simulated data for study 3 - scenario 2 with NNGP=15 spatial
 neighbors.  
 \|———————- *scenario_phenology_spot_review*: correct data and simulation
-results for study 3 - scenario 3 incorporating phenology + observer
-preferences + observation spot of 50% of the sites - **study 3 -
-scenario 3**  
+results for study 3 - scenario 2 incorporating phenology + observer
+preferences + observation spot of 50% of the sites.  
 
   
 
@@ -344,7 +360,7 @@ settings
 **study 2-scenario 2**  
 \|———————- *scenario_phenology_spot*: correct data and simulation
 results for study 3 - scenario 2 incorporating phenology + observer
-preferences + observation spot of I\*25% sites.  
+preferences + observation spot of I $\times$ 25% sites.  
 
 ##### This article was produced using the following software and associated packages:
 
@@ -387,9 +403,9 @@ preferences + observation spot of I\*25% sites.
     ## loaded via a namespace (and not attached):
     ##  [1] Rdpack_2.6.6       DBI_1.3.0          deldir_2.0-4       s2_1.1.9          
     ##  [5] rlang_1.1.7        magrittr_2.0.4     otel_0.2.0         e1071_1.7-17      
-    ##  [9] compiler_4.3.3     systemfonts_1.0.5  vctrs_0.7.1        stringr_1.6.0     
+    ##  [9] compiler_4.3.3     systemfonts_1.0.5  vctrs_0.7.2        stringr_1.6.0     
     ## [13] pkgconfig_2.0.3    wk_0.9.5           fastmap_1.2.0      magic_1.6-1       
-    ## [17] rmarkdown_2.30     nloptr_2.2.1       purrr_1.2.1        xfun_0.56         
+    ## [17] rmarkdown_2.30     nloptr_2.2.1       purrr_1.2.1        xfun_0.57         
     ## [21] aplot_0.2.9        parallel_4.3.3     R6_2.6.1           stringi_1.8.7     
     ## [25] RColorBrewer_1.1-3 boot_1.3-30        Rcpp_1.1.1         iterators_1.0.14  
     ## [29] Matrix_1.6-5       splines_4.3.3      timechange_0.4.0   tidyselect_1.2.1  
@@ -400,7 +416,7 @@ preferences + observation spot of I\*25% sites.
     ## [49] KernSmooth_2.23-22 foreach_1.5.2      reformulas_0.4.4   ggfun_0.2.0       
     ## [53] generics_0.1.4     rprojroot_2.1.1    scales_1.4.0       minqa_1.2.8       
     ## [57] class_7.3-22       glue_1.8.0         tools_4.3.3        lme4_2.0-1        
-    ## [61] RANN_2.6.2         fs_1.6.7           rbibutils_2.4.1    nlme_3.1-164      
+    ## [61] RANN_2.6.2         fs_2.0.1           rbibutils_2.4.1    nlme_3.1-164      
     ## [65] patchwork_1.3.2    Formula_1.2-5      cli_3.6.5          rappdirs_0.3.4    
     ## [69] viridisLite_0.4.3  svglite_2.1.3      gtable_0.3.6       yulab.utils_0.2.4 
     ## [73] digest_0.6.39      classInt_0.4-11    ggplotify_0.1.3    farver_2.1.2      
