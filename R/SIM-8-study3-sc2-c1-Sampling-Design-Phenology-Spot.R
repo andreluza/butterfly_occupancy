@@ -9,7 +9,7 @@
 
 # We implemented a similar reasoning of phenology + observer sampling effects to a spatial spot effect.
 
-# Here we work with 25% sites with data (over all years)
+# Here we work with 25% sites with data (over all years) (but working with \lambda=1.1 decreases the amount of data -- survey occasions x sites x years)
 
 # ---------------------------------------------------------------
 

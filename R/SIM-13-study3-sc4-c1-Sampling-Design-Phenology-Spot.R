@@ -1,16 +1,7 @@
 # ---------------------------------------------------------------
 
-# The first reviewer required the analysis of less sparse data.
-
-# Sampling design with phenology + observer sampling effects + observation spot (cluster of observations) for simulations (with J=10)
-
-# the issue about the sample function applies here (see https://larryzhangnz.netlify.app/post/note-on-sample/ ; https://freerangestats.info/blog/2024/08/31/ppswor). As no established technique is available up to this date, we produced a noisy gaussian curve and imposed a threshold on it to mimic phenology + observer sampling effects on the observation data.
-
-# Nota bene: the key to the phenology + observer sampling effects that I propose is that you first render the phenology of the year/site a bit noisy (some times you will select values outside the center ones, though not often), through a vector of "seasonal intensity of sampling", and then you just take the indices corresponding to the k largest values of that sample, where k is the number of values that you want to sample.
-# Here k is the value that you randomly draw with D_it, which follows the Poisson distribution. 
-
+# For review only: The first reviewer required the analysis of less sparse data.
 # We implemented a similar reasoning of phenology + observer sampling effects to a spatial spot effect.
-
 # Here we work with 50% sites with data (over all years)
 
 # ---------------------------------------------------------------

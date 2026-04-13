@@ -201,7 +201,7 @@ for (s in 1:n.sims) {
                    accept.rate = 0.43,
                    cov.model = cov.model,
                    tuning = tuning.list,
-                   n.omp.threads = 1, # TODO: change as necessary. 
+                   n.omp.threads = 3,
                    verbose = TRUE,
                    ar1 = TRUE,
                    NNGP = TRUE,

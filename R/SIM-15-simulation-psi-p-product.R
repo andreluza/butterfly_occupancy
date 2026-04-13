@@ -3,10 +3,7 @@
 
 #  COMPARISON OF STUDIES, SCENARIOS AND SUB SCENARIOS
 #  
-#  Code to produce most figures used in the main text
-
-# TODO --- check if it is better to use the product or the realization of this product Bernoulli (psi * p)
-
+#  Evaluation of the product of psi and p
 
 # -------------------------------------------------------
 

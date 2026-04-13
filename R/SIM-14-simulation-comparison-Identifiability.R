@@ -1374,21 +1374,3 @@ png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc13-16.png"),
 
 dev.off()
 
-# build the likelihood surfaces  --------------------
-
-# https://stackoverflow.com/questions/13613157/plot-3d-density
-require(plotly)
-library(MASS)
-
-# all random effects high
-test_sc2 <- theta_data %>%
-  filter (is.na(sigma_sq)!=T) %>%
-  filter (study == 2 & sc == 1 & scenario == 1) 
-den3d <- kde2d((test_sc2$sigma_sq), 
-               (test_sc2$phi.x))
-
-# plot 
-plot_surface2<-plot_ly(x=den3d$x, y=den3d$y, z=den3d$z) %>% 
-  add_surface()
-plot_surface2
-htmlwidgets::saveWidget(as_widget(plot_surface2), here("figures", "Scenario-Comparisons","st1-sc0_all_high.html"))

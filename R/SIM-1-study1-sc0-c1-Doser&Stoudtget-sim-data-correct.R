@@ -1,22 +1,14 @@
 # -----------------------------------------------------------------------------
 
 # Simulation study 1 - scenario 0: replication of D&S Simulations
-# Basic data (Random effects will be used in all scenarios)
+# Simulate basic data (Random effects will be used in all scenarios)
+# source code as reference: https://rdrr.io/cran/spOccupancy/src/R/simTOcc.R
 
 # --------------------------------------------------------------------------
-
-# ------------------------------------------------------------------
-# original description
-# get-sim-data-correct.R: script to generate the simulated data sets for the 
-#                         first simulation study.
-# Author: Jeffrey W. Doser and Sara Stoudt
-# Approximate run time: <5 min
-# ------------------------------------------------------------------
 
 rm(list = ls())
 library(spOccupancy)
 library(here)
-
 
 # create sequence of folders to save data and output
 dir.create(here ("model_output"))

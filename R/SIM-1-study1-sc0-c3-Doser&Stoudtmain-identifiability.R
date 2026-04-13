@@ -496,7 +496,6 @@ dat.plot %>%
 
 dev.off()
 
-
 # spatial phi
 # Select the paramLab for the current param (assuming i is defined and valid)
 current_param_lab <- unique(dat.plot$paramLab[dat.plot$param == 2])
@@ -731,13 +730,8 @@ table(dat[[1]]$coords[, 1] == dat[[100]]$coords[, 1] )
 # all coordinates are the same
 plot.df$x <- dat[[1]]$coords[, 1] 
 plot.df$y <- dat[[1]]$coords[, 2] 
-
-# but not the spatial effect
-# test
-# scenario <- 1 # up to 16
-# sim <- 3 # up to n.sim
+# select year
 year <- 1 # year don't matter here
-# scenario.sim <- 33 # do scenario 1, 17, 33 ... resemble to each other?
 
 # do this to repeat the 16 scenarios n.sims times
 scenario.vals.rep <- lapply (seq (1,n.sims), function (i) 

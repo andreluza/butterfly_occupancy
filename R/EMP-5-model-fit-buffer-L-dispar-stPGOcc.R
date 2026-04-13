@@ -1,15 +1,15 @@
 
-# --------------------------------
+# -------------------------------------------------------------------
 
 # Empirical data analyses - Lycaena dispar
-# Using the data collected within the buffer of 10km^2 around Bordeaux
 
-# using spOccupancy package
-# models with nngp=15
-# weak prior for phi
-# informative prior for phi
+# Using the data collected within the communes within a buffer of 10km^2 around Bordeaux
+# Using spOccupancy package
+# Models with NNGP=15
+# Weak prior for phi ~ uniform (c(a = 3 / 1, b = 3 / 0.05)) 
+# Informative prior for phi ~  uniform (c(a = 3 / 6, b = 3 / 1)) # interpreted as somehow 6 km up to 1 km distance neighbors
 
-# --------------------------------------
+# -------------------------------------------------------------------
 
 # load packages
 rm(list=ls())

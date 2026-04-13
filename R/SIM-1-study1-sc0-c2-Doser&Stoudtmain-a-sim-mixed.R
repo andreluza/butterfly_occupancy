@@ -1,13 +1,9 @@
 # -----------------------------------------------------------------------------
 
 # Simulation study 1 - scenario 0: replication of D&S Simulations
+# Fit the stPGocc model to data
 
-# -------------------------------------------------------------------------------
-# Original description
-# main-sim-mixed.R: script to run a set of simulations to assess identifiability of a "mixed design" multi-season occupancy model under varying levels of spatial and temporal autocorrelation. 
-# Authors: Jeffrey W. Doser and Sara Stoudt
-# Approximate run time: 10 days
-# -------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 rm(list = ls())
 library(spOccupancy)
@@ -18,7 +14,7 @@ n.samples <- 25000
 batch.length <- 25
 n.burn <- 15000
 n.thin <- 10
-n.chains <- 3 # changed (previously was 1 chain)
+n.chains <- 3
 accept.rate <- 0.43
 n.batch <- (n.samples / batch.length)*n.chains
 

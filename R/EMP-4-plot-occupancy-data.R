@@ -2,7 +2,7 @@
 
 # ----------------------------------------------------------------
 
-#          Section of plots and maps illustrating the empirical data
+#      Section of plots and maps illustrating the empirical data
 
 # -----------------------------------------------------------------
 
@@ -111,8 +111,6 @@ p1a <- ggplot(data = cells_NAquitane) +
           colour= "orange2",
           alpha=0.15,size=0.1)+
   facet_wrap(~TaxNomVal,ncol=3)+
-  #coord_sf(xlim=xlim,ylim=ylim)+
-  #theme_bw() +
   scale_colour_viridis_c(option = "magma",direction=1,end=0.7,na.value = "gray90")+
   scale_fill_viridis_c(option = "magma",direction=1,end=0.7,na.value = "gray90")+
   my_theme+
@@ -137,11 +135,7 @@ p1b <- ggplot(data = cells_NAquitane) +
           alpha=0.75)+
   scale_colour_viridis_c(option = "magma",direction=1,na.value = "gray90")+
   scale_fill_viridis_c(option = "magma",direction=1,na.value = "gray90")+
-  #coord_sf(xlim=xlim,ylim=ylim)+
-  #theme_bw() +
-  #scale_colour_viridis_d(option = "magma",direction=1)+
-  theme(#legend.position = c(0.7,0.2),
-        axis.text.y = element_blank(),
+  theme(axis.text.y = element_blank(),
         strip.text = element_text(face = "italic"),
         legend.key.size = unit(0.8, 'cm'), #change legend key size
         legend.background = element_blank(),
@@ -162,11 +156,7 @@ p1c <- ggplot(data = cells_NAquitane) +
           alpha=0.75)+
   scale_colour_viridis_c(option = "magma",direction=-1,na.value = "white")+
   scale_fill_viridis_c(option = "magma",direction=-1,na.value = "white")+
-  #coord_sf(xlim=xlim,ylim=ylim)+
-  #theme_bw() +
-  #scale_colour_viridis_d(option = "magma",direction=1)+
-  theme(#legend.position = c(0.7,0.2),
-    axis.text.y = element_blank(),
+  theme(axis.text.y = element_blank(),
     strip.text = element_text(face = "italic"),
     legend.key.size = unit(0.5, 'cm'), #change legend key size
     legend.background = element_blank(),
@@ -194,7 +184,6 @@ MontSurv_plot <-table(rowSums(base_table>0)) %>%
   theme(axis.text = element_text(size=7),
         axis.title = element_text(size=12))+
   scale_y_break(c(200,30000), expand=T,scales=c(1,0.5))+
-  #my_theme + 
   theme(axis.text.x = element_text(angle=90,size=8),
                    panel.background =  element_rect(fill="white")
                     )
@@ -209,11 +198,6 @@ month_plot <- data.frame("NObs"=colSums(base_table)) %>%
          "Group" = substr (rownames(.),nchar(rownames(.))-4,nchar(rownames(.)))) %>%
   ggplot (aes(x=reorder(Survey, Order),y=NObs))+
   geom_bar(stat = "identity")+
-  #geom_smooth(aes(x=reorder(Survey, Order),y=NObs,group = Group),
-  #            method = "glm", se = F, 
-  #            formula = 'y ~ poly(x,2)',
-  #            method.args = list(family = "poisson"),
-  #            linetype = "solid",col="orange",linewidth=0.25)+
   labs (x="",
         y="Number of Observations per Month and Year",
         title="A")+
@@ -240,8 +224,7 @@ data_visits <- #lapply (unique(cols_base), function (i) # activate if need to ev
           )
       ) %>%
         mutate(Freq = as.numeric(Freq),
-               Var1 = as.numeric(Var1)-1#,
-               #Year = as.numeric(i)
+               Var1 = as.numeric(Var1)-1
                ) 
 #)
 
@@ -290,19 +273,15 @@ DS_design <- data.frame (Numb = c(1200,1200*0.1),
             Var1= c(1,0.1)) %>%
   ggplot(aes (x=SecOcc, y=Numb))+
   geom_bar(stat = "identity")+
-  labs (#y="Number of cells",
-        x=" ",
+  labs (x=" ",
         title="D")+
-  #geom_text(aes(x=Var1+1,y=200,label = round(Var1,3)))+
-  #theme(axis.text.x = element_text(angle=50,size=6))+
   geom_smooth(aes(x=SecOcc,y=Numb),method = "glm", se = F, 
               method.args = list(family = "poisson"),
               linetype = "dashed",col="orange")+
   geom_text(aes(x=SecOcc,y=Numb+40,label = round(Var1,2)*100),size=3.5)+
   scale_x_continuous(breaks=c(1,2))+
   my_theme+
-  theme(#plot.title = element_text(face="italic"),
-        axis.text = element_text(angle=0,size=6),
+  theme(axis.text = element_text(angle=0,size=6),
         axis.title.y = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank())
@@ -362,17 +341,10 @@ species_plot <- melt (apply(species_table,c(2,3),sum,na.rm=T),as.is=T) %>%
   mutate (X2=stringr::str_replace(X2, " \\s*\\([^\\)]+\\)", "")) %>%
   ggplot (aes(x=reorder(X1, Order),y=value))+
   facet_wrap(~X2,scales="free_y",nrow = 2)+
-  #geom_smooth(aes(x=reorder(X1, Order),y=value,group = Group),
-  #            method = "glm", se = F, 
-  #            formula = 'y ~ poly(x,2)',
-  #            method.args = list(family = "poisson"),
-  #            linetype = "solid",col="orange",linewidth=0.25)+
-  
   geom_bar(stat = "identity")+
   labs (x="",
         y="Number of Observations per Month and Year",
         title="B")+
-  #my_theme+
   theme(axis.text.x = element_text(angle=0,size=4,hjust = 1),
         strip.text = element_text(face = "italic"),
         axis.text.y = element_text(size=5)) + 
@@ -436,11 +408,7 @@ p_BM <- ggplot(data = cells_buffer_bordeaux) +
           alpha=0.75)+
   scale_colour_viridis_c(option = "magma",direction=-1,na.value = "gray90")+
   scale_fill_viridis_c(option = "magma",direction=-1,na.value = "gray90")+
-  #coord_sf(xlim=xlim,ylim=ylim)+
-  #theme_bw() +
-  #scale_colour_viridis_d(option = "magma",direction=1)+
-  theme(#legend.position = c(0.7,0.2),
-    axis.text.y = element_blank(),
+  theme(axis.text.y = element_blank(),
     strip.text = element_text(face = "italic"),
     legend.key.size = unit(0.8, 'cm'), #change legend key size
     legend.background = element_blank(),
@@ -470,11 +438,7 @@ p_BM_obs <- ggplot(data = cells_buffer_bordeaux) +
           alpha=0.75)+
   scale_colour_viridis_c(option = "magma",direction=-1,na.value = "gray90")+
   scale_fill_viridis_c(option = "magma",direction=-1,na.value = "gray90")+
-  #coord_sf(xlim=xlim,ylim=ylim)+
-  #theme_bw() +
-  #scale_colour_viridis_d(option = "magma",direction=1)+
-  theme(#legend.position = c(0.7,0.2),
-    axis.text.y = element_blank(),
+  theme(axis.text.y = element_blank(),
     strip.text = element_text(face = "italic"),
     legend.key.size = unit(0.8, 'cm'), #change legend key size
     legend.background = element_blank(),

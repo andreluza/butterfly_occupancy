@@ -81,7 +81,6 @@ for (s in 88:n.sims) {
     # index
     curr.indx <- (s - 1) * n.scenarios + sc
     dat <- dat.full[[curr.indx]]
-    #psi.true[, , s, sc] <- dat$psi
     phi.tune <- 0.5
     
     # sim data for spOccupancy -------------------------------------------

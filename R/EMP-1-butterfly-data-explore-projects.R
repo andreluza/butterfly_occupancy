@@ -73,15 +73,6 @@ bordeaux_distance <- st_distance (cells_Gironde,
                          aes(fill= NOM_COMM))+
   theme(legend.position = "none"))
 
-# plot
-#(a <- a  + geom_sf(data=bordeaux_metropole,
-#            aes(fill= NOM_COMM))+
-#  theme(legend.position = "none"))
-
-# intersection Gironde - NAquitaine
-#cells_metropole <- st_intersection(cells_NAquitane,
-#                                   bordeaux_metropole)
-
 # intersection Buffer - Gironde -- buffer of 10 km around Bordeaux
 cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                         cbind (dist=as.numeric(bordeaux_distance)) %>%
@@ -89,18 +80,9 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                       ,
                                       cells_NAquitane))
 
-# matching between Bordeaux Metropole and an area of 10 km around the city
-#a + geom_sf(data=cells_buffer_bordeaux,
-#            aes(fill=NOM_REGION))+ 
-#  geom_sf(data=cells_metropole,
-#          aes(fill=NOM_COMM),col= "black")+
-#  theme(legend.position = "none")
-
 #   load butterfly (community) data ------------------------------
 #  families
 families <- list.dirs(here::here("Data","SpeciesData", "Community Data"),full.names = F)[-1]
-# families in the atlas data
-# families_atlas <- list.dirs(here::here("Data","SpeciesData", "Atlas Data"),full.names = F)[-1]
 
 #  occurrence data summary (points) -------------------------------------
 #k = species[1]
@@ -156,10 +138,6 @@ dataPoints<- lapply (families, function (k)
                              k,
                              "Metadonnees.csv"), 
                        sep= "\t")
-    #unique(metadat$NomJeuDonnees)
-    #table(datSpatPts$IdJdd %in% metadat$IdJeuDonnees)
-    #table(datSpatPts$IdCadreAc %in% metadat$IdCadre) # they match but the variable names are different
-    # change the scd column name to match data and metadata
     
     # match data and metadata
     datSpatPts <- cbind (datSpatPts,
@@ -231,9 +209,6 @@ dataLinestrings<- lapply (families, function (k)
                              k,
                              "Metadonnees.csv"), 
                        sep= "\t")
-    
-    #table(datSpatPts$IdCadreAc %in% metadat$IdCadre) # they match but the variable names are different
-    # change the scd column name to match data and metadata
     
     # match data and metadata
     datSpatPts <- cbind (datSpatPts,
@@ -535,8 +510,6 @@ dataPointsPolygonClean %>%
             min_years = min (Year),
             max_years = max(Year)) %>%   # Now summarise with unique elements per group
   ungroup()
-
-
 
 # clean workspace
 rm(list=ls())

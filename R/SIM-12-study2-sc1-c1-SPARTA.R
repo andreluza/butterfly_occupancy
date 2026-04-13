@@ -1,13 +1,8 @@
 
 # -------------------------------------------------------
 
-# Simulation study 2 - 1
-
-# SCENARIO 0 - changing from Bernoulli to a Poisson sampling
-# SCENARIO 1 - SCENARIO 0 + X_it = psi in function of L_i
-
-# Using the approach of sparta (spatially uncorrelated random effects)
-#  and a Random Walk model for temporal autocorrelation
+# Simulation study 2 - 1 using the occupancy model with temporal autocorrelation of Outhwaite et al (2018)
+# Spatially uncorrelated site random effects
 
 # ---------------------------------------------------------------
 

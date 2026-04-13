@@ -2,11 +2,11 @@
 
 # ----------------------------------------------------------------
 
-#  Summarizing the data set motivating the simulations
+#  Organizing the occupancy data set that motivated the simulations
 #  
-#  Butterfly data from the whole Nouvelle-Aquitaine region ,at the scale of 1x1 km (systematic grid). 
+#  Butterfly data from the whole Nouvelle-Aquitaine region, at the scale of 1x1 km (systematic grid). 
 
-#  Here we created intermediary files for creating occupancy (occurrence) data. The observations were done through points, linestrings and polygons (geometries did not follow the TypeGeoms so we merged/pooled all data for analyzes).
+#  Here we created intermediary files for generating the occupancy data. Butterfly observations were obtained from points, linestrings/transects and polygons (geometries did not follow the TypeGeoms so we merged/pooled all data for analyzes).
 #  We did some editing in the name of observers to minimize redundancy/orthographic errors, and also filtered data considering the years (2000-2023) and month of analysis (February to November). 
 
 # ------------------------------------------------------------------
@@ -66,10 +66,6 @@ a <- ggplot() +
   geom_sf(data= cells_NAquitane)
 
 # bordeaux distance
-#bordeaux_metropole <- cells_Gironde %>%
-#             filter (NOM_COMM %in% communes)
-
-# bordeaux distance
 bordeaux_distance <- st_distance (cells_Gironde,
                                   cells_Gironde %>%
                                     filter (NOM_COMM == "BORDEAUX"))
@@ -81,15 +77,6 @@ bordeaux_distance <- st_distance (cells_Gironde,
                          aes(fill= NOM_COMM))+
   theme(legend.position = "none"))
 
-# plot
-#(a <- a  + geom_sf(data=bordeaux_metropole,
-#            aes(fill= NOM_COMM))+
-#  theme(legend.position = "none"))
-
-# intersection Gironde - NAquitaine
-#cells_metropole <- st_intersection(cells_NAquitane,
-#                                   bordeaux_metropole)
-
 # intersection Buffer - Gironde -- buffer of 10 km around Bordeaux
 cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                         cbind (dist=as.numeric(bordeaux_distance)) %>%
@@ -97,20 +84,10 @@ cells_buffer_bordeaux <- (st_intersection(cells_Gironde %>%
                                       ,
                                       cells_NAquitane))
 
-# matching between Bordeaux Metropole and an area of 10 km around the city
-#a + geom_sf(data=cells_buffer_bordeaux,
-#            aes(fill=NOM_REGION))+ 
-#  geom_sf(data=cells_metropole,
-#          aes(fill=NOM_COMM),col= "black")+
-#  theme(legend.position = "none")
-
 #   load butterfly (community) data ------------------------------
 #  families
 families <- list.dirs(here::here("Data","SpeciesData", "Community Data"),full.names = F)[-1]
 families <- families[-grep("2025", families)]
-
-# families in the atlas data
-# families_atlas <- list.dirs(here::here("Data","SpeciesData", "Atlas Data"),full.names = F)[-1]
 
 #  occurrence data summary (points) -------------------------------------
 #k = species[1]
@@ -216,7 +193,6 @@ dataLinestrings<- lapply (families, function (k)
              YearMonth = zoo::as.yearmon(DateDebut),
              # add the information that this is occurrence data
              dataType = "Occurrence")
-    
     
     datSpatPts
     
@@ -388,18 +364,11 @@ dataPointsPolygonClean <- rbind(dataPointsClean %>%
                                                  TaxNomVal,TaxNomVern,DateDebut , dataType)
                                 )
 
-# View(data.frame(unique(dataPointsPolygonClean$ObserverMod)[order(unique(dataPointsPolygonClean$ObserverMod))]))
-# inconnu here belongs to some institution
-
-# who was doing fieldwork on december and january
-#table(dataPointsPolygonClean[which(dataPointsPolygonClean$Month %in% c(1,12)),"ObserverMod"][[1]])[order(table(dataPointsPolygonClean[which(dataPointsPolygonClean$Month %in% c(1,12)),"ObserverMod"][[1]])
-#)]
-
 # select the year of interest (2000 onwards) > 2000 observations overall
 dataPointsPolygonClean <- dataPointsPolygonClean %>%
   filter (Year >= "2000" & 
             Year <= "2023" &
-            Month %in% levels(Month)[2:11] &
+            Month %in% levels(Month)[2:11] & # select months
             Maille1 != ""
   )
 

@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------
 
-# Settings for simulations - used in studies 2 to 3
-# on study 2 - scenario 3 we added one coefficient in alpha object (coefficients of the detection model)
+# Settings for simulations - used in all scenarios of Study 2
 
 # ---------------------------------------------------------------
 
@@ -9,7 +8,6 @@
 rm(list=ls())
 source ("R/packages.R")
 source ("R/functions.R")
-
 
 # create directory to receive results of the scenarios ------------------
 dir.create(here ("model_output", "output_simulations","scenario_zero"))
@@ -40,18 +38,9 @@ n.samples <- 25000
 batch.length <- 25
 n.burn <- 15000
 n.thin <- 10
-n.chains <- 3 # changed (previously was 1 chain)
+n.chains <- 3
 accept.rate <- 0.43
 n.batch <- (n.samples / batch.length)*n.chains
-
-# short MCMC settings -----------------------------------------------
-#n.samples <- 100
-#batch.length <- 25
-#n.burn <- 50
-#n.thin <- 1
-#n.chains <- 3 # changed (previously was 1 chain)
-#accept.rate <- 0.43
-#n.batch <- (n.samples / batch.length)*n.chains
 
 # Parameters for simulation -----------------------------------------------
 # Number of data sets for each scenario

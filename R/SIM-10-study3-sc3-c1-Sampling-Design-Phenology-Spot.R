@@ -2,7 +2,7 @@
 
 # 3 -3 restablishing the amount of data
 
-# Since the amount of data declined from 3.1 to 3.2, we need to restablish it
+# Since the amount of data declined from 3.1 to 3.2, we need to reestablish it
 
 # Thus, we will spread surveys using Poisson distribution with \lambda=1.1 * (I/(I*0.25)), so that we will have 4 times more surveys in the spot to have similar amount of data between 3 - 1 and 3 - 3
 

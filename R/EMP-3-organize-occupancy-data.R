@@ -331,8 +331,7 @@ cell_centroid_df <- cell_centroid %>%
   st_coordinates()
 rownames(cell_centroid_df) <- cell_centroid$CODE_10KM
 
-# -------------------------
-# 
+# -------------------------------------
 # Now transform these data into arrays
 
 # sequence of j months and t years

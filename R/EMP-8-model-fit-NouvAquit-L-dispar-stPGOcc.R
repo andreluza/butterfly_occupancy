@@ -5,12 +5,11 @@
 # Empirical data analyses - Lycaena dispar
 # Using the data from the whole Nouvelle-Aquitaine region
 
-# using spOccupancy package
-# models with nngp=15
-# weak prior for phi
-# informative prior for phi
-
-# Approx. 10 hours  to run  each model
+# Using spOccupancy package
+# Models with NNGP=15
+# Weak prior for phi ~ uniform (c(a = 3 / 1, b = 3 / 0.05)) 
+# Informative prior for phi ~  uniform (c(a = 3 / 6, b = 3 / 1)) # interpreted as somehow 6 km up to 1 km distance neighbors
+# Approx. 10 hours to run  each model
 
 # --------------------------------------
 

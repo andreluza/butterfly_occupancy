@@ -2,19 +2,17 @@
 # --------------------------------------------------------
 
 
-# Extract spatial covariates used in occupancy models
-# Altitude from EU-DEM
-# Habitat from CORINE database
+#   Extract spatial covariates used in occupancy models
+#             Altitude from EU-DEM
+#         Habitat from CORINE database
 
-# NA = Nouvelle Aquitaine 
+# "NA" in object names stands for Nouvelle Aquitaine 
 # 
 # -------------------------------------------------------
-
 
 # load packages
 rm(list=ls())
 source ("R/packages.R")
-
 
 # ggplot theme
 my_theme <- theme(legend.position = 'bottom', 
@@ -28,16 +26,13 @@ my_theme <- theme(legend.position = 'bottom',
                   axis.text.y = element_text(size = 10),
                   axis.title = element_text(size=15))
 
-
-
 # ---------------------------------------
 
 # load spatial data
 cells_NAquitane <- st_read(dsn=here ("Data", "SpatialData","Maillage_1x1km"),
                            layer="1x1km_n-a")
 
-
-#load copernicus data
+#load EUDEM-COPERNICUS data
 altitude.files <- list.files(path=here ("Data", "Altitude","eudem_buffered", "eudem"),
                              pattern =".tif$", full.names=TRUE)
 altitude.europe <- lapply (altitude.files, raster)

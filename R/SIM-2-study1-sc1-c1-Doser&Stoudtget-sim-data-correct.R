@@ -1,7 +1,9 @@
 
 # -----------------------------------------------------------------------------
 
-# Simulation study 1 - 1: replication of D&S Simulations with higher Spatial Autocorrelation (low phi)
+# Simulation study 1 - 1: replication of D&S Simulations with higher Spatial Autocorrelation
+# Here the values of phi were lower than before (higher autocorrelation)
+# source code as reference: https://rdrr.io/cran/spOccupancy/src/R/simTOcc.R
 
 # -------------------------------------------------------------------------------
 
@@ -51,7 +53,7 @@ sigma.sq.vals <- c(0.3, 1.5)
 #       study region.
 
 # set lower values of phi to have more spatial autocorrelation
-phi.vals <- c(3 / 3, 3 / 6)  # lower decay than before
+phi.vals <- c(3 / 3, 3 / 6)  # smaller decay than before
 
 # Temporal parameters -----------------
 rho.vals <- c(0.5, 0.9)

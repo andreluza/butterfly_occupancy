@@ -2,11 +2,7 @@
 # -------------------------------------------------------
 
 # Interpretation study 2 scenario 1
-# Using the approach of sparta (spatially uncorrelated random effects)
-
-
-# SCENARIO 0 - changing from Bernoulli to a Poisson sampling
-# SCENARIO 1 - SCENARIO 0 + X_it = psi in function of L_i
+# Using the approach of Outhwaite et al. (2018)
 
 # ---------------------------------------------------------------
 
@@ -34,7 +30,7 @@ my_theme <- theme(legend.position = 'bottom',
 
 
 # create a folder to host the figures
-dir.create(here ("figures", "TuningD&S_sims","Scenario1_sparta"))
+dir.create(here ("figures", "sims_present_paper","Scenario1_sparta"))
 
 # load model output
 list_output <- list.files (here ("model_output", "output_simulations", "scenario_two_sparta"),
@@ -236,7 +232,7 @@ fig.3.plot <- plot.df %>%
   my_theme
 
 # save
-png(here("figures","TuningD&S_sims", "Scenario1_sparta", "Figure-3-st2-sc1-sparta.png"),
+png(here("figures","sims_present_paper", "Scenario1_sparta", "Figure-3-st2-sc1-sparta.png"),
     width = 600, height = 600,units = "px")
 
   fig.3.plot
@@ -425,7 +421,7 @@ p2<- grid.arrange(map_true,
              nrow=3)
 
 # save all them
-png (here("figures","TuningD&S_sims" ,"Scenario1_sparta","maps_comparison_sparta.png"),
+png (here("figures","sims_present_paper" ,"Scenario1_sparta","maps_comparison_sparta.png"),
      width = 13, height = 17, units = "cm",res=150)
 
   grid.arrange (
@@ -478,7 +474,7 @@ hat_alphas <- lapply (list_output, function (i) {
 )
 
 # save
-png(here("figures","TuningD&S_sims", "Scenario1_sparta", "coeff_densities.png"),
+png(here("figures","sims_present_paper", "Scenario1_sparta", "coeff_densities.png"),
     width = 500, height = 500,units = "px")
 
 # plot (densities)
