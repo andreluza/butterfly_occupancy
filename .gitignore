@@ -12,3 +12,7 @@ Data/SpatialData/33-gironde
 MS_submission_arkiv
 model_output_mis-specification/output_simulations
 R/EMP-1-butterfly-data-explore-projects.R
+R/EMP-1-organize-empirical-butterfly-data.R
+R/EMP-2-extractionSpatialCovariates.R
+R/EMP-3-organize-occupancy-data.R
+
