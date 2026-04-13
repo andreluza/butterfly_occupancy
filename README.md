@@ -158,7 +158,13 @@ fit the multi-season occupancy model; “c3”: interpretation of results
 and figures. Results and figures of this study-scenario are stored in
 one specific folder in the path: “model_output –\> output_simulations
 –\> scenario_phenology_spot_2”.  
-\|——– SIM-11-study2-sc1-… .R: Scripts to analyze data from study
+\|——– SIM-11-study3-sc3-…NNGP-15.R: Scripts used to analyze simulated
+data, as per study scenario 3-3, using NNGP=15 spatial neighbors in the
+Gaussian Process approximation. Results and figures of this
+study-scenario are stored in one specific folder in the path:
+“model_output –\> output_simulations –\>
+scenario_phenology_spot_2\_-\_NNGP15”.  
+\|——– SIM-12-study2-sc1-… .R: Scripts to analyze data from study
 scenario 2-1 with the random walk model by Outhwaite et al. (2018) -
 <https://doi.org/10.1016/j.ecolind.2018.05.010>. “c1”: build the model
 in BUGS language, generate simulated data, apply the Poisson sampling
@@ -166,7 +172,7 @@ design and fit the multi-season occupancy model; “c2”: interpretation of
 results and figures. Results and figures of this study-scenario are
 stored in one specific folder in the path: “model_output –\>
 output_simulations –\> scenario_two_sparta”.  
-\|——– SIM-12-study3-sc4-… .R: Scripts to simulations with our Poisson
+\|——– SIM-13-study3-sc4-… .R: Scripts to simulations with our Poisson
 sampling design ($\lambda=1.1$), $\phi$ as in study 1-sc0, and latitude
 $L_i$ as occupancy and detection covariate, and $v_{itj}$ (random
 covariate) in the detection model (partial overlap of covariates).
@@ -179,10 +185,10 @@ multi-season occupancy model; “c3”: interpretation of results and
 figures. Results and figures of this study-scenario are stored in one
 specific folder in the path: “model_output –\> output_simulations –\>
 scenario_phenology_spot_review”.  
-\|——– SIM-13-study-simulation-comparison-Identifiability: Script used to
+\|——– SIM-14-study-simulation-comparison-Identifiability: Script used to
 interpret the output of simulations. This script will produce figures
 shown in the main text and SI  
-\|——– SIM-13-simulation-psi-p-product: Evaluation of the product of
+\|——– SIM-15-simulation-psi-p-product: Evaluation of the product of
 $\psi_{it} \times p_{it}$ for each scenario.  
 
   
@@ -262,16 +268,19 @@ and predictions) using the $spOccupancy$ package;
 once)  
 \|———————- *“sim-settings.rda”*: simulation constants and MCMC
 settings  
-\|———————- *“sampling_design_Poisson”*: sampling design used in study 2
-from scenario 0 to 3  
-\|———————- *“sampling_design_Poisson_phenology”*: sampling design used
-in study 3 - scenario 1 (only phenology + observer preferences).  
-\|———————- *“sampling_design_Poisson_phenology_spot”*: sampling design
-used in study 3 - scenario 2 (phenology + observer preferences +
-observation spot I $\times$ 25% of the sites).  
-\|———————- *“sampling_design_Poisson_phenology_spot_st3_sc3”*: sampling
+\|———————- *“sampling_design_Poisson.rda”*: sampling design used in
+study 2 from scenario 0 to 3  
+\|———————- *“sampling_design_Poisson_phenology.rda”*: sampling design
+used in study 3 - scenario 1 (only phenology + observer preferences).  
+\|———————- *“sampling_design_Poisson_phenology_spot.rda”*: sampling
 design used in study 3 - scenario 2 (phenology + observer preferences +
-observation spot I $\times$ 50% of the sites).  
+observation spot I $\times$ 25% of the sites).  
+\|———————- *“sampling_design_Poisson_phenology_spot_st3_sc3.rda”*:
+sampling design used in study 3 - scenario 3 (phenology + observer
+preferences + observation spot + amount of data reestablished).  
+\|———————- *“sampling_design_Poisson_phenology_spot_st_sc4.rda”*:
+sampling design used in study 3 - scenario 2 (phenology + observer
+preferences + observation spot I $\times$ 50% of the sites).  
 \|———————- *sims_D&S*: correct data and simulation results as per Doser
 & Stoudt (2024) - **study 1-scenario 0**  
 \|———————- *smooth_sims_D&S*: correct data and simulation results for
@@ -301,6 +310,8 @@ preferences + observation spot - **study 3 - scenario 3**
 \|———————- *scenario_phenology_spot-NNGP-15-review*: analysis of
 simulated data for study 3 - scenario 2 with NNGP=15 spatial
 neighbors.  
+\|———————- *scenario_phenology_spot_2_NNGP15*: analysis of simulated
+data for study 3 - scenario 3 with NNGP=15 spatial neighbors.  
 \|———————- *scenario_phenology_spot_review*: correct data and simulation
 results for study 3 - scenario 2 incorporating phenology + observer
 preferences + observation spot of 50% of the sites.  
@@ -317,13 +328,14 @@ function); “c3”: interpretation of results and figures. Two separate
 folders that will host simulation results (path:
 model_output/output_simulations) and figures are created here. Results
 and figures of this study-scenario are stored in one specific folder in
-the path: “model_output –\> output_simulations –\> sims_D&S”.  
-\|——– SIM-3-a-study2-Sim-Settings.R: Our simulation settings with
+the path: “model_output_mis-specification –\> output_simulations –\>
+sims_D&S”.  
+\|——– SIM-2-a-study2-Sim-Settings.R: Our simulation settings with
 initial number of secondary sampling occasions $J=10$ (equivalent to
 sampling months in our butterfly data). These settings are used in Study
 2. The code also create folders to store simulation results, figures,
 and the theme for ggplot (as per D&S).  
-\|——– SIM-5-study2-sc2-… .R: Scripts to simulations with our Poisson
+\|——– SIM-3-study2-sc2-… .R: Scripts to simulations with our Poisson
 sampling design ($\phi$ as in study 1-sc0) and latitude $L_i$ as
 occupancy and detection covariate (total overlap of covariates). “c1”:
 generate simulated data with pnorm link for $\psi_{it}$ and $p_{itj}$,
@@ -331,8 +343,9 @@ apply the Poisson sampling design already generated in the previous
 scenario, and fit the multi-season occupancy model (with logit link
 function); “c2”: interpretation of results and figures. Results and
 figures of this study-scenario are stored in one specific folder in the
-path: “model_output –\> output_simulations –\> scenario_two”.  
-\|——– SIM-8-study3-sc2-… .R: Scripts to simulations with our Poisson
+path: “model_output_mis-specification –\> output_simulations –\>
+scenario_two”.  
+\|——– SIM-4-study3-sc2-… .R: Scripts to simulations with our Poisson
 sampling design ($\phi$ as in study 1-sc0) and latitude $L_i$ as
 occupancy and detection covariate, and $v_{itj}$ (random covariate) in
 the detection model (partial overlap of covariates). Design including
@@ -344,7 +357,22 @@ pnorm link for $\psi_{it}$ and $p_{itj}$, apply the sampling design and
 fit the multi-season occupancy model (with logit link function); “c3”:
 interpretation of results and figures. Results and figures of this
 study-scenario are stored in one specific folder in the path:
-“model_output –\> output_simulations –\> scenario_phenology_spot”.  
+“model_output_mis-specification –\> output_simulations –\>
+scenario_phenology_spot”.  
+\|——– SIM-5-study3-sc3-… .R: Scripts to simulations with our Poisson
+sampling design ($\phi$ as in study 1-sc0) and latitude $L_i$ as
+occupancy and detection covariate, and $v_{itj}$ (random covariate) in
+the detection model (partial overlap of covariates). Design including
+the effect of phenology + observer preferences + observation spot on
+occupancy data. “c1”: creates the Poisson sampling design - array
+$G_{itj}$ - with an effect of phenology + observer preferences +
+observation spot in mid latitudes; “c2”: generate simulated data with
+pnorm link for $\psi_{it}$ and $p_{itj}$, apply the sampling design and
+fit the multi-season occupancy model (with logit link function); “c3”:
+interpretation of results and figures. Results and figures of this
+study-scenario are stored in one specific folder in the path:
+“model_output_mis-specification –\> output_simulations –\>
+scenario_phenology_spot_2”.  
 
 #### \|- *model_output_mis-specification*: Results of the assessment of model misspecification (three scenarios analyzed):
 
@@ -358,9 +386,12 @@ settings
 & Stoudt (2024) - **study 1-scenario 0**  
 \|———————- *scenario_two*: simulation results for study 2 - scenario 2 -
 **study 2-scenario 2**  
-\|———————- *scenario_phenology_spot*: correct data and simulation
-results for study 3 - scenario 2 incorporating phenology + observer
-preferences + observation spot of I $\times$ 25% sites.  
+\|———————- *scenario_phenology_spot*: simulation results for study 3 -
+scenario 2 incorporating phenology + observer preferences + observation
+spot of I $\times$ 25% sites.  
+\|———————- *scenario_phenology_spot*: simulation results for study 3 -
+scenario 3 incorporating phenology + observer preferences + observation
+spot (reestablished amount of data).  
 
 ##### This article was produced using the following software and associated packages:
 
