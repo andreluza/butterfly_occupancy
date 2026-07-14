@@ -16,6 +16,7 @@ dir.create(here ("model_output", "output_simulations","scenario_two"))
 dir.create(here ("model_output", "output_simulations","scenario_three"))
 dir.create(here ("model_output", "output_simulations","scenario_phenology"))
 dir.create(here ("model_output", "output_simulations","scenario_phenology_spot"))
+dir.create(here ("model_output", "output_simulations","scenario_phenology_spot2"))
 
 # directory to store figures
 dir.create(here ("figures", "sims_present_paper"))
