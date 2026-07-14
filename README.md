@@ -13,8 +13,8 @@ heterogeneous datasets
 \|- *SuppInfo-A-D.pdf*: Supporting Information A, B, C and D associated
 to the article (also published as Online Supporting Information)  
 \|- *SuppInfo-E.pdf*: Supporting Information E: Assessment of model
-misspeficication, analysis of $\psi_{it} \times p_it$, and evaluation of
-the study scenario 3-2 with NNGP=15 spatial neighbors.  
+misspeficication, analysis of $\psi_{it} \times p_{it}$, and evaluation
+of the study scenario 3-2 with NNGP=15 spatial neighbors.  
 \|- *SuppInfo-F.pdf*: Supporting Information E: analyses using the
 Random Walk Occupancy Model by Outwaithe et al. (2018)  
 \|- *occ-model-rwalk-RE-simulations.txt*: Model of Outwaithe et
@@ -23,27 +23,27 @@ al. (2018) in BUGS language
 the four remaining species: the meadow brown, the false ringlet, the
 marsh fritillary, and the small copper  
 \|- *SuppInfo-H.pdf*: Supporting Information G: names/IDs of data
-contributors, as appearing in FAUNA data sets  
+contributors, as appearing in FAUNA datasets  
   
 
 #### \|- *Data*: Spatial data 
 
 \|——– SpatialData: systematic grid (grid cells 1x1 km, French geographic
-system) from Observatoire FAUNA. The $1 \times 1$km spatial grid was
-downloaded from: <a
+system) from Observatoire FAUNA. The 1x1 km spatial grid was downloaded
+from: <a
 href="https://observatoire-fauna.fr/ressources/publications?typePublication%5B%5D=fauna&amp;themesID%5B%5D=6\"
 class="uri">https://observatoire-fauna.fr/ressources/publications?typePublication%5B%5D=fauna&amp;themesID%5B%5D=6\</a>
 
   
 
-#### \|- *Processed_data*: Data obtained after processing raw data sets 
+#### \|- *Processed_data*: Data obtained after processing raw datasets 
 
-\|——– AltitudeHabitatStats.RData: Altitude data (from EUDEM) and habitat
-data (from CORINE land use data)  
+\|——– AltitudeHabitatStats.RData: Altitude data from EUDEM and habitat
+data from CORINE land use data;  
 \|——– SpeciesData.RData: Occupancy data used in SDMs (from Observatoire
-FAUNA data base)  
+FAUNA data base);  
 \|——– Water.RData: CORINE land cover data regarding water vs non-water
-sites  
+(land) cover.  
   
 
 #### \|- *R*: R scripts 
@@ -133,19 +133,17 @@ study-scenario are stored in one specific folder in the path:
 “model_output –\> output_simulations –\>
 scenario_phenology_spot-NNGP-15-review”.  
 \|——– SIM-10-study3-sc3-… .R: Scripts to simulations with our Poisson
-sampling design where $\lambda = 1.1 \times (I/I*)$ (reestablishes the
+sampling design where $\lambda = 1.1 \times (I/I^*)$ (reestablishes the
 amount of data used from 1-0 to 3-1), $\phi$ as in study 1-sc0, and
 latitude $L_i$ as occupancy and detection covariate, and $v_{itj}$
 (random covariate) in the detection model (partial overlap of
-covariates). Design including the effect of phenology + observer
-preferences + observation spot of I $\times$ 50% sites on occupancy
-data. “c1”: creates the Poisson sampling design (array $G_{itj}$) with
-an effect of phenology + observer preferences + observation spot at mid
-latitudes; “c2”: generate simulated data, apply the sampling design and
-fit the multi-season occupancy model; “c3”: interpretation of results
-and figures. Results and figures of this study-scenario are stored in
-one specific folder in the path: “model_output –\> output_simulations
-–\> scenario_phenology_spot_2”.  
+covariates). “c1”: creates the Poisson sampling design (array $G_{itj}$)
+with an effect of phenology + observer preferences + observation spot at
+mid latitudes; “c2”: generate simulated data, apply the sampling design
+and fit the multi-season occupancy model; “c3”: interpretation of
+results and figures. Results and figures of this study-scenario are
+stored in one specific folder in the path: “model_output –\>
+output_simulations –\> scenario_phenology_spot_2”.  
 \|——– SIM-11-study3-sc3-…NNGP-15.R: Scripts used to analyze simulated
 data, as per study scenario 3-3, using NNGP=15 spatial neighbors in the
 Gaussian Process approximation. Results and figures of this
@@ -175,7 +173,7 @@ specific folder in the path: “model_output –\> output_simulations –\>
 scenario_phenology_spot_review”.  
 \|——– SIM-14-study-simulation-comparison-Identifiability: Script used to
 interpret the output of simulations. This script will produce figures
-shown in the main text and SI  
+shown in the main text and SI.  
 \|——– SIM-15-simulation-psi-p-product: Evaluation of the product of
 $\psi_{it} \times p_{it}$ for each scenario.  
 
@@ -247,7 +245,7 @@ models fitted to *Coenonympha oedippus*, *Euphydryas aurinia*, *Lycaena
 phlaeas*, and *Maniola jurtina* at Bordeaux + 10 km buffer scale.  
   
 
-#### \|- *model_output*: General simulation settings, sampling designs, and results of the analyses of simulated and empirical data sets. These folders and files (RData) will be created while running scripts:
+#### \|- *model_output*: General simulation settings, sampling designs, and results of the analyses of simulated and empirical datasets. These folders and files (RData) will be created while running scripts:
 
 \|————— *empirical*: results of empirical data analysis (model output
 and predictions) using the $spOccupancy$ package;  
@@ -293,16 +291,16 @@ scenario 1**
 results for study 3 - scenario 2 incorporating phenology + observer
 preferences + observation spot - **study 3 - scenario 2**  
 \|———————- *scenario_phenology_spot_2*: correct data and simulation
-results for study 3 - scenario 3 incorporating phenology + observer
+results for **study 3 - scenario 3** incorporating phenology + observer
 preferences + observation spot - **study 3 - scenario 3**  
 \|———————- *scenario_phenology_spot-NNGP-15-review*: analysis of
-simulated data for study 3 - scenario 2 with NNGP=15 spatial
-neighbors.  
+simulated data for **study 3 - scenario 2 with NNGP=15 spatial
+neighbors**.  
 \|———————- *scenario_phenology_spot_2_NNGP15*: analysis of simulated
-data for study 3 - scenario 3 with NNGP=15 spatial neighbors.  
+data for **study 3 - scenario 3 with NNGP=15 spatial neighbors**.  
 \|———————- *scenario_phenology_spot_review*: correct data and simulation
-results for study 3 - scenario 2 incorporating phenology + observer
-preferences + observation spot of 50% of the sites.  
+results for study **3 - scenario 2** incorporating phenology + observer
+preferences + observation spot of **50%** of the sites.  
 
   
 
@@ -374,12 +372,12 @@ settings
 & Stoudt (2024) - **study 1-scenario 0**  
 \|———————- *scenario_two*: simulation results for study 2 - scenario 2 -
 **study 2-scenario 2**  
-\|———————- *scenario_phenology_spot*: simulation results for study 3 -
-scenario 2 incorporating phenology + observer preferences + observation
-spot of I $\times$ 25% sites.  
-\|———————- *scenario_phenology_spot*: simulation results for study 3 -
-scenario 3 incorporating phenology + observer preferences + observation
-spot (reestablished amount of data).  
+\|———————- *scenario_phenology_spot*: simulation results for **study 3 -
+scenario 2** incorporating phenology + observer preferences +
+observation spot of I $\times$ 25% sites.  
+\|———————- *scenario_phenology_spot*: simulation results for **study 3 -
+scenario 3** incorporating phenology + observer preferences +
+observation spot (reestablished amount of data).  
 
 ##### This article was produced using the following software and associated packages:
 
@@ -416,27 +414,27 @@ spot (reestablished amount of data).
     ## [13] kableExtra_1.4.0        knitr_1.51              ggh4x_0.3.1            
     ## [16] units_1.0-1             gridExtra_2.3           rnaturalearthdata_1.0.0
     ## [19] rnaturalearth_1.2.0     reshape_0.8.10          lubridate_1.9.5        
-    ## [22] ggbreak_0.1.6           dplyr_1.2.0             ggplot2_4.0.2          
+    ## [22] ggbreak_0.1.6           dplyr_1.2.0             ggplot2_4.0.3          
     ## [25] sf_1.1-0                here_1.0.2             
     ## 
     ## loaded via a namespace (and not attached):
     ##  [1] Rdpack_2.6.6       DBI_1.3.0          deldir_2.0-4       s2_1.1.9          
-    ##  [5] rlang_1.1.7        magrittr_2.0.4     otel_0.2.0         e1071_1.7-17      
-    ##  [9] compiler_4.3.3     systemfonts_1.0.5  vctrs_0.7.2        stringr_1.6.0     
+    ##  [5] rlang_1.2.0        magrittr_2.0.5     otel_0.2.0         e1071_1.7-17      
+    ##  [9] compiler_4.3.3     systemfonts_1.0.5  vctrs_0.7.3        stringr_1.6.0     
     ## [13] pkgconfig_2.0.3    wk_0.9.5           fastmap_1.2.0      magic_1.6-1       
     ## [17] rmarkdown_2.30     nloptr_2.2.1       purrr_1.2.1        xfun_0.57         
     ## [21] aplot_0.2.9        parallel_4.3.3     R6_2.6.1           stringi_1.8.7     
-    ## [25] RColorBrewer_1.1-3 boot_1.3-30        Rcpp_1.1.1         iterators_1.0.14  
+    ## [25] RColorBrewer_1.1-3 boot_1.3-30        Rcpp_1.1.1-1.1     iterators_1.0.14  
     ## [29] Matrix_1.6-5       splines_4.3.3      timechange_0.4.0   tidyselect_1.2.1  
     ## [33] rstudioapi_0.18.0  dichromat_2.0-0.1  yaml_2.3.12        doParallel_1.0.17 
     ## [37] codetools_0.2-19   lattice_0.22-5     tibble_3.3.1       plyr_1.8.9        
-    ## [41] withr_3.0.2        S7_0.2.1           evaluate_1.0.5     gridGraphics_0.5-1
+    ## [41] withr_3.0.2        S7_0.2.2           evaluate_1.0.5     gridGraphics_0.5-1
     ## [45] proxy_0.4-29       xml2_1.5.2         pillar_1.11.1      spAbundance_0.2.1 
     ## [49] KernSmooth_2.23-22 foreach_1.5.2      reformulas_0.4.4   ggfun_0.2.0       
     ## [53] generics_0.1.4     rprojroot_2.1.1    scales_1.4.0       minqa_1.2.8       
-    ## [57] class_7.3-22       glue_1.8.0         tools_4.3.3        lme4_2.0-1        
+    ## [57] class_7.3-22       glue_1.8.1         tools_4.3.3        lme4_2.0-1        
     ## [61] RANN_2.6.2         fs_2.0.1           rbibutils_2.4.1    nlme_3.1-164      
-    ## [65] patchwork_1.3.2    Formula_1.2-5      cli_3.6.5          rappdirs_0.3.4    
+    ## [65] patchwork_1.3.2    Formula_1.2-5      cli_3.6.6          rappdirs_0.3.4    
     ## [69] viridisLite_0.4.3  svglite_2.1.3      gtable_0.3.6       yulab.utils_0.2.4 
     ## [73] digest_0.6.39      classInt_0.4-11    ggplotify_0.1.3    farver_2.1.2      
     ## [77] htmltools_0.5.9    lifecycle_1.0.5

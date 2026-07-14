@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 |- *SuppInfo-F.pdf*: Supporting Information E: analyses using the Random Walk Occupancy Model by Outwaithe et al. (2018)\
 |- *occ-model-rwalk-RE-simulations.txt*: Model of Outwaithe et al. (2018) in BUGS language\
 |- *SuppInfo-G.pdf*: Supporting Information F: analyses using data of the four remaining species: the meadow brown, the false ringlet, the marsh fritillary, and the small copper\
-|- *SuppInfo-H.pdf*: Supporting Information G: names/IDs of data contributors, as appearing in FAUNA data sets\
+|- *SuppInfo-H.pdf*: Supporting Information G: names/IDs of data contributors, as appearing in FAUNA datasets\
 \
 
 #### |- *Data*: Spatial data\
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 \
 
-#### |- *Processed_data*: Data obtained after processing raw data sets \
+#### |- *Processed_data*: Data obtained after processing raw datasets \
 |-------- AltitudeHabitatStats.RData: Altitude data from EUDEM and habitat data from CORINE land use data;\
 |-------- SpeciesData.RData: Occupancy data used in SDMs (from Observatoire FAUNA data base);\
 |-------- Water.RData: CORINE land cover data regarding water vs non-water (land) cover.\
@@ -78,7 +78,7 @@ knitr::opts_chunk$set(echo = TRUE)
 |-------- EMP-11-buffer-Tables-PPO-remaining-species.R: script used to calculate summary statistics for regression coefficients, including the Prior-Posterior overlap (Tables in Supporting Information F), from models fitted to  *Coenonympha oedippus*, *Euphydryas aurinia*, *Lycaena phlaeas*, and *Maniola jurtina* at Bordeaux + 10 km buffer scale.\
 \
 
-#### |- *model_output*: General simulation settings, sampling designs, and results of the analyses of simulated and empirical data sets. These folders and files (RData) will be created while running scripts:
+#### |- *model_output*: General simulation settings, sampling designs, and results of the analyses of simulated and empirical datasets. These folders and files (RData) will be created while running scripts:
 |--------------- *empirical*: results of empirical data analysis (model output and predictions) using the $spOccupancy$ package; \
 |--------------- *output_simulations*: simulation settings and results: \
 |---------------------- *"Xp_itj.rda"*: observation covariate $v_{itj}$ (generated once) \
