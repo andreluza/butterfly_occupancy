@@ -23,7 +23,7 @@ my_theme <- theme(legend.position = 'bottom',
                   strip.text = element_text(size=12),
                   strip.text.y = element_text(color = 'black'),
                   strip.text.x = element_text(color = 'black'), 
-                  text = element_text(family="LM Roman 10"),
+                  text = element_text(family="Arial"),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
@@ -49,29 +49,29 @@ scePhenSpot2 <- new.env()
 
 # load in the environments
 load(file = here ("model_output", "output_simulations", "sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDS)
+                  "sim-mixed-stPGOcc-results-1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
 # 
 load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDSsmooth)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
 sceDSsmooth$study <- 1
 sceDSsmooth$sc <- 1
 
-
+#
 load(file = here ("model_output", "output_simulations", "scenario_zero",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce0)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce0)
 sce0$study <- 2
 sce0$sc <- 0
 
 load(file = here ("model_output", "output_simulations", "scenario_one",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce1)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce1)
 sce1$study <- 2
 sce1$sc <- 1
 
 load(file = here ("model_output", "output_simulations", "scenario_two",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce2)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 sce2$study <- 2
 sce2$sc <- 2
 
@@ -233,7 +233,7 @@ fig_error_psi <- ggplot(BVDec_psi_it %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","Error_psi_it.png"),
-     width = 600, height = 600,units = "px")
+     width = 17, height = 15, units = "cm", res=200)
 
   fig_error_psi
 
@@ -337,7 +337,7 @@ fig_error_phi <- ggplot(BVDec_phi %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","Error_phi.png"),
-     width = 600, height = 600,units = "px")
+     width = 17, height = 15, units = "cm", res=200)
 
   fig_error_phi
 
@@ -396,7 +396,7 @@ phi_decay <- ggplot(BVDec_phi %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","Phi_decay_comparison.png"),
-     width = 600, height = 600,units = "px")
+     width = 17, height = 15, units = "cm", res=200)
 
   phi_decay
 
@@ -497,7 +497,7 @@ fig_error_rho <- ggplot(BVDec_rho%>%
 
 # save
 png (here("figures", "Scenario-Comparisons","Error_rho.png"),
-     width = 600, height = 600,units = "px")
+     width = 17, height = 15, units = "cm", res=200)
 
   fig_error_rho
 
@@ -597,7 +597,7 @@ fig_error_sigma2_T <- ggplot(BVDec_sigma2_T%>%
 
 # save
 png (here("figures", "Scenario-Comparisons","Error_sigma2_T.png"),
-     width = 600, height = 600,units = "px")
+     width = 17, height = 15, units = "cm", res=200)
 
   fig_error_sigma2_T
 
@@ -901,7 +901,7 @@ density_phi_sigma <- theta_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_phi_sigma1-4.png"),
-     width = 17, height = 17,units = "cm",res=150)
+     width = 17, height = 17, units = "cm", res=300)
 
   density_phi_sigma
 
@@ -929,7 +929,7 @@ density_phi_sigma2 <- theta_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_phi_sigma13-16.png"),
-     width = 17, height = 17,units = "cm",res=150)
+     width = 17, height = 17, units = "cm", res=300)
 
   density_phi_sigma2
 
@@ -957,7 +957,7 @@ density_rho_sigmaT <- theta_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_rho_sigmaT1-4.png"),
-     width = 17, height = 17,units = "cm",res=150)
+     width = 17, height = 17, units = "cm", res=300)
 
   density_rho_sigmaT
 
@@ -985,7 +985,7 @@ density_rho_sigmaT2 <- theta_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_rho_sigmaT13-16.png"),
-     width = 17, height = 17,units = "cm",res=150)
+     width = 17, height = 17, units = "cm", res=300)
 
   density_rho_sigmaT2
 
@@ -1110,7 +1110,7 @@ density_intercepts1 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_intercepts_sc1-4.png"),
-     width =18, height = 18,units = "cm",res=150)
+     width =18, height = 18,units = "cm",res=300)
 
   density_intercepts1
 
@@ -1138,7 +1138,7 @@ density_intercepts2 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_intercepts_sc13-16.png"),
-     width =18, height = 18,units = "cm",res=150)
+     width =18, height = 18,units = "cm",res=300)
 
   density_intercepts2
 
@@ -1167,7 +1167,7 @@ density_betas1 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_betas_sc1-4.png"),
-     width =18, height = 18,units = "cm",res=150)
+     width =18, height = 18,units = "cm",res=300)
 
   density_betas1
 
@@ -1195,7 +1195,7 @@ density_betas2 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_betas_sc13-16.png"),
-     width = 18, height = 18, units = "cm",res=150)
+     width = 18, height = 18, units = "cm",res=300)
 
   density_betas2
 
@@ -1224,7 +1224,7 @@ density_alphas1 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas_sc1-4.png"),
-     width = 18, height = 18, units = "cm",res=150)
+     width = 18, height = 18, units = "cm",res=300)
 
   density_alphas1
 
@@ -1252,7 +1252,7 @@ density_alphas2 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas_sc13-16.png"),
-     width = 18, height = 18, units = "cm",res=150)
+     width = 18, height = 18, units = "cm",res=300)
 
   density_alphas2
 
@@ -1281,7 +1281,7 @@ density_alphas2 <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas2_sc1-4.png"),
-     width = 18, height = 12, units = "cm",res=150)
+     width = 18, height = 12, units = "cm",res=300)
 
   density_alphas2
 
@@ -1309,7 +1309,7 @@ density_alphas2_b <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas2_sc13-16.png"),
-     width = 18, height = 12, units = "cm",res=150)
+     width = 18, height = 12, units = "cm",res=300)
 
   density_alphas2_b
 
@@ -1338,7 +1338,7 @@ density_alphas <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc1-4.png"),
-     width = 18, height = 12, units = "cm",res=150)
+     width = 18, height = 12, units = "cm",res=300)
 
   density_alphas
 
@@ -1368,7 +1368,7 @@ density_alphas <- psi_p_data %>%
 
 # save
 png (here("figures", "Scenario-Comparisons","density_alphas_pairs_sc13-16.png"),
-     width = 18, height = 12, units = "cm",res=150)
+     width = 18, height = 12, units = "cm",res=300)
 
   density_alphas
 

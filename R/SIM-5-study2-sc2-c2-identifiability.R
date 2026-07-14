@@ -27,15 +27,16 @@ load(file = here ("model_output", "output_simulations", "scenario_two",
                   "sim-mixed-stPGOcc-results_1600.rda"))
 
 # load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_two",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"))
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+load(file = here ("model_output", "output_simulations", "scenario_two",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"))
 
 # ggplot theme -------------------------------------
 my_theme <- theme(legend.position = 'bottom', 
                   strip.text = element_text(size=12),
                   strip.text.y = element_text(color = 'black'),
                   strip.text.x = element_text(color = 'black'), 
-                  text = element_text(family="LM Roman 10"),
+                  text = element_text(family="Arial"),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
@@ -191,7 +192,7 @@ fig.3.plot <- plot.df %>%
 
 # save
 png(here("figures","sims_present_paper", "Scenario2", "Figure-3-st1-sc2.png"),
-    width = 600, height = 600,units = "px")
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.3.plot
 

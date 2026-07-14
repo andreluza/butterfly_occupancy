@@ -21,7 +21,7 @@ my_theme <- theme(legend.position = 'bottom',
                   strip.text = element_text(size=12),
                   strip.text.y = element_text(color = 'black'),
                   strip.text.x = element_text(color = 'black'), 
-                  text = element_text(family="LM Roman 10"),
+                  text = element_text(family="Arial"),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
@@ -37,7 +37,6 @@ load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-co
 # load model output
 load(file = here ("model_output", "output_simulations", "scenario_zero",
                   "sim-mixed-stPGOcc-results_1600.rda"))
-
 
 # Generate the data -------------------------------------------------------
 # Number of data sets for each scenario
@@ -188,9 +187,9 @@ fig.3.plot <- plot.df %>%
 
 # save
 png(here("figures","sims_present_paper", "Scenario0", "Figure-3-st1-sc0.png"),
-    width = 600, height = 600,units = "px")
+    width = 20, height = 20, units = "cm", res=200)
 
-fig.3.plot
+  fig.3.plot
 
 dev.off()
 

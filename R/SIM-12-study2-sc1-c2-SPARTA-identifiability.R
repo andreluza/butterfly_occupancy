@@ -21,7 +21,7 @@ my_theme <- theme(legend.position = 'bottom',
                   strip.text = element_text(size=12),
                   strip.text.y = element_text(color = 'black'),
                   strip.text.x = element_text(color = 'black'), 
-                  text = element_text(family="LM Roman 10"),
+                  text = element_text(family="Arial"),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 
@@ -40,53 +40,9 @@ list_output <- list.files (here ("model_output", "output_simulations", "scenario
 load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-correct.rda"))
 
 # load true psi 
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
 load(file = here ("model_output", "output_simulations", "scenario_one",
                   "sim-mixed-stPGOcc-psi-true_1600.rda"))
-
-# ordering the output
-order_output <- as.numeric(
-  gsub (".rda", "",
-        gsub ("sim-mixed-stPGOcc-results_","", list_output)
-  ))
-list_output <- list_output[order(order_output)]  # reorder
-
-# load and extract estimated psi_it
-hat_psi_it <- lapply (list_output, function (i) {
-  # load 
-  load(file = here ("model_output", 
-                    "output_simulations", 
-                    "scenario_two_sparta",
-                  i))
-  # extract
-  hat_psi_it <- output_save$mean$muZ
-  
-  # rm output_save
-  rm(output_save)
-  ;
-  # return
-  hat_psi_it
-  
-  }
-)
-
-# plot one single simulation run + the truth
-plot.df <- lapply (seq (1:42), function (sim) 
-  do.call(rbind, lapply (seq (1:16), function (sce) {
-    
-    curr.indx <- (sim - 1) * n.scenarios + sce
-    plot.df <- cbind (Estimated = melt(hat_psi_it[[curr.indx]])[,3],
-                      melt(psi.true[,,sim,sce]),
-                      sim=sim,
-                      scenario=sce) 
-    
-    plot.df
-})))
-plot.df <- do.call(rbind,plot.df)
-
-# list to array
-#arr_hat_psi_it<-array(unlist(hat_psi_it),dim=c(1200,10,42,16)) # nsites x nyears x nsims x nscenarios
-#arr_hat_psi_it <- lapply (hat_psi_it,melt)
-#arr_hat_psi_it <- do.call(rbind , arr_hat_psi_it)
 
 # Generate the data -------------------------------------------------------
 # Number of data sets for each scenario
@@ -164,6 +120,51 @@ scenario.vals$time <- c(expression(paste(sigma, " "[T]^2, " Low, ", rho, "  Low"
 
 # ----------------------------------------------------
 
+# ordering the output
+order_output <- as.numeric(
+  gsub (".rda", "",
+        gsub ("sim-mixed-stPGOcc-results_","", list_output)
+  ))
+list_output <- list_output[order(order_output)]  # reorder
+
+# load and extract estimated psi_it
+hat_psi_it <- lapply (list_output, function (i) {
+  # load 
+  load(file = here ("model_output", 
+                    "output_simulations", 
+                    "scenario_two_sparta",
+                    i))
+  # extract
+  hat_psi_it <- output_save$mean$muZ
+  
+  # rm output_save
+  rm(output_save)
+  ;
+  # return
+  hat_psi_it
+  
+}
+)
+
+# plot one single simulation run + the truth
+plot.df <- lapply (seq (1:42), function (sim) 
+  do.call(rbind, lapply (seq (1:16), function (sce) {
+    
+    curr.indx <- (sim - 1) * n.scenarios + sce
+    plot.df <- cbind (Estimated = melt(hat_psi_it[[curr.indx]])[,3],
+                      melt(psi.true[,,sim,sce]),
+                      sim=sim,
+                      scenario=sce) 
+    
+    plot.df
+  })))
+plot.df <- do.call(rbind,plot.df)
+
+# list to array
+#arr_hat_psi_it<-array(unlist(hat_psi_it),dim=c(1200,10,42,16)) # nsites x nyears x nsims x nscenarios
+#arr_hat_psi_it <- lapply (hat_psi_it,melt)
+#arr_hat_psi_it <- do.call(rbind , arr_hat_psi_it)
+
 # SUMMARIZE AS DOSER & STOUDT
 colnames(plot.df) <- c('Estimated','site', 'year', 'True', 'sim', 'scenario')
 plot.df$diff <- plot.df$True - plot.df$Estimated # calculate difference
@@ -233,7 +234,7 @@ fig.3.plot <- plot.df %>%
 
 # save
 png(here("figures","sims_present_paper", "Scenario1_sparta", "Figure-3-st2-sc1-sparta.png"),
-    width = 600, height = 600,units = "px")
+    width = 20, height = 20, units = "cm", res=300)
 
   fig.3.plot
 

@@ -24,14 +24,14 @@ load(file = here ("model_output", "output_simulations", "sims_D&S", "sim-data-co
 
 # load model output
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_review",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"))
+                  "sim-mixed-stPGOcc-results_1600.rda"))
 
 # ggplot theme -------------------------------------
 my_theme <- theme(legend.position = 'bottom', 
                   strip.text = element_text(size=12),
                   strip.text.y = element_text(color = 'black'),
                   strip.text.x = element_text(color = 'black'), 
-                  text = element_text(family="LM Roman 10"),
+                  text = element_text(family="Arial"),
                   panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank(),
                   axis.text.x = element_text(angle = 45, hjust = 1, size = 10), 

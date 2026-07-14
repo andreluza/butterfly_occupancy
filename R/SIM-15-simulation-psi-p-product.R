@@ -37,7 +37,7 @@ scePhenSpot2 <- new.env()
 
 # load in the environments
 load(file = here ("model_output", "output_simulations", "sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDS)
+                  "sim-mixed-stPGOcc-results-1600.rda"),sceDS)
 sceDS$study <- 1
 sceDS$sc <- 0
 
@@ -76,8 +76,8 @@ scenario.vals$time <- c(expression(paste(sigma, " "[T]^2, " Low, ", rho, "  Low"
                         expression(paste(sigma, " "[T]^2, " High, ", rho, "  High")))
 
 # choose the simulation run and scenario to evaluate
-s = 1
-sc = 13
+# s = 1
+# sc = 13
 
 # calculate the product of psi_it and p_it (aggregated over J) for all sim runs and scenarios
 prod_psi_det <- lapply (seq(1,n.sims), function (s) {
@@ -148,8 +148,8 @@ prod_psi_det <- lapply (seq(1,n.sims), function (s) {
     plot.df
     
     
-  }
-  ) # close scenario
+      }
+    ) # close scenario
   }
 ) # close simulation
 
@@ -158,6 +158,9 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
                       lapply (prod_psi_det, function (s)  # dissolve simulations
                         do.call(rbind, s))  
 ) 
+length(prod_psi_det)
+length(prod_psi_det[[1]])
+
 # obtain the average relationship
 # data frame with average
 avg.df <- plot.data[,-9] %>%
@@ -189,7 +192,7 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
 
 # save
 png(here("figures","sims_D&S","Figure-psi-p-st1-sc0.png"),
-    width = 600, height = 600,units = "px")
+    width = 20, height = 20, units = "cm", res=200)
   
     fig.psi.p.prod
 
@@ -207,7 +210,7 @@ gc()
 
 # Scenario 1 - 1 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "smooth_sims_D&S",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sceDSsmooth)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sceDSsmooth)
 sceDSsmooth$study <- 1
 sceDSsmooth$sc <- 1
 
@@ -294,6 +297,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
                       lapply (prod_psi_det, function (s)  # dissolve simulations
                         do.call(rbind, s))  
 ) 
+
 # obtain the average relationship
 # data frame with average
 avg.df <- plot.data[,-9] %>%
@@ -324,7 +328,7 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
              labeller = label_parsed)
 # save
 png(here("figures","sims_D&S_smooth","Figure-psi-p-st1-sc1.png"),
-    width = 600, height = 600,units = "px")
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -340,7 +344,6 @@ rm(sceDSsmooth)
 rm(fig.psi.p.prod)
 gc()
 
-
 # Scenario 2 - 0 ------------------------------------------
 # load simulation settings
 load(here("model_output", "output_simulations", "sim-settings.RData"))
@@ -349,7 +352,7 @@ load(here("model_output", "output_simulations", "sim-settings.RData"))
 load (file=here ("model_output", "output_simulations", "Xp_itj.rda"))
 
 load(file = here ("model_output", "output_simulations", "scenario_zero",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce0)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce0)
 sce0$study <- 2
 sce0$sc <- 0
 
@@ -449,7 +452,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -460,7 +463,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -475,9 +478,10 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
               lwd = 0.5) +
   facet_grid(time~spatial, 
              labeller = label_parsed)
+
 # save
-png(here("figures","TuningD&S_sims","Scenario0","Figure-psi-p-st2-sc0.png"),
-    width = 600, height = 600,units = "px")
+png(here("figures","sims_present_paper","Scenario0","Figure-psi-p-st2-sc0.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -496,7 +500,11 @@ gc()
 load(here("model_output", "output_simulations", "sim-settings.RData"))
 
 load(file = here ("model_output", "output_simulations", "scenario_one",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce1)
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce1)
+# load true psi 
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+load(file = here ("model_output", "output_simulations", "scenario_one",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce1)
 
 sce1$study <- 2
 sce1$sc <- 1
@@ -597,7 +605,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -608,7 +616,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -624,8 +632,8 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","Scenario1","Figure-psi-p-st2-sc1.png"),
-    width = 600, height = 600,units = "px")
+png(here("figures","sims_present_paper","Scenario1","Figure-psi-p-st2-sc1.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -643,16 +651,19 @@ gc()
 
 # Scenario 2 - 2 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "scenario_two",
-                  "sim-mixed-stPGOcc-results-merged-B.rda"),sce2)
-# load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_two",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce2)
-sce2$study <- 2
-sce2$sc <- 2
+                  "sim-mixed-stPGOcc-results_1600.rda"),sce2)
 
 # Load the data sets to have latitude
 load(here ("model_output", "output_simulations", "sims_D&S", "sim-data-correct.rda"))
 dat.full <- dat
+
+# load true psi 
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+
+load(file = here ("model_output", "output_simulations", "scenario_two",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce2)
+sce2$study <- 2
+sce2$sc <- 2
 
 # calculate the product of psi_it and p_it (aggregated over J) for all sim runs and scenarios
 prod_psi_det <- lapply (seq(1,n.sims), function (s) {
@@ -766,7 +777,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -777,7 +788,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data [,-9]%>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -793,8 +804,8 @@ fig.psi.p.prod <- plot.data [,-9]%>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","Scenario2","Figure-psi-p-st2-sc2.png"),
-    width = 600, height = 600,units = "px")
+png(here("figures","sims_present_paper","Scenario2","Figure-psi-p-st2-sc2.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -813,6 +824,12 @@ gc()
 # Scenario 2 - 3 ------------------------------------------
 load(file = here ("model_output", "output_simulations", "scenario_three",
                   "sim-mixed-stPGOcc-results_1600.rda"),sce3)
+# load true psi 
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+
+load(file = here ("model_output", "output_simulations", "scenario_phenology",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"),sce3)
+
 sce3$study <- 2
 sce3$sc <- 3
 
@@ -934,7 +951,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -945,7 +962,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -961,10 +978,10 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","Scenario3","Figure-psi-p-st2-sc3.png"),
-    width = 600, height = 600,units = "px")
+png(here("figures","sims_present_paper","Scenario3","Figure-psi-p-st2-sc3.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
-fig.psi.p.prod
+  fig.psi.p.prod
 
 dev.off()
 
@@ -983,8 +1000,10 @@ gc()
 load(file = here ("model_output", "output_simulations", "scenario_phenology",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhen)
 # load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhen)
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+
+load(file = here ("model_output", "output_simulations", "scenario_phenology",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhen)
 
 scePhen$study <- 3
 scePhen$sc <- 1
@@ -1112,7 +1131,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -1123,7 +1142,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -1139,8 +1158,8 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","ScenarioPhenology","Figure-psi-p-st3-sc1.png"),
-    width = 700, height = 600,units = "px")
+png(here("figures","sims_present_paper","ScenarioPhenology","Figure-psi-p-st3-sc1.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -1162,8 +1181,10 @@ gc()
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpot)
 # load true psi 
-#load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
-#                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhenSpot)
+# PS: During the simulations, I forgot to save `psi_true` along with the model results for scenarios 2-1 through 3-1. Consequently, I had to retrieve the true `psi_it` values ​​in a later step—note that the random number generator seeds remained constant to avoid generating different data. Thus, I load this `psi_true` at this point in the code. The current code versions save `psi_true`, so the file "sim-mixed-stPGOcc-psi-true_1600.rda" will not be generated. Therefore, if you attempt to reproduce the results, the absence of this object is not an issue (the error can be ignored), as the true `psi_true` values ​​are contained within the "sim-mixed-stPGOcc-results_1600.rda" object. If you encounter any problems, please get in touch (via email, GitHub issue, etc.).
+
+load(file = here ("model_output", "output_simulations", "scenario_phenology_spot",
+                  "sim-mixed-stPGOcc-psi-true_1600.rda"),scePhenSpot)
 
 scePhenSpot$study <- 3
 scePhenSpot$sc <- 2
@@ -1286,7 +1307,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -1297,7 +1318,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -1313,8 +1334,8 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","ScenarioSpot","Figure-psi-p-st3-sc2.png"),
-    width = 700, height = 600,units = "px")
+png(here("figures","sims_present_paper","ScenarioSpot","Figure-psi-p-st3-sc2.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
@@ -1330,7 +1351,7 @@ rm(scePhenSpot)
 rm(fig.psi.p.prod)
 gc()
 
-# Scenario 3 - 2 ------------------------------------------
+# Scenario 3 - 3 ------------------------------------------
 
 load(file = here ("model_output", "output_simulations", "scenario_phenology_spot_2",
                   "sim-mixed-stPGOcc-results_1600.rda"),scePhenSpot2)
@@ -1455,7 +1476,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
 ) 
 # obtain the average relationship
 # data frame with average
-avg.df <- plot.data[,-9] %>%
+avg.df <- plot.data %>%
   group_by(scenario, sim) %>%
   arrange(true, .by_group = TRUE) %>%
   mutate(fake.id = 1:n()) %>%
@@ -1466,7 +1487,7 @@ avg.df <- plot.data[,-9] %>%
   ungroup()
 
 # plot data
-fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
+fig.psi.p.prod <- plot.data %>% # remove duplicated column
   #filter (scenario == 1) %>%
   ggplot() + 
   #geom_point(aes(x=true, y=estimated), alpha = 0.2) +
@@ -1482,28 +1503,13 @@ fig.psi.p.prod <- plot.data[,-9] %>% # remove duplicated column
   facet_grid(time~spatial, 
              labeller = label_parsed)
 # save
-png(here("figures","TuningD&S_sims","ScenarioSpot2","Figure-psi-p-st3-sc3.png"),
-    width = 700, height = 600,units = "px")
+png(here("figures","sims_present_paper","ScenarioSpot2","Figure-psi-p-st3-sc3.png"),
+    width = 20, height = 20, units = "cm", res=200)
 
   fig.psi.p.prod
 
 dev.off()
 
 # free space
-rm(plot.data)
-rm(prod_psi_det)
-rm(dat.full)
-rm(dat)
-rm(avg.df)
-rm(scePhenSpot2)
-rm(fig.psi.p.prod)
-gc()
-
+rm(list=ls())
 # end
-
-
-
-
-
-
-
