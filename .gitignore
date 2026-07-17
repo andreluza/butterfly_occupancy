@@ -13,4 +13,5 @@ R/EMP-1-organize-empirical-butterfly-data.R
 R/EMP-2-extractionSpatialCovariates.R
 R/EMP-3-organize-occupancy-data.R
 butterfly_occupancy.zip
+butterfly_occupancy_v2.zip
 

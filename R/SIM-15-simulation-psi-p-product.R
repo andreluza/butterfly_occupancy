@@ -450,6 +450,7 @@ plot.data <- do.call( rbind, # dissolve scenarios inside simulations
                       lapply (prod_psi_det, function (s)  # dissolve simulations
                         do.call(rbind, s))  
 ) 
+
 # obtain the average relationship
 # data frame with average
 avg.df <- plot.data %>%
